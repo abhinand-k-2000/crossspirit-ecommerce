@@ -11,6 +11,14 @@ dotenv.config({path: './config/.env'});
 //database connecting
 dbConnect();
 
+// Creating the session
+const session = require('express-session');
+app.use(session({
+    secret: process.env.SESSIONSECRET,
+    resave: false,
+    saveUninitialized: true
+}))
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
@@ -33,9 +41,7 @@ app.use('/', userRoute)
 
 
 
-app.get('/', (req, res) => {
-    res.render('index')
-})
+
 
 
 const port = process.env.PORT || 8000
