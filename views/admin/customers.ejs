@@ -1,0 +1,134 @@
+<%- include('../layouts/admHeader') %>
+
+<section class="content-main">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title">Customers List</h2>
+      <p>Our happy customers</p>
+    </div>
+    <div>
+      <a href="#" class="btn btn-primary btn-sm rounded">Create new</a>
+    </div>
+  </div>
+  <div class="card mb-4">
+    <header class="card-header">
+      <div class="row align-items-center">
+        <div class="col col-check flex-grow-0"></div>
+        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+          <!-- <select class="form-select">
+            <option selected>All category</option>
+            <option>Electronics</option>
+            <option>Clothes</option>
+            <option>Automobile</option>
+          </select> -->
+        </div>
+        <div class="col-md-2 col-6">
+          <input type="date" value="02.05.2021" class="form-control" />
+        </div>
+        <div class="col-md-2 col-6">
+          <select class="form-select">
+            <option selected>Show all</option>
+            <option>Active</option>
+            <option>InActive</option>
+          </select>
+        </div>
+      </div>
+    </header>
+    <!-- card-header end// -->
+
+    <div class="card-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Sl. No.</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Mobile</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Item 1 -->
+          <% if (users.length > 0) { 
+              for (let i = 0; i < users.length; i++) { %>
+                  <tr>
+                      <td><%= i+1 %></td>
+                      <td>
+                          <div class="info">
+                              <h6 class="mb-0"><%= users[i].name %></h6>
+                          </div>
+                      </td>
+                      <td><%= users[i].email %></td>
+                      <td><%= users[i].mobile %></td>
+      
+
+                      
+                        <% if(users[i].isOnline) {  %>
+                          <td>
+                            <span class="badge rounded-pill alert-success">Active</span>
+                        </td>
+                        <% }else{ %>
+                           <td>
+                              <span class="badge rounded-pill alert-danger">Inactive</span>
+                          </td>
+                        <% } %>
+                          
+                  
+                         
+          
+
+
+
+      
+                      <td>
+                          <% if (users[i].isBlocked) { %>
+                              <form action="/admin/unblock-user/<%= users[i]._id %>" method="post">
+                                  <button type="submit" class="btn px-3 py-1.5 btn-sm font-sm btn-success rounded">Unblock</button>
+                              </form>
+                          <% } else { %>
+                              <form action="/admin/block-user/<%= users[i]._id %>" method="post">
+                                  <button type="submit" class="btn px-4 btn-sm font-sm btn-danger rounded">Block</button>
+                              </form>
+                          <% } %>
+                      </td>
+                  </tr>
+          <% } } %>
+      </tbody>
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+      </table>
+    </div>
+  </div>
+  <!-- card end// -->
+  <div class="pagination-area mt-30 mb-50">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-start">
+        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+        <li class="page-item"><a class="page-link" href="#">02</a></li>
+        <li class="page-item"><a class="page-link" href="#">03</a></li>
+        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+        <li class="page-item"><a class="page-link" href="#">16</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#"
+            ><i class="material-icons md-chevron_right"></i
+          ></a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</section>
+
+<%- include('../layouts/admFooter') %>

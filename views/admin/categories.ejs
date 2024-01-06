@@ -1,0 +1,122 @@
+<%- include('../layouts/admHeader') %>
+
+<section class="content-main">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title">Categories</h2>
+    </div>
+    <div>
+      <a href="/admin/add-category" class="btn btn-primary btn-sm rounded">Create new</a>
+    </div>
+  </div>
+  <!-- <header class="card card-body mb-4">
+    <div class="row gx-3">
+      <div class="col-lg-4 col-md-6 me-auto">
+        <input type="text" placeholder="Search..." class="form-control" />
+      </div>
+      <div class="col-lg-2 col-6 col-md-3">
+        <select class="form-select">
+          <option>All category</option>
+          <option>Electronics</option>
+          <option>Clothings</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="col-lg-2 col-6 col-md-3">
+        <select class="form-select">
+          <option>Latest added</option>
+          <option>Cheap first</option>
+          <option>Most viewed</option>
+        </select>
+      </div>
+    </div>
+  </header> -->
+
+  <!-- card-header end// -->
+  <div class="row">
+    <% if(category.length > 0){ for(let i = 0; i < category.length; i++){ %>
+
+
+      
+
+    <div class="col-xl-3 col-lg-4 col-md-6">
+      <div class="card card-product-grid">
+        <a class="img-wrap">
+          <img src="/category/<%= category[i].imagePath %>" alt="Product">
+        </a>
+
+        <div class="info-wrap">
+          <div class="dropdown float-end">
+            <a href="/admin/edit-category/<%= category[i]._id %>" class="btn btn-sm btn-dark rounded">
+              <i class="material-icons md-edit mr-5"></i>Edit
+            </a>
+
+
+            <% if (!category[i].isDeleted) { %>
+              <form action="/admin/unlist-category/<%= category[i]._id %>" method="post">
+                  <button type="submit" class="btn px-3 py-1.5 btn-sm font-sm btn-danger rounded">Unlist</button>
+              </form>
+          <% } else { %>
+              <form action="/admin/list-category/<%= category[i]._id %>" method="post">
+                  <button type="submit" class="btn px-4 btn-sm font-sm btn-success rounded">List</button>
+              </form>
+          <% } %>   
+
+            <!-- <a href="/admin/delete-category?id=<%=category[i]._id%>" class="btn btn-sm btn-danger rounded" onclick="confirmDelete('<%= category._id %>' , event)">
+              <i class="material-icons md-edit mr-5 "></i>Delete
+            </a> -->
+            
+
+
+
+
+            <!-- <div class="dropdown-menu dropdown-menu-end">
+              <a class="dropdown-item" href="#">Edit info</a>
+              <a class="dropdown-item text-danger" href="#">Delete</a>
+            </div> -->
+            
+          </div>
+          <a href="#" class="title"><%= category[i].name %></a>
+        </div>
+      </div>
+    </div>
+
+ 
+
+    <% }} %>
+  </div>
+
+  <!-- row.// -->
+  <div class="pagination-area mt-15 mb-50">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-start">
+        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+        <li class="page-item"><a class="page-link" href="#">02</a></li>
+        <li class="page-item"><a class="page-link" href="#">03</a></li>
+        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+        <li class="page-item"><a class="page-link" href="#">16</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#"
+            ><i class="material-icons md-chevron_right"></i
+          ></a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</section>
+<!-- content-main end// -->
+
+
+<script>
+  function confirmDelete(productId, event) {
+      var confirmation = confirm("Are you sure you want to delete?");
+
+      if (!confirmation) {
+          // If the user clicks "Cancel", prevent the default anchor tag behavior
+          event.preventDefault();
+          console.log('Deletion canceled');
+      }
+    }
+</script>
+
+<%- include('../layouts/admFooter') %>

@@ -54,12 +54,12 @@
 													<form class="row g-3" action="/login" method="POST">
 														<div class="col-12">
 															<label for="inputEmailAddress" class="form-label">Email Address</label>
-															<input type="email" class="form-control" id="inputEmailAddress" name="email" placeholder="Email Address">
+															<input type="email" class="form-control" id="inputEmailAddress" name="email" placeholder="Email Address" required>
 														</div>
 														<div class="col-12">
 															<label for="inputChoosePassword" class="form-label">Enter Password</label>
 															<div class="input-group" id="show_hide_password">
-																<input type="password" class="form-control border-end-0" id="inputChoosePassword" name="password"  placeholder="Enter Password"> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
+																<input type="password" class="form-control border-end-0" id="inputChoosePassword" name="password"  placeholder="Enter Password" required> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
 															</div>
 														</div>
 														<!-- <div class="col-md-6">
@@ -68,8 +68,8 @@
 																<label class="form-check-label" for="flexSwitchCheckChecked">Remember Me</label>
 															</div>
 														</div> -->
-														<div class="col-md-6 text-end">	<a href="authentication-forgot-password.html">Forgot Password ?</a>
-														</div>
+														<div class="col-md-6 text-end" >	<a href="">Forgot Password ?</a></div>
+														
 														<div class="col-12">
 															<div class="d-grid">
 																<button type="submit" class="btn btn-dark"><i class="bx bxs-lock-open"></i>Sign in</button>
@@ -78,7 +78,7 @@
 														<%
 															if(typeof message !== 'undefined'){
 																%>
-																<p class="text-center mt-3 text-danger"> <%= message %></p>
+																<h5 class="text-center mt-3 text-danger"> <%= message %></h5>
 																<%
 															}
 														%>

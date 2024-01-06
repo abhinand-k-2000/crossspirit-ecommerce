@@ -42,7 +42,7 @@
 												</div>
 												<div class="d-grid">
 													<a class="btn my-4 shadow-sm btn-white" href="javascript:;"> <span class="d-flex justify-content-center align-items-center">
-														<img class="me-2" src="/images/icons/search.svg" width="16" alt="Image Description">
+														<img class="me-2" src="userAssets/images/icons/search.svg" width="16" alt="Image Description">
 														<span>Sign Up with Google</span>
 														</span>
 													</a> <a href="javascript:;" class="btn btn-white"><i class="bx bxl-facebook"></i>Sign Up with Facebook</a>
@@ -52,7 +52,8 @@
 												</div>
 												<div class="form-body">
 
-													<form class="row g-3" action="/register", method="POST">
+													<!--Form for registration-->
+													<form class="row g-3" action="/register", method="POST" onsubmit="return validateForm()">
 														<div class="col-sm-12">
 															<label for="inputFirstName" class="form-label">Name</label>
 															<input type="text" class="form-control" id="inputFirstName" name="name" placeholder="Jhon" required>
@@ -112,5 +113,45 @@
 		<!--End Back To Top Button-->
 	</div>
 	<!--end wrapper-->
+
+
+	<!-- Script file-->
+	<script>
+		function validateForm() {
+			var nameInput = document.getElementById('inputFirstName').value.trim();
+			var email = document.getElementById('inputEmailAddress').value;
+			var emailRegex = /^[^\s@]+@gmail\.com$/i;
+	
+			var mobile = document.getElementById('inputMobile').value;
+			var mobileRegex = /^\d{10}$/;
+	
+			var password = document.getElementById('inputChoosePassword').value;
+			var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/;
+	
+			if (nameInput === "" || !/^[a-zA-Z]+$/.test(nameInput)) {
+				alert("Please enter a valid name");
+				return false;
+			}
+	
+			
+			if (!mobileRegex.test(mobileInput) || /^0+$/.test(mobileInput)) {
+				alert('Invalid mobile number. Please enter a 10-digit number.');
+				return false;
+			}
+	
+			if (!emailRegex.test(email)) {
+				alert('Invalid email. Please enter a valid Gmail address.');
+				return false;
+			}
+	
+	
+			if (!passwordRegex.test(password)) {
+				alert('Invalid password. It should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+				return false;
+			}
+	
+			return true;
+	    }
+	</script>
 	
 	<%- include('../layouts/footer') %>

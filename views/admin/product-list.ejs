@@ -1,0 +1,122 @@
+
+<%- include('../layouts/admHeader') %>
+
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Products List</h2>
+                    </div>
+                    <div>
+                        
+                        <a href="/admin/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
+                    </div>
+                </div>
+                <div class="card mb-4">
+              
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl. No.</th>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Category ID</th>
+                                    <th scope="col">Stock</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <% if(product.length > 0){
+                                    product.forEach((ele, index) => { %>
+
+                                     
+                                            <tr>
+                                                <td><%= index + 1 %></td>
+                                                <td class="col-image">
+                                                    <img src="/products/<%=ele.images[0]%>" class="img-sm img-fluid img-thumbnail" alt="Item" />
+                                                </td>
+                                                <td><%= ele.name %></td>
+                                                <td><%= ele.price %></td>
+                                                <td><%= ele.category_id.name %></td>
+                                                <td><%= ele.countInStock %></td>
+                                                <td class="col-action">
+                                                    <div class="btn-group ">
+                                                        <a href="/admin/edit-product/<%= ele._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                                            <i class="material-icons md-edit"></i> Edit
+                                                        </a>
+
+
+
+
+                                                        <% if (!ele.isDeleted) { %>
+                                                            <form action="/admin/unlist-product/<%= ele._id %>" method="post">
+                                                                <button type="submit" class="btn px-3 py-1.5 btn-sm font-sm btn-danger rounded">Unlist</button>
+                                                            </form>
+                                                        <% } else { %>
+                                                            <form action="/admin/list-product/<%= ele._id %>" method="post">
+                                                                <button type="submit" class="btn px-4 btn-sm font-sm btn-success rounded">List</button>
+                                                            </form>
+                                                        <% } %>
+
+                                                     
+    
+                                                        <!-- <form action="/admin/delete-product/<%= ele._id %>" method="post" onclick="confirmDelete('<%= category._id %>' , event)">
+                                                            <button type="submit" class="btn btn-sm font-sm btn-danger rounded" name="deleteForm">
+                                                                <i class="material-icons md-delete_forever"></i> Delete
+                                                            </button>
+                                                        </form> -->
+                                                        
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+
+                                   <% }) } %>
+                            </tbody>
+
+
+
+                        </table>
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                    <!-- card-body end// -->
+                </div>
+                <!-- card end// -->
+                <!-- <div class="pagination-area mt-30 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                            <li class="page-item"><a class="page-link" href="#">02</a></li>
+                            <li class="page-item"><a class="page-link" href="#">03</a></li>
+                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">16</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div> -->
+            </section>
+            <!-- content-main end// -->
+
+
+            <!-- <script>
+                function confirmDelete(productId, event) {
+                    var confirmation = confirm("Are you sure you want to delete?");
+              
+                    if (!confirmation) {
+                        // If the user clicks "Cancel", prevent the default anchor tag behavior
+                        event.preventDefault();
+                        console.log('Deletion canceled');
+                    }
+                  }
+              </script> -->
+            
+            <%- include('../layouts/admFooter') %>

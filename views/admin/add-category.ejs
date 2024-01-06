@@ -1,0 +1,61 @@
+<%- include('../layouts/admHeader') %>
+
+<section class="content-main">
+  <div class="row">
+    <div class="col-9">
+      <div class="content-header">
+        <h2 class="content-title">Add New Category</h2>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Category Details</h4>
+        </div>
+        <div class="card-body">
+          <form
+            enctype="multipart/form-data"
+            action="/admin/add-category"
+            method="POST"
+          >
+            <div class="mb-4">
+              <label for="product_name" class="form-label">Category Name</label>
+              <input
+                type="text"
+                placeholder="Type here"
+                class="form-control"
+                id="product_name"
+                name="name"
+                required
+              />
+            </div>
+            <div class="mb-4">
+              <label for="media_upload" class="form-label">Image Upload</label>
+              <div class="input-upload">
+                <img src="/adminAssets/imgs/theme/upload.svg" alt="" />
+                <input
+                  class="form-control"
+                  type="file"
+                  id="media_upload"
+                  name="image"
+                  required
+                />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-md rounded font-sm hover-up">
+              Submit
+            </button>
+
+            <% if(typeof message !== 'undefined'){ %>
+              <h4 class="text-center mt-3" style="color: <%= color %>;"><%= message %></h4>
+
+            <% } %>
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/admFooter') %>
