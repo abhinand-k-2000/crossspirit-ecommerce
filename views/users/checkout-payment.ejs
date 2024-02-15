@@ -1,0 +1,542 @@
+<%- include('../layouts/header') %>
+
+		<!--end top header wrapper-->
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Checkout</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Shop</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Checkout</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<div class="shop-cart">
+							<div class="row">
+								<div class="col-12 col-xl-8">
+									<div class="checkout-payment">
+										<div class="card bg-transparent rounded-0 shadow-none">
+											<div class="card-body">
+												<div class="steps steps-light">
+													<a class="step-item active" href="shop-cart.html">
+														<div class="step-progress"><span class="step-count">1</span>
+														</div>
+														<div class="step-label"><i class='bx bx-cart'></i>Cart</div>
+													</a>
+													<a class="step-item active" href="checkout-details.html">
+														<div class="step-progress"><span class="step-count">2</span>
+														</div>
+														<div class="step-label"><i class='bx bx-user-circle'></i>Details</div>
+													</a>
+													<!-- <a class="step-item active" href="checkout-shipping.html">
+														<div class="step-progress"><span class="step-count">3</span>
+														</div>
+														<div class="step-label"><i class='bx bx-cube'></i>Shipping</div>
+													</a> -->
+													<a class="step-item active current" href="checkout-payment.html">
+														<div class="step-progress"><span class="step-count">3</span>
+														</div>
+														<div class="step-label"><i class='bx bx-credit-card'></i>Payment</div>
+													</a>
+													<!-- <a class="step-item" href="checkout-review.html">
+														<div class="step-progress"><span class="step-count">4</span>
+														</div>
+														<div class="step-label"><i class='bx bx-check-circle'></i>Review</div>
+													</a> -->
+												</div>
+											</div>
+										</div>
+
+										<!-- <div> -->
+											<div class="card bg-transparent rounded-0 shadow-none">
+												<div class="card-body">
+													<h4>Selected Address</h4>
+													<div class="ms-3  pe-3">
+														<p class="mb-0 ">Address: <span class="fw-bolder text-dark"><%= address.streetaddress %></span> </p>
+														<p class="mb-0">City:<span class="fw-bolder text-dark"> <%= address.city %></span></p>
+														<p class="mb-0">State: <span class="fw-bolder text-dark"><%= address.state %> </span></p>
+														<p class="mb-0">Zip Code: <span class="fw-bolder text-dark"><%= address.pincode %> </span></p>
+													</div>
+												</div>
+											</div>
+
+										<div class="card rounded-0 shadow-none border mt-2">
+											<div class="card-header border-bottom">
+												<h2 class="h5 my-2">Choose Payment Method</h2>
+											</div>
+											<div class="card-body">
+												<ul class="nav nav-pills mb-3 border p-3" role="tablist">
+													<!-- <li class="nav-item" role="presentation">
+														<a class="nav-link active rounded-0" data-bs-toggle="pill" href="#credit-card" role="tab" aria-selected="true">
+															<div class="d-flex align-items-center">
+																<div class="tab-icon"><i class='bx bx-credit-card font-18 me-1'></i>
+																</div>
+																<div class="tab-title">Credit Card</div>
+															</div>
+														</a>
+													</li> -->
+													<li class="nav-item" role="presentation">
+														<a class="nav-link rounded-0" data-bs-toggle="pill" href="#paypal-payment" role="tab" aria-selected="false">
+															<div class="d-flex align-items-center">
+																<div class="tab-icon"><i class='bx bxl-paypal font-18 me-1'></i>
+																</div>
+																<div class="tab-title">Razorpay</div>
+															</div>
+														</a>
+													</li>
+													<li class="nav-item" role="presentation">
+														<a class="nav-link rounded-0" data-bs-toggle="pill" href="#net-banking" role="tab" aria-selected="false">
+															<div class="d-flex align-items-center">
+																<div class="tab-icon"><i class='bx bx-mobile font-18 me-1'></i>
+																</div>
+																<div class="tab-title">Wallet</div>
+															</div>
+														</a>
+													</li>
+													<li class="nav-item" role="presentation">
+														<a class="nav-link rounded-0" data-bs-toggle="pill" href="#cod" role="tab" aria-selected="false">
+															<div class="d-flex align-items-center">
+																<div class="tab-icon"><i class='bx bx-mobile font-18 me-1'></i>
+																</div>
+																<div class="tab-title">COD</div>
+															</div>
+														</a>
+													</li>
+												</ul>
+												<div class="tab-content" id="pills-tabContent">
+													<!-- <div class="tab-pane fade show active" id="credit-card" role="tabpanel">
+														<div class="p-3 border">
+															<form>
+																<div class="mb-3">
+																	<label class="form-label">Card Owner</label>
+																	<input type="text" class="form-control rounded-0" placeholder="Card Owner name">
+																</div>
+																<div class="mb-3">
+																	<label class="form-label">Card number</label>
+																	<div class="input-group">
+																		<input type="text" class="form-control rounded-0" placeholder="Valid Owner number">	<span class="input-group-text rounded-0"><img src="userAssets/images/icons/mastercard.png" width="35" alt=""></span>
+																		<span class="input-group-text rounded-0"><img src="userAssets/images/icons/visa.png" width="35" alt=""></span>
+																		<span class="input-group-text rounded-0"><img src="userAssets/images/icons/american-express.png" width="35" alt=""></span>
+																	</div>
+																</div>
+																<div class="row">
+																	<div class="col-12 col-lg-8">
+																		<div class="mb-3">
+																			<label class="form-label">Expiration Date</label>
+																			<div class="input-group">
+																				<input type="text" class="form-control rounded-0" placeholder="MM">
+																				<input type="text" class="form-control rounded-0" placeholder="YY">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-12 col-lg-4">
+																		<div class="mb-3">
+																			<label class="form-label">CVV</label>
+																			<input type="text" class="form-control rounded-0" placeholder="Three digit CCV number">
+																		</div>
+																	</div>
+																</div>
+																<div class="row">
+																	<div class="col-md-12">
+																		<div class="d-grid">	<a href="javascript:;" class="btn btn-dark btn-ecomm rounded-0">Confirm Payment</a>
+																		</div>
+																	</div>
+																</div>
+															</form>
+														</div>
+													</div> -->
+													<div class="tab-pane fade" id="paypal-payment" role="tabpanel">
+														<div class="p-3 border">
+															<div class="mb-3">
+																<div class="d-block text-center">
+																	<button id="rzp-button1" onclick="confirmRazorpayPayment()" class="btn btn-light rounded-0">
+																		<i class='bx bxl-paypal'></i> Confirm Payment
+																	</button>
+																</div>
+															</div>
+															<div class="mb-3">
+																<p class="mb-0">Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website to view details of your order.</p>
+															</div>
+														</div>
+													</div>
+
+			<!-- Include Razorpay SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<!-- Your JavaScript logic for handling Razorpay payment -->
+<script>
+	function confirmRazorpayPayment() {
+	  // Fetch order details from the server
+	  fetch('/create-razorpay-order', {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json',
+		}
+	  })
+	  .then(response => response.json())
+	  .then(order => {
+		// Log order details for debugging
+		console.log('Received order details:', order);
+		console.log("payment order created successfully....")
+  
+		// Configure Razorpay button
+		var options = {
+		  key: '<%=razorpaykey %>',
+		  amount: order.amount,
+		  currency: order.currency,
+		  order_id: order.id,
+		  name: 'CrossSpirit Fashion',
+		  description: 'Order Payment',
+		  handler: function (response) {
+			// Handle successful payment
+			console.log('Razorpay payment success:', response);
+  
+			// Call the create-order API after successful payment
+			createOrder(order.id); // Assuming order.id is the Razorpay order ID
+		  },
+		  prefill: {
+			name: 'User Name',
+			email: 'user@example.com',
+			contact: '1234567890',
+		  },
+		  notes: {
+			address: 'User Address',
+		  },
+		  theme: {
+			color: '#012652',
+		  },
+		};
+  
+		var rzp = new Razorpay(options);
+		rzp.open();
+	  })
+	  .catch(error => {
+		console.error('Error fetching Razorpay order:', error);
+		// Handle error
+	  });
+	}
+  
+	function createOrder(razorpayOrderId) {
+	  // Call the /create-order API with the Razorpay order ID
+	  fetch('/create-order', {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ selectedAddress: '<%=address._id %>', paymentMethod: 'Razorpay' }),
+	  })
+	  .then(response => response.json())
+	  .then(result => {
+		// Handle the response from the create-order API
+		console.log("ORder creating success......real product order")
+		console.log('Order creation response:', result);
+  
+		
+		// Optionally, redirect to an order confirmation page
+		if(result.success){
+			console.log('Redirecting to order confirmation page...');
+		window.location.href = '/order-confirmation';
+		}else{
+			console.error("Error creating order: ", result.error)
+		}
+	  })
+	  .catch(error => {
+		console.error('Error creating order:', error);
+		// Handle error
+	  });
+	}
+  </script>
+  
+  
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+													<div class="tab-pane fade" id="net-banking" role="tabpanel">
+														<div class="p-3 border">
+									
+															<div class="mb-3 text-center">
+																<div class="d-block"> 
+																	<form  id="walletPaymentForm"  class="text-center">
+																		<input type="hidden" name="selectedAddress" value="<%= address._id %>">
+																		<input type="hidden" name="paymentMethod" value="Wallet">
+
+																		<button type="submit" id="confirmWalletPayment"  class="btn btn-success rounded-0" >
+																			<i class='bx bxl-paypal'></i>Wallet Payment
+																		</button>
+																		<a href="/wallet" id="goToWallet" class="mt-3" style="display: none;">Go to Wallet</a>
+																	</form>
+																</div>
+															</div>
+
+
+															<script>
+																document.getElementById('walletPaymentForm').addEventListener('submit', function(event) {
+																	event.preventDefault(); // Prevent the default form submission
+															
+																	// Get form data
+																	var formData = new FormData(this);
+															
+																	// Fetch API
+																	fetch('/create-order', {
+																		method: 'POST',
+																		headers: {
+																			'Content-Type': 'application/json',
+																		},
+																		body: JSON.stringify(Object.fromEntries(formData.entries())),
+																	})
+																	.then(response => response.json())
+																	.then(result => {
+																		// Handle the response from the create-order API
+																		console.log('Order creation response:', result);
+															
+																		if (result.success) {
+																			console.log('Redirecting to order confirmation page...');
+																			const Toast = Swal.mixin({
+																				toast: true,
+																				position: "top",
+																				showConfirmButton: false,
+																				timer: 3000,
+																				timerProgressBar: true,
+																				didOpen: (toast) => {
+																					toast.onmouseenter = Swal.stopTimer;
+																					toast.onmouseleave = Swal.resumeTimer;
+																				}
+																			});
+																			Toast.fire({
+																				icon: "success",
+																				title: "Order Placed Successfully"
+																			});
+
+																			// Redirect to the order confirmation page after the alert is closed
+																			setTimeout(() => {
+																				window.location.href = '/order-confirmation';
+																			}, 3000);
+																		} else {
+																			console.error("Error creating order: ", result.error)
+																			document.getElementById("goToWallet").style.display = 'block';
+																			Swal.fire({
+																				icon: 'error',
+																				title: 'Insufficient Funds',
+																				text: 'Please add sufficient funds to your wallet.',
+																			});								
+
+																		}
+																	})
+																	.catch(error => {
+																		console.error('Fetch error:', error);
+																		// Handle fetch error on the client side if needed
+																	});
+																});
+															</script>
+															
+
+
+															<div class="mb-3">
+																<p class="mb-0">Seamless and Secure Wallet Payments: Elevate your financial experience with hassle-free transactions and robust security through our wallet payment system.</p>
+															</div>
+														</div>
+													</div>
+
+													<div class="tab-pane fade" id="cod" role="tabpanel">
+														<div class="p-3 border">
+														
+															<div class="mb-3">
+																<form  id="cashOnDeliveryForm"  class="text-center">
+																	<input type="hidden" name="selectedAddress" value="<%= address._id %>">
+																	<input type="hidden" name="paymentMethod" value="Cash On Delivery">
+
+																	<button type="submit" id="confirmOrderButton" class="btn btn-light rounded-0" ><i class='bx bxl-paypal'></i>Confirm Order</button>
+																</form>
+																
+															</div>
+															<div class="mb-3">
+																<p class="mb-0">Experience the ease of Cash on Delivery for a worry-free shopping journey!</p>
+															</div>
+														</div>
+													</div>
+
+												</div>
+											</div>
+										</div>
+
+
+										<script>
+											document.getElementById('cashOnDeliveryForm').addEventListener('submit', function(event) {
+											  event.preventDefault(); // Prevent the default form submission
+											  
+											  // Get form data
+											  var formData = new FormData(this);
+										  
+											  // Fetch API
+											  fetch('/create-order', {
+												method: 'POST',
+												headers: {
+												  'Content-Type': 'application/json',
+												},
+												body: JSON.stringify(Object.fromEntries(formData.entries())),
+											  })
+											  .then(response => response.json())
+											  .then(result => {
+												// Handle the response from the create-order API
+												console.log('Order creation response:', result);
+										  
+												if (result.success) {
+												  console.log('Redirecting to order confirmation page...');
+												  const Toast = Swal.mixin({
+													toast: true,
+													position: "top",
+													showConfirmButton: false,
+													timer: 3000,
+													timerProgressBar: true,
+													didOpen: (toast) => {
+														toast.onmouseenter = Swal.stopTimer;
+														toast.onmouseleave = Swal.resumeTimer;
+													}
+												});
+												Toast.fire({
+													icon: "success",
+													title: "Order Placed Successfully"
+												});
+
+												// Redirect to the order confirmation page after the alert is closed
+												setTimeout(() => {
+													window.location.href = '/order-confirmation';
+												}, 3000);
+												} else {
+												  console.error("Error creating order: ", result.error)
+												}
+											  })
+											  .catch(error => {
+												console.error('Fetch error:', error);
+												// Handle fetch error on the client side if needed
+											  });
+											});
+										  </script>
+										  
+										<!-- <div class="card rounded-0 shadow-none border">
+											<div class="card-body">
+												<div class="row">
+													<div class="col-md-6">
+														<div class="d-grid">
+															<a href="javascript:;" class="btn btn-light btn-ecomm"><i class="bx bx-chevron-left"></i>Back to Shipping</a>
+														</div>
+													</div>
+													<div class="col-md-6">
+														<div class="d-grid">
+															<a href="javascript:;" class="btn btn-outline-dark btn-ecomm">Review Your Order<i class="bx bx-chevron-right"></i></a>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div> -->
+									</div>
+								</div>
+								<div class="col-12 col-xl-4">
+									<div class="order-summary">
+										<div class="card rounded-0">
+											<div class="card-body">
+												<div class="card rounded-0 border bg-transparent shadow-none mb-3">
+													<!-- <div class="card-body">
+														<p class="fs-5">Apply Discount Code</p>
+														<div class="input-group">
+															<input type="text" class="form-control rounded-0" placeholder="Enter discount code">
+															<button class="btn btn-dark btn-ecomm" type="button">Apply</button>
+														</div>
+													</div> -->
+												</div>
+
+
+												<div class="card rounded-0 border bg-transparent shadow-none">
+													<div class="card-body">
+														<p class="fs-5">Order summary</p>
+														<% products.forEach((prod, index) => { %>
+															<div class="my-3 border-top"></div>
+															<div class="d-flex align-items-center">
+																<a class="d-block flex-shrink-0" href="javascript:;">
+																	<img src="/products/<%= prod.imageUrl[0] %>" width="75" alt="Product">
+																</a>
+																<div class="ps-2">
+																	<h6 class="mb-1"><a href="javascript:;" class="text-dark"><%= prod.name %></a></h6>
+																	<div class="widget-product-meta"><span class="me-2">Rs. <%= prod.price %></span><span class="">x <%= prod.quantity %></span>
+																	</div>
+																</div>
+															</div>
+														<% }) %>
+													</div>
+												</div>
+
+
+												<div class="card rounded-0 border bg-transparent mb-0 shadow-none">
+													<div class="card-body">
+														<p class="mb-2">Subtotal: <span class="float-end">Rs. <%= cart.totalProductsPrice %></span>
+														</p>
+														<p class="mb-2">Shipping: <span class="float-end">--</span>
+														</p>
+														<p class="mb-2">Taxes: <span class="float-end">--</span>
+														</p>
+														<p class="mb-0">Discount: <span class="float-end">--</span>
+														</p>
+														<div class="my-3 border-top"></div>
+														<h5 class="mb-0">Order Total: <span class="float-end">Rs. <%= cart.totalProductsPrice %></span></h5>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--end row-->
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		<%- include('../layouts/footer') %>

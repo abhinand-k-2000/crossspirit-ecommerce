@@ -1,0 +1,266 @@
+
+<%- include('../layouts/header') %>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<!--end top header wrapper-->
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">My Orders</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Account</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Wallet</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<h3 class="d-none">Account</h3>
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+
+						
+									<%- include('../layouts/userDashboard') %>
+
+									<div class="col-lg-8">
+                                        <div class="card shadow-none mb-0 border">
+                                            <div class="card-body">
+                                               
+                                    
+                                                <!-- Display Wallet Information -->
+                                                <div class="row">
+                                                    <div class="col-10 col-lg-10 col-md-10">
+                                                        <h4 class="mb-4 ">Wallet Information</h4> 
+
+                                                        <% if(wallet){ %>
+                                                            <h6>Balance: <span class="fs-5 fw-bolder">Rs. <%= wallet.balance%></span></h5>
+                                                        <% }else{ %>
+                                                            <h5><strong>Balance:</strong>Rs. 0</h5>
+                                                        <% } %>
+                                                        
+                                                    </div>
+                                                    <div class="col-2 col-lg-2 col-md-2">
+                                                        <a href="/wallet/transactions">All Transactions</a>                           
+                                                    </div>
+                                                </div>
+                                    
+                                                <!-- Wallet Action Buttons -->
+                                                <div class="container">
+                                                    <div class="row mt-4">
+                                                        <div class="col-6">
+                                                            <button type="button" class="btn btn-success" id="addFundsBtn">Add Funds</button>
+                                                        </div>
+                                                        <div class="col-6 text-end">
+                                                            <button type="button" class="btn btn-danger" id="withdrawFundsBtn">Withdraw Funds</button>
+                                                        </div>
+                                                        
+                                                    </div>
+
+                                                    
+                                                
+                                                    <!-- Input field for adding funds -->
+                                                    <div class="row mt-2" id="addFundsInputField" style="display: none;">
+                                                        <div class="col-12">
+                                                            <label class="form-label">Enter Amount to Add:</label>
+                                                            <form action="/wallet/add-amount" method="post" onsubmit="return handleRazorpayPayment(event)">
+                                                                <input type="number" name="amount" class="form-control" id="addFundsAmount" placeholder="Enter amount">
+                                                                <button type="submit" class="btn btn-primary mt-2" id="addFundsConfirmBtn">Add</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                
+                                                    <!-- Input field for withdrawing funds -->
+                                                    <div class="row mt-2" id="withdrawFundsInputField" style="display: none;">
+                                                        <div class="col-12">
+                                                            <label class="form-label">Enter Amount to Withdraw:</label>
+                                                            <form action="/wallet/withdraw-amount" method="post" onsubmit=" return showSweetAlert()">
+                                                                <input type="number" name="amount" class="form-control" id="withdrawFundsAmount" placeholder="Enter amount">
+                                                                <button type="submit" class="btn btn-primary mt-2" id="withdrawFundsConfirmBtn">Withdraw</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                
+                                              
+                                    
+                                            </div>
+                                        </div>
+                                        
+                                        <% if(typeof message != 'undefined'){ %>
+
+                                            <p class="text-center text-danger fs-6"><%=message%></p>
+                                        <% } %>
+                                    </div>
+                                    
+                                    
+                                    
+									
+								</div>
+                                
+
+
+
+
+                                
+								<!--end row-->
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+
+	</div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        // Function to handle Razorpay payment
+        async function handleRazorpayPayment(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+    
+            // Get the amount from the input field
+            const amount = document.getElementById('addFundsAmount').value;
+    
+            // Make an AJAX request to create a Razorpay order
+            const orderResponse = await fetch('/wallet/razorpay-payment-wallet', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount: amount }),
+            });
+    
+            const order = await orderResponse.json();
+    
+            if (order.id) {
+                // Initialize Razorpay modal
+                const options = {
+                    key: '<%=razorpaykey%>', // Replace with your Razorpay key
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: 'Your App Name',
+                    description: 'Add Funds to Wallet',
+                    order_id: order.id,
+                    handler: async function(response) {
+                        // Handle the Razorpay success response
+                        console.log('Payment successful', response);
+    
+                        // After successful payment, submit the form to your server
+                        const paymentResponse = await fetch('/wallet/add-amount', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                payment_id: response.razorpay_payment_id,
+                                order_id: response.razorpay_order_id,
+                                signature: response.razorpay_signature,
+                                amount: amount,
+                            }),
+                        });
+    
+                        const paymentResult = await paymentResponse.json();
+                        // Redirect to '/wallet' after successful payment and wallet update
+                        if (paymentResult.success) {
+                            window.location.href = '/wallet';
+                        } else {
+                            console.error('Failed to update wallet:', paymentResult.message);
+                        }
+                    },
+                    prefill: {
+                        name: 'User Name',
+                        email: 'user@example.com',
+                        contact: '1234567890',
+                    },
+                    notes: {
+                        // Add any additional notes or metadata if needed
+                    },
+                    theme: {
+                        color: '#007BFF', // Set the color according to your theme
+                    },
+                };
+    
+                const rzp = new Razorpay(options);
+                rzp.open();
+            } else {
+                // Handle error in fetching Razorpay order
+                console.error('Error fetching Razorpay order:', order);
+            }
+    
+            return false; // Prevent the form from submitting
+        }
+    </script>
+    
+    
+    <script>
+        $(document).ready(function () {
+            $("#addFundsBtn").click(function () {
+                // Toggle visibility of the "Add Funds" input field
+                $("#addFundsInputField").toggle();
+    
+                // Hide the "Withdraw Funds" input field
+                $("#withdrawFundsInputField").hide();
+            });
+    
+            $("#withdrawFundsBtn").click(function () {
+                // Toggle visibility of the "Withdraw Funds" input field
+                $("#withdrawFundsInputField").toggle();
+    
+                // Hide the "Add Funds" input field
+                $("#addFundsInputField").hide();
+            });
+    
+            $("#addFundsConfirmBtn").click(function () {
+                // Implement logic to add funds to the wallet
+                var amount = $("#addFundsAmount").val();
+                console.log("Adding funds: " + amount);
+                // You can perform further operations here, such as sending a request to the server
+                $("#addFundsInputField").hide();
+            });
+    
+            $("#withdrawFundsConfirmBtn").click(function () {
+                // Implement logic to withdraw funds from the wallet
+                var amount = $("#withdrawFundsAmount").val();
+                console.log("Withdrawing funds: " + amount);
+                // You can perform further operations here, such as sending a request to the server
+                $("#withdrawFundsInputField").hide();
+            });
+        });
+    </script>
+
+
+
+ 
+    
+	<!-----------------------------------------------------------MODAL--------------------------------------------------------->
+
+
+	
+
+
+
+
+	
+	
+	<%- include('../layouts/footer') %>
+
+	
+	

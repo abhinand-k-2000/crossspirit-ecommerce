@@ -1,7 +1,7 @@
 <%- include('../layouts/header') %>
-
+<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
 		<!--start slider section-->
-		<section class="slider-section mb-4">
+		<!-- <section class="slider-section mb-4">
 			<div class="first-slider p-0"> 
 
 				<div class="banner-slider owl-carousel owl-theme">
@@ -15,7 +15,7 @@
 								</div>
 							  </div> 
 							<a href="javascript:;">
-								<img src="userAssets/images/banners/01.png" class="img-fluid" alt="...">
+								<img src="userAssets/images/banners/02.png" class="img-fluid" alt="...">
 							</a>
 						</div>
 					</div>
@@ -50,8 +50,74 @@
 				</div>
 
 			</div>
-		</section>
+		</section> -->
 		<!--end slider section-->
+
+<!--start carousel-->
+<div id="myCarousel" class="carousel slide" data-bs-ride="carousel" style="width: 100%; max-width: 100%; height: 450px; overflow: hidden;">
+	<div class="carousel-inner" style="width: 100%; height: 450px;">
+  
+	  <!-- Slide 1 -->
+	  <div class="carousel-item active" style="width: 100%; height: 400px;">
+		<img src="userAssets/images/banners/02.png" class="d-block w-100" alt="userAssets/images/banners/04.png">
+		<div class="carousel-caption d-none d-md-block">
+		  <a href="#" class="btn btn-light btn-ecomm px-4 rounded">Shop Now</a>
+		</div>
+	  </div>
+  
+	  <!-- Slide 2 -->
+	  <div class="carousel-item" style="width: 100%; height: 400px;">
+		<img src="userAssets/images/banners/04.png" class="d-block w-100" alt="userAssets/images/banners/04.png">
+		<div class="carousel-caption d-none d-md-block">
+		  <a href="#" class="btn btn-light btn-ecomm px-4 rounded">Shop Now</a>
+		</div>
+	  </div>
+  
+	  <!-- Slide 3 -->
+	  <div class="carousel-item" style="width: 100%; height: 400px;">
+		<img src="userAssets/images/banners/04.png" class="d-block w-100" alt="userAssets/images/banners/04.png">
+		<div class="carousel-caption d-none d-md-block">
+		  <a href="#" class="btn btn-light btn-ecomm px-4 rounded">Shop Now</a>
+		</div>
+	  </div>
+  
+	</div>
+  
+	<button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+	  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+	  <span class="visually-hidden">Previous</span>
+	</button>
+	<button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+	  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+	  <span class="visually-hidden">Next</span>
+	</button>
+  </div>
+  
+  
+  
+  <!-- Include Bootstrap JavaScript -->
+  <!-- <script src="path/to/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+  
+  <script>
+	// Activate the carousel
+	$('.carousel').carousel({
+	  interval: 3000 // Set the interval to 3 seconds (3000 milliseconds)
+	});
+  </script>
+  
+  <script>
+	var myCarousel = document.getElementById('myCarousel');
+  
+	var carousel = new bootstrap.Carousel(myCarousel, {
+	  interval: 3000,
+	  pause: 'hover',
+	  wrap: true
+	});
+  </script>
+  
+<!--end carousel-->
+
+		
 		
 		<!--start page wrapper -->
 		<div class="page-wrapper">
@@ -59,7 +125,7 @@
 				
 
 				<!--start pramotion-->
-				<section class="py-4">
+				<!-- <section class="py-4">
 					<div class="container">
 						<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4">
 							<div class="col">
@@ -109,9 +175,9 @@
 								</div>
 							</div>
 						</div>
-						<!--end row-->
+						
 					</div>
-				</section>
+				</section> -->
 				<!--end pramotion-->
 
 				<!--start Featured product-->
@@ -142,12 +208,10 @@
 													<div class="add-cart position-absolute top-0 end-0 mt-3 me-3">
 														<a href="javascript:;"><i class="fa-solid fa-cart-shopping"></i></a>
 													  </div>
-												  <div class="quick-view position-absolute start-0 bottom-0 end-0">
-													<a href="javascript:;" data-bs-toggle="modal" data-bs-target="#QuickViewProduct">Quick View</a>
-												  </div>
+												
 												  <!-- The detail of the product is sent through params-->
 												  <a href="/product-detail/<%= product[i]._id %>">
-													<img src="/products/<%=product[i].images[0]%>" class="img-fluid" style="height: 261px; width: 348px;" alt="...">
+													<img src="/products/<%=product[i].images[0]%>" class="img-fluid"  alt="...">
 												  </a>
 												</div>
 												<div class="card-body px-0">
@@ -157,20 +221,106 @@
 														  <h6 class="mb-0 fw-bold product-short-title"><%= product[i].name %></h6>
 													  </div>
 													  <div class="icon-wishlist">
-														  <a href="javascript:;"><i class="bx bx-heart"></i></a>
-													  </div>
+														<!-- <a href="#" id="addToWishlist" data-product-id="<%= product[i]._id %>"><i class="bx bx-heart"></i></a> -->
+													</div>
 												  </div>
-												  <div class="cursor-pointer rating mt-2">
+
+
+
+
+												  <!-- <script>
+													document.addEventListener('DOMContentLoaded', function () {
+														document.querySelectorAll('#addToWishlist').forEach(function(icon) {
+															if (!icon.hasAttribute('data-event-listener')) {
+																icon.setAttribute('data-event-listener', 'true');
+												
+																icon.addEventListener('click', function (e) {
+																	e.preventDefault();
+												
+																
+												
+																	var productId = this.getAttribute('data-product-id');
+																	console.log('Product ID:', productId);
+												
+																	var wishlistEndpoint = '/add-to-wishlist?productId=' + productId;
+												
+																	fetch(wishlistEndpoint, {
+																		method: 'POST',
+																		headers: {
+																			'Content-Type': 'application/json'
+																			// Add any other headers if needed
+																		},
+																		// You can include a request body if necessary
+																		// body: JSON.stringify({ productId: productId })
+																	})
+																	.then(response => response.json())
+																	.then(data => {
+																		console.log(data);
+																		console.log('Product ID:', productId);
+												
+																		// Update the icon on successful addition to the wishlist
+																		if (data.success) {
+																				// Replace the heart icon with a checkmark
+																				icon.innerHTML = '<i class="bx bx-check"></i>';
+																			}
+																	})
+																	.catch(error => {
+																		console.error('Error adding product to wishlist:', error);
+																		console.log('Product ID:', productId);
+																	});
+																});
+															}
+														});
+													});
+												</script> -->
+												
+												
+												
+												
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												  <!-- <div class="cursor-pointer rating mt-2">
 													  <i class="bx bxs-star text-warning"></i>
 													  <i class="bx bxs-star text-warning"></i>
 													  <i class="bx bxs-star text-warning"></i>
 													  <i class="bx bxs-star text-warning"></i>
 													  <i class="bx bxs-star text-warning"></i>
-												  </div>
+												  </div> -->
 												  <div class="product-price d-flex align-items-center justify-content-start gap-2 mt-2">
-													<div class="h6 fw-light fw-bold text-secondary text-decoration-line-through">Rs.1799</div>
-													<div class="h6 fw-bold">Rs.<%= product[i].price %></div>
-												  </div>
+													<div class="h6 fw-light fw-bold text-secondary text-decoration-line-through">Rs. <%= product[i].price %></div>
+												
+												
+													<div class="h6 fw-bold">
+														<% if (product[i].offer && product[i].offer.percentage) { %>
+															Rs. <%= calculateDiscountedPrice(product[i].price, product[i].offer.percentage) %> <span class="text-success">(<%=product[i].offer.percentage%>% off)</span>
+														  <% } else { %>
+															Rs. <%= product[i].price %>
+														  <% } %>
+														<span>
+															<% function calculateDiscountedPrice(originalPrice, discountPercentage) { %>
+																<% const discountAmount = originalPrice * (discountPercentage / 100); %>
+																<% const discountedPrice = originalPrice - discountAmount; %>
+																<% return Math.floor(discountedPrice); %>
+															  <% } %>
+														</span>
+													</div>
+												</div>
+												
 												</div>
 											  </div>
 										  </div>
@@ -183,16 +333,12 @@
 									</div>
 									  </div><!--end row-->
 								</div>
-
-
-						
-				<!-- Listing Products-->
-						  
-
 					</div>
 				</section>
 
 				<!--end Featured product-->
+				<!-- Include this script after jQuery -->
+				
 
 				
 				<!--start categories-->
@@ -206,15 +352,9 @@
 
 						<div class="product-grid">
 							<div class="browse-category owl-carousel owl-theme">
-
-
 								<% if(category.length > 0){
 									category.forEach((ele) => { 
-
-
 										if(ele.isDeleted === false){ %>
-
-											
 										<div class="item">
 											<div class="card rounded-0">
 												<div class="card-body p-0">
@@ -227,44 +367,7 @@
 											</div>
 										</div>
 										<% } %>
-
-
-
-
-									<% }) } %>
-
-								
-							
-
-
-
-
-
-
-
-								<!-- <div class="item">
-									<div class="card rounded-0">
-										<div class="card-body p-0">
-											<img src="userAssets/images/categories/02.png" class="img-fluid" alt="...">
-										</div>
-										<div class="card-footer text-center bg-transparent border">
-											<h6 class="mb-1 text-uppercase fw-bold">Watches</h6>
-											<p class="mb-0 font-12 text-uppercase">8 Products</p>
-										</div>
-									</div>
-								</div>
-
-								<div class="item">
-									<div class="card rounded-0">
-										<div class="card-body p-0">
-											<img src="userAssets/images/categories/03.png" class="img-fluid" alt="...">
-										</div>
-										<div class="card-footer text-center bg-transparent border">
-											<h6 class="mb-1 text-uppercase fw-bold">Shoes</h6>
-											<p class="mb-0 font-12 text-uppercase">14 Products</p>
-										</div>
-									</div>
-								</div> -->
+								<% }) } %>
 							</div>
 						</div>
 					</div>
@@ -273,7 +376,7 @@
 
 
 				<!--start support info-->
-				<section class="py-5 bg-light">
+				<!-- <section class="py-5 bg-light">
 					<div class="container">
 						<div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4">
 							<div class="col">
@@ -313,217 +416,19 @@
 								</div>
 							</div>
 						</div>
-						<!--end row-->
 					</div>
-				</section>
+				</section> -->
 				<!--end support info-->				
 			</div>
 		</div>
 		<!--end page wrapper -->
 
 
-		<!--start footer section-->
-		<footer>
-			<section class="py-5 border-top bg-light">
-				<div class="container">
-					<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
-						<div class="col">
-							<div class="footer-section1">
-								<h5 class="mb-4 text-uppercase fw-bold">Contact Info</h5>
-								<div class="address mb-3">
-									<h6 class="mb-0 text-uppercase fw-bold">Address</h6>
-									<p class="mb-0">123 Street Name, City, Australia</p>
-								</div>
-								<div class="phone mb-3">
-									<h6 class="mb-0 text-uppercase fw-bold">Phone</h6>
-									<p class="mb-0">Toll Free (123) 472-796</p>
-									<p class="mb-0">Mobile : +91-9910XXXX</p>
-								</div>
-								<div class="email mb-3">
-									<h6 class="mb-0 text-uppercase fw-bold">Email</h6>
-									<p class="mb-0">mail@example.com</p>
-								</div>
-								<div class="working-days mb-3">
-									<h6 class="mb-0 text-uppercase fw-bold">WORKING DAYS</h6>
-									<p class="mb-0">Mon - FRI / 9:30 AM - 6:30 PM</p>
-								</div>
-							</div>
-						</div>
-						<div class="col">
-							<div class="footer-section2">
-								<h5 class="mb-4 text-uppercase fw-bold">Categories</h5>
-								<ul class="list-unstyled">
-
-									<% if(category.length > 0){
-										category.forEach((ele) => { 
-
-
-
-											if(ele.isDeleted === false){ %>
-
-											
-												<li class="mb-1"><a href="javascript:;"><i class='bx bx-chevron-right'></i> <%= ele.name %></a>
-												</li>
-												<% } %>
-
-
-
-											<% }) } %>
-
-									
-								
-								</ul>
-							</div>
-						</div>
-					</div>
-					<!--end row-->
-				</div>
-			</section>
-
-			<!-- <section class="footer-strip text-center py-3 border-top positon-absolute bottom-0">
-				<div class="container">
-					<div class="d-flex flex-column flex-lg-row align-items-center gap-3 justify-content-between">
-						<p class="mb-0">Copyright © 2022. All right reserved.</p>
-						<div class="payment-icon">
-							<div class="row row-cols-auto g-2 justify-content-end">
-								<div class="col">
-									<img src="userAssets/images/icons/visa.png" alt="" />
-								</div>
-								<div class="col">
-									<img src="userAssets/images/icons/paypal.png" alt="" />
-								</div>
-								<div class="col">
-									<img src="userAssets/images/icons/mastercard.png" alt="" />
-								</div>
-								<div class="col">
-									<img src="userAssets/images/icons/american-express.png" alt="" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section> -->
-		</footer>
-		<!--end footer section-->
-
-
-		<!--start quick view product-->
-		<!-- Modal -->
-		<div class="modal fade" id="QuickViewProduct">
-			<div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-xl-down">
-				<div class="modal-content rounded-0 border-0">
-					<div class="modal-body">
-						<button type="button" class="btn-close float-end" data-bs-dismiss="modal"></button>
-						<div class="row g-0">
-							<div class="col-12 col-lg-6">
-								<div class="image-zoom-section">
-									<div class="product-gallery owl-carousel owl-theme border mb-3 p-3" data-slider-id="1">
-										<div class="item">
-											<img src="userAssets/images/product-gallery/01.png" class="img-fluid" alt="">
-										</div>
-										<div class="item">
-											<img src="userAssets/images/product-gallery/02.png" class="img-fluid" alt="">
-										</div>
-										<div class="item">
-											<img src="userAssets/images/product-gallery/03.png" class="img-fluid" alt="">
-										</div>
-										<div class="item">
-											<img src="userAssets/images/product-gallery/04.png" class="img-fluid" alt="">
-										</div>
-									</div>
-									<div class="owl-thumbs d-flex justify-content-center" data-slider-id="1">
-										<button class="owl-thumb-item">
-											<img src="userAssets/images/product-gallery/01.png" class="" alt="">
-										</button>
-										<button class="owl-thumb-item">
-											<img src="userAssets/images/product-gallery/02.png" class="" alt="">
-										</button>
-										<button class="owl-thumb-item">
-											<img src="userAssets/images/product-gallery/03.png" class="" alt="">
-										</button>
-										<button class="owl-thumb-item">
-											<img src="userAssets/images/product-gallery/04.png" class="" alt="">
-										</button>
-									</div>
-								</div>
-							</div>
-							<div class="col-12 col-lg-6">
-								<div class="product-info-section p-3">
-									<h3 class="mt-3 mt-lg-0 mb-0">Allen Solly Men's Polo T-Shirt</h3>
-									<div class="product-rating d-flex align-items-center mt-2">
-										<div class="rates cursor-pointer font-13">	<i class="bx bxs-star text-warning"></i>
-											<i class="bx bxs-star text-warning"></i>
-											<i class="bx bxs-star text-warning"></i>
-											<i class="bx bxs-star text-warning"></i>
-											<i class="bx bxs-star text-warning"></i>
-										</div>
-										<div class="ms-1">
-											<p class="mb-0">(24 Ratings)</p>
-										</div>
-									</div>
-									<div class="d-flex align-items-center mt-3 gap-2">
-										<h5 class="mb-0 text-decoration-line-through text-light-3">$98.00</h5>
-										<h4 class="mb-0">$49.00</h4>
-									</div>
-									<div class="mt-3">
-										<h6>Discription :</h6>
-										<p class="mb-0">Virgil Abloh’s Off-White is a streetwear-inspired collection that continues to break away from the conventions of mainstream fashion. Made in Italy, these black and brown Odsy-1000 low-top sneakers.</p>
-									</div>
-									<dl class="row mt-3">	<dt class="col-sm-3">Product id</dt>
-										<dd class="col-sm-9">#BHU5879</dd>	<dt class="col-sm-3">Delivery</dt>
-										<dd class="col-sm-9">Russia, USA, and Europe</dd>
-									</dl>
-									<div class="row row-cols-auto align-items-center mt-3">
-										<div class="col">
-											<label class="form-label">Quantity</label>
-											<select class="form-select form-select-sm">
-												<option>1</option>
-												<option>2</option>
-												<option>3</option>
-												<option>4</option>
-												<option>5</option>
-											</select>
-										</div>
-										<div class="col">
-											<label class="form-label">Size</label>
-											<select class="form-select form-select-sm">
-												<option>S</option>
-												<option>M</option>
-												<option>L</option>
-												<option>XS</option>
-												<option>XL</option>
-											</select>
-										</div>
-										<div class="col">
-											<label class="form-label">Colors</label>
-											<div class="color-indigators d-flex align-items-center gap-2">
-												<div class="color-indigator-item bg-primary"></div>
-												<div class="color-indigator-item bg-danger"></div>
-												<div class="color-indigator-item bg-success"></div>
-												<div class="color-indigator-item bg-warning"></div>
-											</div>
-										</div>
-									</div>
-									<!--end row-->
-									<div class="d-flex gap-2 mt-3">
-										<a href="javascript:;" class="btn btn-dark btn-ecomm">	<i class="bx bxs-cart-add"></i>Add to Cart</a>	<a href="javascript:;" class="btn btn-light btn-ecomm"><i class="bx bx-heart"></i>Add to Wishlist</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!--end row-->
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--end quick view product-->
-
 		
-		<!--Start Back To Top Button-->
-		 <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
-		<!--End Back To Top Button-->
+
+
 
 	</div>
 	<!--end wrapper-->
-	
+
 	<%- include('../layouts/footer') %>

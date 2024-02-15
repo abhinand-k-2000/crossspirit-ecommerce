@@ -39,47 +39,35 @@
 
       
 
-    <div class="col-xl-3 col-lg-4 col-md-6">
-      <div class="card card-product-grid">
-        <a class="img-wrap">
-          <img src="/category/<%= category[i].imagePath %>" alt="Product">
-        </a>
-
-        <div class="info-wrap">
-          <div class="dropdown float-end">
-            <a href="/admin/edit-category/<%= category[i]._id %>" class="btn btn-sm btn-dark rounded">
-              <i class="material-icons md-edit mr-5"></i>Edit
+      <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="card card-product-grid">
+            <a class="img-wrap">
+                <img src="/category/<%= category[i].imagePath %>" alt="Product">
             </a>
-
-
-            <% if (!category[i].isDeleted) { %>
-              <form action="/admin/unlist-category/<%= category[i]._id %>" method="post">
-                  <button type="submit" class="btn px-3 py-1.5 btn-sm font-sm btn-danger rounded">Unlist</button>
-              </form>
-          <% } else { %>
-              <form action="/admin/list-category/<%= category[i]._id %>" method="post">
-                  <button type="submit" class="btn px-4 btn-sm font-sm btn-success rounded">List</button>
-              </form>
-          <% } %>   
-
-            <!-- <a href="/admin/delete-category?id=<%=category[i]._id%>" class="btn btn-sm btn-danger rounded" onclick="confirmDelete('<%= category._id %>' , event)">
-              <i class="material-icons md-edit mr-5 "></i>Delete
-            </a> -->
-            
-
-
-
-
-            <!-- <div class="dropdown-menu dropdown-menu-end">
-              <a class="dropdown-item" href="#">Edit info</a>
-              <a class="dropdown-item text-danger" href="#">Delete</a>
-            </div> -->
-            
-          </div>
-          <a href="#" class="title"><%= category[i].name %></a>
+    
+            <div class="info-wrap d-flex flex-column align-items-start">
+                <a href="#" class="title mb-2"><%= category[i].name %></a>
+    
+                <div class="d-flex">
+                    <a href="/admin/edit-category/<%= category[i]._id %>" class="btn btn-sm btn-dark rounded me-2">
+                        <i class="material-icons md-edit mr-1"></i>Edit
+                    </a>
+    
+                    <% if (!category[i].isDeleted) { %>
+                        <form action="/admin/unlist-category/<%= category[i]._id %>" method="post">
+                            <button type="submit" class="btn px-3 py-1.5 btn-sm font-sm btn-danger rounded">Unlist</button>
+                        </form>
+                    <% } else { %>
+                        <form action="/admin/list-category/<%= category[i]._id %>" method="post">
+                            <button type="submit" class="btn px-4 btn-sm font-sm btn-success rounded">List</button>
+                        </form>
+                    <% } %>               
+                </div>
+            </div>
         </div>
-      </div>
     </div>
+    
+    
 
  
 
@@ -87,7 +75,7 @@
   </div>
 
   <!-- row.// -->
-  <div class="pagination-area mt-15 mb-50">
+  <!-- <div class="pagination-area mt-15 mb-50">
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-start">
         <li class="page-item active"><a class="page-link" href="#">01</a></li>
@@ -102,7 +90,7 @@
         </li>
       </ul>
     </nav>
-  </div>
+  </div> -->
 </section>
 <!-- content-main end// -->
 

@@ -29,6 +29,8 @@ product_route.post('/list-product/:id', productController.listProduct)
 product_route.get('/edit-product/:id', productController.loadEditProduct) 
 product_route.post('/edit-product/:id', upload.array('images', 5), productController.updateProduct) 
 
+product_route.delete('/product-image-delete/:productId/images/:imageId', productController.deleteProductImage )
+
 
 
 module.exports = product_route

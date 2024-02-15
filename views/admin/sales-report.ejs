@@ -1,0 +1,188 @@
+<%- include('../layouts/admHeader') %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script> -->
+
+
+
+
+
+
+
+
+<section class="content-main">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title">Sales Report</h2>
+    </div>
+   
+  </div>
+  <div class="card mb-4">
+    <header class="card-header">
+      <div class="row gx-3">
+        <div class="col-lg-4 col-md-6 me-auto">
+          <!-- <input type="text" placeholder="Search..." class="form-control" /> -->
+        </div>
+        <!-- <div class="col-lg-2 col-md-3 col-6">
+          <select class="form-select">
+            <option>Status</option>
+            <option>Active</option>
+            <option>Disabled</option>
+            <option>Show all</option>
+          </select>
+        </div> -->
+        
+        <div class="col-lg-8 col-md-12">
+          <form id="salesReportForm" method="POST" action="/admin/sales-report">
+            <div class="row align-items-center">
+              <div class="col-lg-3 col-md-4">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" value="<%= defaultStartDate %>"/>
+              </div>
+            
+              <div class="col-lg-3 col-md-4">
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" name="endDate" class="form-control" value="<%= defaultEndDate %>"/>
+              </div>
+        
+              <div class="col-lg-3 col-md-4">
+                <button type="submit" id="submitBtn" class="btn btn-primary ">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        
+        
+        
+          
+
+     
+      </div>
+    </header>
+    <!-- card-header end// -->
+    <div class="card-body">
+      <div class="table-responsive">
+        
+        <div id="dailyTable" >
+            <h4>Daily Report</h4>
+            <table id="dataTable" class="table table-hover mt-3">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>#ID</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Payment</th>
+                    <th>Date</th>
+                    <!-- <th class="text-end">Action</th> -->
+                </tr>
+                </thead>
+                <tbody>
+              
+                  <% salesData.forEach((order, index) => { %>
+
+                    <tr>
+                      <td></td>
+                      <td> <%= index+1%></td>
+                      <td><b> <%= order.productDetails.name %> </b></td>
+                      <td><b> <%= order.items.quantity %> </b></td>
+                      <td>Rs. <%= order.items.price * order.items.quantity %> </td>
+                      <td><%= order.payment %> </td>
+      
+                      <td><%= order.date.toLocaleString() %>
+                      </td>
+                  </tr>
+
+                  <% }) %>
+
+                </tbody>
+            </table>
+          <div class="text-end">
+            <button class="btn btn-dark btn-sm" onclick="exportToExcel('dataTable')">Download Report (Excel)</button>
+            <!-- <button class="btn btn-dark btn-sm" onclick="generatePDF('dataTable')">Download Report (PDF)</button> -->
+            <!-- <a href="/admin/generate-sales-report-pdf" target="_blank" class="btn btn-dark btn-sm">Download Report (PDF)</a> -->
+            <a href="#" id="downloadPdfLink" class="btn btn-dark btn-sm">Download Report (PDF)</a>
+
+          </div>
+
+        </div>
+        
+      </div>
+      <!-- table-responsive//end -->
+    </div>
+    <!-- card-body end// -->
+  </div>
+  
+</section>
+
+<!-- <form action="/admin/generate-sales-report-pdf"  >
+  <button type="submit">Generate PDF</button>
+</form> -->
+<script>
+  document.getElementById('downloadPdfLink').addEventListener('click', function() {
+    // Get the selected start and end dates
+    var startDate = document.getElementById('startDate').value;
+    var endDate = document.getElementById('endDate').value;
+
+    // Build the URL with query parameters
+    var pdfUrl = '/admin/generate-order-summary-pdf?startDate=' + encodeURIComponent(startDate) +
+                 '&endDate=' + encodeURIComponent(endDate);
+
+    // Open the PDF generation route in a new tab
+    window.open(pdfUrl, '_blank');
+  });
+</script>
+
+
+<!-- <script>
+  function generatePDF() {
+      // Select the HTML content of the table
+      var tableContent = document.getElementById('dailyTable').outerHTML;
+
+      // Define the document structure
+      var docDefinition = {
+          content: [
+              { text: 'Table to PDF Example', fontSize: 16, bold: true },
+              { text: 'Generated from an EJS page', fontSize: 12, margin: [0, 10, 0, 10] },
+              { table: { body: [[{ text: tableContent, style: 'tableStyle' }]] }, style: 'tableStyle' },
+          ],
+          styles: {
+              tableStyle: { margin: [0, 5, 0, 15] },
+          },
+      };
+
+      // Create the PDF
+      pdfmake.createPdf(docDefinition).download('table_to_pdf.pdf');
+  } -->
+</script>
+
+
+
+<script>
+  function exportToExcel(tableId) {
+  const table = document.getElementById(tableId);
+  const ws = XLSX.utils.table_to_sheet(table);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+  // Save the file
+  XLSX.writeFile(wb, 'daily_report.xlsx');
+}
+
+</script>
+
+
+
+
+<%- include('../layouts/admFooter') %>
+
+

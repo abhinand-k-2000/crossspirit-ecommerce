@@ -1,0 +1,77 @@
+<%- include('../layouts/admHeader') %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Add Product Offer</h2>
+            </div>
+        </div>
+
+
+
+    
+
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <% if(typeof message !== 'undefined'){ %>
+                        <p class="<%= color%> text-center">
+                        <%=message%>
+                    </p>
+                    <% } %>
+                    <h4>Basic</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/add-offer" method="POST" onsubmit="return validateForm()">
+                        <div class="mb-4"> 
+                            <label for="targetEntity" class="form-label">Category</label>
+                            <select name="targetEntity" class="form-select" id="category">
+                               <% if(typeof product !== 'undefined'){ %>
+
+                                <% product.forEach((product) => { %>
+                                    <option value="<%= product._id %>"><%= product.name %></option>
+                                <% }) %>
+                               <% } %>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="percentage" class="form-label">Dicount (In %)</label>
+                            <input type="text" placeholder="Type here" name="percentage" class="form-control" id="percentage" />
+                            <div id="percentageError" class="text-danger"></div>
+                        </div>
+
+                        <input type="hidden" name="targetType" value="product">
+                        
+                        <button type="submit" class="btn btn-success btn-sm">Add Offer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    function validateForm() {
+        const percentageInput = document.getElementById("percentage").value;
+        const percentageError = document.getElementById("percentageError");
+
+        if (!validatePercentage(percentageInput)) {
+            percentageError.textContent = "Enter a valid discount percentage (0-100)";
+            return false; // Prevent form submission
+        } else {
+            percentageError.textContent = "";
+            return true; // Allow form submission
+        }
+    }
+
+    function validatePercentage(percentage) {
+        const parsedPercentage = parseFloat(percentage);
+        return !isNaN(parsedPercentage) && parsedPercentage >= 0 && parsedPercentage <= 100;
+    }
+</script>
+
+
+            <%- include('../layouts/admFooter') %>

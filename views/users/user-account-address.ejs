@@ -1,0 +1,309 @@
+<%- include('../layouts/header') %>
+<!-- Include SweetAlert CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+ <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> -->
+ 
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> 
+
+		<!--end top header wrapper-->
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">My Orders</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Account</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Account Details</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<h3 class="d-none">Account</h3>
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+
+							
+
+                                    <%- include('../layouts/userDashboard') %>
+                                   
+									<div class="col-lg-8">
+                                        <div>
+                                            <!-- Button to trigger modal -->
+                                            <button class="btn btn-dark mb-2" data-toggle="modal" data-target="#addAddressModal">Add Address</button>
+                                        </div>
+
+                                        <% if(address) {
+                                            address.address.forEach((add) => { %>
+                                                <div class="card shadow-none mb-0 border">
+                                                    <div class="card-body">
+                                                        <h6>Name</h6>
+                                                        <!-- Display only some details of the address -->
+                                                        <p>Street Address: <span id="displayStreetAddress" class="fw-bold"><%= add.streetaddress %></span></p>
+                                                        <p>City: <span id="displayCity" class="fw-bold"><%= add.city %></span></p>
+                                                        <p>State: <span id="displayState" class="fw-bold"><%= add.state %></span></p>
+                                                        <p>Zip Code: <span id="displayZipCode" class="fw-bold"><%= add.pincode %></span></p>
+                                                        <!-- <button class="btn btn-danger" onclick="deleteAddress('<%= add._id %>')">
+                                                            <i class="fas fa-times"></i> Delete
+                                                        </button> -->
+                                                        <div class="d-flex ">
+                                                            <div  >
+                                                                <form action="/delete-address/<%= add._id %>" method="POST" id="deleteAddressForm_<%= add._id %>">
+                                                                    <!-- Submit button -->
+                                                                    <button type="button" class="btn btn-danger" onclick="showConfirmation('deleteAddressForm_<%= add._id %>')">
+                                                                        <i class="fas fa-times"></i> Delete
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                            <div style="margin-left: 1em;" >
+                                                              
+                                                                <button class="btn btn-dark mb-2" data-toggle="modal" data-target="#editAddressModal" data-address-id="<%= add._id %>" data-street="<%= add.streetaddress %>" data-city="<%= add.city %>" data-state="<%= add.state %>" data-zip="<%= add.pincode %>">
+                                                                    Edit
+                                                                </button>
+                                                               
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        <% }) } %>
+                                    </div>
+                                    
+								</div>
+								<!--end row-->
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+
+	</div>
+
+    <!--------------------------------------- Starting of Add Address Modal ---------------------------------------------------------->
+
+    <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAddressModalLabel">Add Address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAddressForm" action="/add-address" method="POST" onsubmit="return validateForm()">
+                        <!-- Address form fields -->
+                        <div class="form-row mb-3">
+                            <div class="form-group col">
+                                <label for="modalStreetAddress">Street Address</label>
+                                <input type="text" class="form-control" id="modalStreetAddress" name="streetAddress" required>
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="form-group col">
+                                <label for="modalCity">City</label>
+                                <input type="text" class="form-control" id="modalCity" name="city" required>
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="form-group col">
+                                <label for="modalState">State</label>
+                                <input type="text" class="form-control" id="modalState" name="state" required>
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="form-group col">
+                                <label for="modalZipCode">Zip Code</label>
+                                <input type="text" class="form-control" id="modalZipCode" name="pinCode" pattern="\d*" title="Please enter only numbers" required>
+                            </div>
+                        </div>
+                        <!-- End of address form fields -->
+    
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Address</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--------------------------------------- End of Add Address Modal ---------------------------------------------------------->
+
+
+    <!--------------------------------------- Starting of Edit Address Modal ---------------------------------------------------------->
+    <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAddressForm" action="/edit-address" method="POST" onsubmit="return validateEditForm()">
+                        <!-- Address form fields -->
+                        <div class="form-row mb-3">
+                            <div class="form-group col">
+                                <label for="modalEditStreetAddress">Street Address</label>
+                                <input type="text" class="form-control" id="modalEditStreetAddress" name="streetAddress" required>
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="form-group col">
+                                <label for="modalEditCity">City</label>
+                                <input type="text" class="form-control" id="modalEditCity" name="city" required>
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="form-group col">
+                                <label for="modalEditState">State</label>
+                                <input type="text" class="form-control" id="modalEditState" name="state" required>
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="form-group col">
+                                <label for="modalEditZipCode">Zip Code</label>
+                                <input type="text" class="form-control" id="modalEditZipCode" name="pinCode" pattern="\d*" title="Please enter only numbers" required>
+                            </div>
+                        </div>
+                        <!-- End of address form fields -->
+    
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        <!--------------------------------------- End of Edit Address Modal ---------------------------------------------------------->
+
+    
+
+        <script>
+            // Script file for the EDIT ADDRESS MODAL
+
+            $(document).ready(function() {
+                // Event listener for the Edit button click
+                $('.btn-dark[data-target="#editAddressModal"]').click(function() {
+                    // Get the address details from the data attributes
+                    var addressId = $(this).data('address-id');
+                    var street = $(this).data('street');
+                    var city = $(this).data('city');
+                    var state = $(this).data('state');
+                    var zip = $(this).data('zip');
+        
+                    // Populate the modal fields with the extracted details
+                    $('#modalEditStreetAddress').val(street);
+                    $('#modalEditCity').val(city);
+                    $('#modalEditState').val(state);
+                    $('#modalEditZipCode').val(zip);
+        
+                    // Optionally, you can update the form action attribute with the correct address ID
+                    $('#editAddressForm').attr('action', '/edit-address/' + addressId);
+                });
+
+               // Validation function
+            function validateEditForm() {
+                var streetAddress = $('#modalEditStreetAddress').val();
+                var city = $('#modalEditCity').val();
+                var state = $('#modalEditState').val();
+                var zipCode = $('#modalEditZipCode').val();
+
+                if (!streetAddress.trim() || !city.trim() || !state.trim() || !zipCode.trim()) {
+                    alert('All fields must be filled out');
+                    return false;
+                }
+
+                // Add additional validation rules as needed
+
+                return true; // Allow form submission if all validations pass
+            }
+
+            // Attach the validation function to the form's onsubmit event
+            $('#editAddressForm').submit(function() {
+                return validateEditForm();
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+    <script>
+    function validateForm() {
+        // Using JavaScript to check if all required fields are filled and not just spaces
+        const streetAddress = document.getElementById('modalStreetAddress').value.trim();
+        const city = document.getElementById('modalCity').value.trim();
+        const state = document.getElementById('modalState').value.trim();
+        const zipCode = document.getElementById('modalZipCode').value.trim();
+    
+        if (streetAddress === '' || city === '' || state === '' || zipCode === '') {
+            // If any required field is empty or contains only spaces, display an error message and prevent form submission
+            alert('Please fill in all required fields.');
+            return false;
+        }
+    
+        // If zipCode contains only numbers, allow form submission
+        if (!/^\d*$/.test(zipCode)) {
+            alert('Zip Code should contain only numbers.');
+            return false;
+        }
+    
+        // If all required fields have non-empty values and zipCode contains only numbers, allow form submission
+        return true;
+    }
+    </script>
+
+<script>
+   function showConfirmation(formId) {
+    // Use SweetAlert2 to show a confirmation dialog
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If the user clicks "Yes, delete it!", submit the specified form
+            document.getElementById(formId).submit();
+        }
+    });
+}
+</script>
+
+
+    <%- include('../layouts/footer') %>
+
+	
+	

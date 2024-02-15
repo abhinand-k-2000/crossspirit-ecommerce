@@ -6,24 +6,24 @@
       <h2 class="content-title card-title">Customers List</h2>
       <p>Our happy customers</p>
     </div>
-    <div>
+    <!-- <div>
       <a href="#" class="btn btn-primary btn-sm rounded">Create new</a>
-    </div>
+    </div> -->
   </div>
   <div class="card mb-4">
-    <header class="card-header">
+    <!-- <header class="card-header">
       <div class="row align-items-center">
         <div class="col col-check flex-grow-0"></div>
         <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-          <!-- <select class="form-select">
+          <select class="form-select">
             <option selected>All category</option>
             <option>Electronics</option>
             <option>Clothes</option>
             <option>Automobile</option>
-          </select> -->
+          </select>
         </div>
         <div class="col-md-2 col-6">
-          <input type="date" value="02.05.2021" class="form-control" />
+          <input type="date"  class="form-control" />
         </div>
         <div class="col-md-2 col-6">
           <select class="form-select">
@@ -33,7 +33,7 @@
           </select>
         </div>
       </div>
-    </header>
+    </header> -->
     <!-- card-header end// -->
 
     <div class="card-body">
@@ -61,9 +61,7 @@
                       </td>
                       <td><%= users[i].email %></td>
                       <td><%= users[i].mobile %></td>
-      
 
-                      
                         <% if(users[i].isOnline) {  %>
                           <td>
                             <span class="badge rounded-pill alert-success">Active</span>
@@ -73,14 +71,7 @@
                               <span class="badge rounded-pill alert-danger">Inactive</span>
                           </td>
                         <% } %>
-                          
-                  
-                         
-          
-
-
-
-      
+  
                       <td>
                           <% if (users[i].isBlocked) { %>
                               <form action="/admin/unblock-user/<%= users[i]._id %>" method="post">
@@ -95,40 +86,38 @@
                   </tr>
           <% } } %>
       </tbody>
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
       </table>
     </div>
   </div>
   <!-- card end// -->
-  <div class="pagination-area mt-30 mb-50">
+  <div class="pagination-area mt-15 mb-50">
     <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-start">
-        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-        <li class="page-item"><a class="page-link" href="#">02</a></li>
-        <li class="page-item"><a class="page-link" href="#">03</a></li>
-        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-        <li class="page-item"><a class="page-link" href="#">16</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#"
-            ><i class="material-icons md-chevron_right"></i
-          ></a>
-        </li>
-      </ul>
+        <ul class="pagination justify-content-start">
+
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+                </li>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">
+                        <i class="material-icons md-chevron_right"></i>
+                    </a>
+                </li>
+            <% } %>
+
+        </ul>
     </nav>
-  </div>
+</div>
+
+  <!-- <div id="pagination-container">
+    <button id="prev-btn">Previous</button>
+    <span id="page-info"></span>
+    <button id="next-btn">Next</button>
+  </div> -->
 </section>
+
 
 <%- include('../layouts/admFooter') %>

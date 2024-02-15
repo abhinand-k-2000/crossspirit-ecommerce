@@ -1,7 +1,7 @@
 
 <%- include('../layouts/header') %>
+<!-- Add this in your HTML file -->
 
-		<!--end top header wrapper-->
 		<!--start page wrapper -->
 		<div class="page-wrapper">
 
@@ -32,39 +32,40 @@
 						<div class="product-detail-card">
 							<div class="product-detail-body">
 								<div class="row g-0">
+
+
 									<div class="col-12 col-lg-5">
 										<div class="image-zoom-section">
 											<div class="product-gallery owl-carousel owl-theme border mb-3 p-3" data-slider-id="1">
-												<div class="item">
-													<img src="/products/<%=product.images[0]%>" class="img-fluid" alt="<%=product.images[0]%>">
-												</div>
-												<div class="item">
-													<img src="/userAssets/images/product-gallery/02.png" class="img-fluid" alt="">
-												</div>
-												<div class="item">
-													<img src="/userAssets/images/product-gallery/03.png" class="img-fluid" alt="">
-												</div>
-												<div class="item">
-													<img src="/userAssets/images/product-gallery/04.png" class="img-fluid" alt="">
-												</div>
+												<% for(let i = 0; i < product.images.length; i++){ %>
+
+													<div class="item" style="height: 500px;" >
+														<img src="/products/<%= product.images[i] %>" class="img-fluid" id="mainImage" style="height: 100%;" alt="<%= product.images[i] %>" onmousemove="zoomImage(event, this)"
+														onmouseleave="resetZoomedImage()">
+														
+													</div>
+
+												<% } %>
 											</div>
+
+											<!-------------------------------------- zooming efftect--------------------------------------->
+											<div id="zoom-image-container">
+												<img id="zoomed-image" src="" >
+								            </div>
+											<!-------------------------------------- zooming efftect--------------------------------------->
+									
 											<div class="owl-thumbs d-flex justify-content-center" data-slider-id="1">
-												<button class="owl-thumb-item">
-													<img src="/userAssets/images/product-gallery/01.png" class="" alt="">
-												</button>
-												<button class="owl-thumb-item">
-													<img src="/userAssets/images/product-gallery/02.png" class="" alt="">
-												</button>
-												<button class="owl-thumb-item">
-													<img src="/userAssets/images/product-gallery/03.png" class="" alt="">
-												</button>
-												<button class="owl-thumb-item">
-													<img src="/userAssets/images/product-gallery/04.png" class="" alt="">
-												</button>
+												<% for(let i = 0; i < product.images.length; i++){ %>
+													<button class="owl-thumb-item">
+														<img src="/products/<%= product.images[i] %>" class="" alt="<%= product.images[i] %>">
+													</button>
+												<% } %>
 											</div>
 										</div>
 									</div>
-									<div class="col-12 col-lg-7">
+									
+									
+									<div class="col-12 col-lg-7" style="position: relative; top: 7em; left: 1em">
 										<div class="product-info-section p-3">
 											<h3 class="mt-3 mt-lg-0 mb-0"><%= product.name %></h3>
 											<div class="product-rating d-flex align-items-center mt-2">
@@ -78,10 +79,31 @@
 													<p class="mb-0">(24 Ratings)</p>
 												</div>
 											</div>
+
 											<div class="d-flex align-items-center mt-3 gap-2">
-												<h5 class="mb-0 text-decoration-line-through text-light-3">Rs.1799</h5>
-												<h4 class="mb-0">Rs.<%= product.price %></h4>
+												<h5 class="mb-0 text-decoration-line-through text-light-3">Rs. <%= product.price %></h5>
+									
+													<h4 class="mb-0">
+														<!-- Rs. <%= product.price %> -->
+														<% if (product.offer && product.offer.percentage) { %>
+															Rs. <%= calculateDiscountedPrice(product.price, product.offer.percentage) %> <span class="text-success">(<%=product.offer.percentage%>% off)</span>
+														  <% } else { %>
+															Rs. <%= product.price %>
+														  <% } %>
+														
+															<% function calculateDiscountedPrice(originalPrice, discountPercentage) { %>
+																<% const discountAmount = originalPrice * (discountPercentage / 100); %>
+																<% const discountedPrice = originalPrice - discountAmount; %>
+																<% return Math.floor(discountedPrice); %>
+															  <% } %>
+														
+													</h4>
+											
 											</div>
+											
+
+											
+
 											<div class="mt-3">
 												<h6>Discription :</h6>
 												<p class="mb-0"><%= product.description %></p>
@@ -89,24 +111,21 @@
 											<dl class="row mt-3">	<dt class="col-sm-3">Product id</dt>
 												<dd class="col-sm-9"><%= product._id %></dd>	
 											</dl>
+											<dl class="row mt-3">	<dt class="col-sm-3">Color</dt>
+												<dd class="col-sm-9"><%= product.color %></dd>	
+											</dl>
 											<div class="row row-cols-auto align-items-center mt-3">
-												<div class="col">
-													<label class="form-label">Quantity</label>
 
+												<!-- <div class="col">
+													<label class="form-label">Quantity</label>
 													<select class="form-select form-select-sm">
 													<% for (let i = 1; i <= product.countInStock; i++) { %>
-														
-															<option><%= i %></option>
-														
+															<option><%= i %></option>						
 													<% } %>
 													</select>
+												</div> -->
 
-													
-													
-
-
-												</div>
-												<div class="col">
+												<!-- <div class="col">
 													<label class="form-label">Size</label>
 													<select class="form-select form-select-sm">
 														<option>S</option>
@@ -115,8 +134,8 @@
 														<option>XS</option>
 														<option>XL</option>
 													</select>
-												</div>
-												<div class="col">
+												</div> -->
+												<!-- <div class="col">
 													<label class="form-label">Colors</label>
 													<div class="color-indigators d-flex align-items-center gap-2">
 														<div class="color-indigator-item bg-primary"></div>
@@ -125,11 +144,45 @@
 														<div class="color-indigator-item bg-warning"></div>
 													</div>
 												</div>
-											</div>
+											</div> -->
 											<!--end row-->
-											<div class="d-flex gap-2 mt-3">
-												<a href="javascript:;" class="btn btn-dark btn-ecomm"><i class="bx bxs-cart-add"></i>Add to Cart</a> 
-												<a href="javascript:;" class="btn btn-light btn-ecomm"><i class="bx bx-heart"></i>Add to Wishlist</a>
+											<div class="d-flex gap-2 mt-3" >
+												<% if(product.countInStock !== 0){%>
+													<form action="/add-to-cart/<%=product._id%>" method="post">
+														<button type="submit" class="btn btn-dark btn-ecomm" name="addToCart" ><i class="bx bxs-cart-add"></i>Add to Cart
+														</button>
+													  </form>
+												<% }else{ %>
+													<h6 class="text-danger mt-2 ">Out of Stock</h6>
+												<% } %>
+
+
+
+												<% if(user) { %>
+													<% if(wishlistData.length == 0){ %>
+														<form id="wishlistForm" action="/add-to-wishlist?productId=<%=product._id%>" method="post">
+															<button type="button" class="btn btn-light btn-ecomm" onclick="addToWishlist()">
+															  <i class="bx bx-heart"></i>Add to Wishlist
+															</button>
+														  </form>
+													<% }else { %>
+														<button  class="btn btn-light btn-ecomm" disabled >
+															Already Added
+														  </button>
+													<% } %>
+												<% } else{ %>
+
+													<form id="wishlistForm" action="/add-to-wishlist?productId=<%=product._id%>" method="post">
+														<button type="button" class="btn btn-light btn-ecomm" onclick="addToWishlist()">
+														  <i class="bx bx-heart"></i>Add to Wishlist
+														</button>
+													  </form>
+												<% } %>
+
+												
+												
+												
+												  
 											</div>
 											<hr/>
 											
@@ -141,26 +194,130 @@
 						</div>
 					</div>
 				</section>
-				<!--end product detail-->
-				<!--start product more info-->
-				
-				<!--end product more info-->
-				<!--start similar products-->
-				
-				<!--end similar products-->
+ 
 			</div>
 		</div>
-		<!--end page wrapper -->
-		<!--start footer section-->
-		
-		<!--end footer section-->
-		<!--start quick view product-->
-		<!-- Modal -->
-		
-		<!--end quick view product-->
-		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
-		<!--End Back To Top Button-->
 	</div>
 	<!--end wrapper-->
+
+	
+	
+
+	<script>
+		const addToWishlist = async () => {
+		  try {
+			const productId = "<%= product._id %>";
+
+			const button = document.querySelector('#wishlistForm button');
+			
+			const response = await fetch(`/add-to-wishlist?productId=${productId}`, {
+			  method: 'POST',
+			});
+	  
+			if (response.ok) {
+			  const result = await response.text();
+			  console.log(result); // Log or handle the response
+	  
+			  // Update the button text to "Already Added"
+			  button.textContent = 'Already Added';
+			  button.disabled = true; // Optionally disable the button
+
+			  // Display a SweetAlert notification
+			  Swal.fire({
+          icon: 'success',
+          title: 'Product Added',
+          text: 'The product has been added to your wishlist.',
+          showConfirmButton: false, // Hides the OK button
+          timer: 1500, // Disappears after 1500 milliseconds (1.5 seconds)
+          position: 'top', // Places the notification at the top of the screen
+          customClass: {
+            container: 'swal-container-custom', // Custom class for the container
+            popup: 'swal-popup-custom', // Custom class for the popup
+            icon: 'swal-icon-custom', // Custom class for the icon
+            htmlContainer: 'swal-html-container-custom', // Custom class for the HTML container
+            border: '3px solid #28a745', // Customize the border
+          },
+        });
+				
+	  
+			  // You can also update the button style or icon to indicate it's added
+			} else {
+			  console.error('Failed to add to wishlist');
+			}
+		  } catch (error) {
+			console.error(error);
+		  }
+		};
+	  </script>
+
+
+	<!-- In your EJS template file -->
+
+
+
+	<!-- <div class="main-image-container" style="height: 500px;">
+		<img id="mainImage" class="img-fluid mx-auto" src="{{ product_images.0.0.image.url }}"
+			style="height: 100%;" alt="Main Image" onmousemove="zoomImage(event, this)"
+			onmouseleave="resetZoomedImage()">
+	</div> -->
+
+	<style>
+		#zoom-image-container {
+			position: absolute;
+			top: 277px;
+			right: 50;
+			left: 650px;
+			width: 550px;
+			height: 400px;
+			overflow: hidden;
+			opacity: 0;
+			transition: opacity 0.3s;
+			z-index: 0;
+		}
+	
+		#product-carousel:hover+#zoom-image-container {
+			opacity: 1;
+		}
+	
+		#zoomed-image {
+			width: 100%;
+			height: auto;
+			transform: scale(3);
+			transition: transform 0.3s; /* Fix the special character here */
+		}
+	</style>
+	
+
+	<script>
+		function zoomImage(event, element) {
+        var zoomedImage = document.getElementById('zoomed-image');
+        var zoomedImageContainer = document.getElementById('zoom-image-container')
+
+        // Calculate the position of the mouse pointer relative to the image
+        var x = event.offsetX / element.offsetWidth;
+        var y = event.offsetY / element.offsetHeight;
+
+        // Set the zoomed image source to the clicked image source
+        zoomedImage.src = element.src;
+
+        // Adjust the transform origin based on the mouse pointer position
+        zoomedImage.style.transformOrigin = (x * 100) + '% ' + (y * 100) + '%';
+
+        // Apply the zoom effect by scaling the image
+        zoomedImage.style.transform = 'scale(2)'; // Adjust the zoom level as desired
+
+        // Change z-index to 999 on mouse hover
+        zoomedImageContainer.style.zIndex = 5000;
+        zoomedImageContainer.style.opacity = 1;
+    }
+
+    function resetZoomedImage() {
+        var zoomedImageContainer = document.getElementById('zoom-image-container')
+        zoomedImageContainer.style.transform = 'none';
+        // Reset z-index to its initial value on mouse leave
+        zoomedImageContainer.style.zIndex = 1;
+        zoomedImageContainer.style.opacity = 0;
+    }
+	</script>
 	
 	<%- include('../layouts/footer') %>

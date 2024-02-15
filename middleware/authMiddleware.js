@@ -102,16 +102,16 @@ const checkAdmin = (req, res, next) => {
 
   if(token){
     jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
-
+ 
       if(err){
         console.log(err.message);
         res.locals.admin = null;
         next();
-      }else{
+      }else{  
         // console.log(decodedToken);
         let admin = await Admin.findById(decodedToken.id)
         res.locals.admin = admin 
-        next();
+        next();     
       }
     })
 

@@ -1,0 +1,68 @@
+<%- include('../layouts/admHeader') %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Edit Product Offer</h2>
+            </div>
+        </div>
+
+
+
+    
+
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <% if(typeof message !== 'undefined'){ %>
+                        <p class="<%= color%> text-center">
+                        <%=message%>
+                    </p>
+                    <% } %>
+                    <h4>Basic</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/edit-product-offer" method="POST" onsubmit="return validateForm()">
+                        <div class="mb-4"> 
+                            <label for="productName" class="form-label">Name</label>
+                            <input type="text" name="productName" value="<%= offer.product.name %>" class="form-control"  readonly>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="percentage" class="form-label">Dicount (In %)</label>
+                            <input type="number" placeholder="Type here" value="<%= offer.percentage %>" name="percentage" class="form-control" id="percentage" />
+                            <div id="percentageError" class="text-danger"></div>
+                        </div>
+
+                        <input type="hidden" value="<%= offer._id %>" name="offerId">
+                        
+                        <button type="submit" class="btn btn-success btn-sm">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    function validateForm() {
+        const percentageInput = document.getElementById("percentage").value;
+        const percentageError = document.getElementById("percentageError");
+
+        if (!validatePercentage(percentageInput)) {
+            percentageError.textContent = "Enter a valid discount percentage (0-100)";
+            return false; // Prevent form submission
+        } else {
+            percentageError.textContent = "";
+            return true; // Allow form submission
+        }
+    }
+
+    function validatePercentage(percentage) {
+        const parsedPercentage = parseFloat(percentage);
+        return !isNaN(parsedPercentage) && parsedPercentage >= 0 && parsedPercentage <= 100;
+    }
+</script>
+            <%- include('../layouts/admFooter') %>

@@ -1,13 +1,85 @@
+	<!--start footer section-->
+	<footer class="mt-5">
+		<section class="py-5 border-top bg-light">
+			<div class="container">
+				<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
+					<div class="col">
+						<div class="footer-section1">
+							<h5 class="mb-4 text-uppercase fw-bold">Contact Info</h5>
+							<div class="address mb-3">
+								<h6 class="mb-0 text-uppercase fw-bold">Address</h6>
+								<p class="mb-0">Kozhikode, Kerala</p>
+							</div>
+							<div class="phone mb-3">
+								<h6 class="mb-0 text-uppercase fw-bold">Phone</h6>
+								<p class="mb-0">Mobile : +91-8089543705</p>
+							</div>
+							<div class="email mb-3">
+								<h6 class="mb-0 text-uppercase fw-bold">Email</h6>
+								<p class="mb-0">abhinand2000@gmail.com</p>
+							</div>
+							
+						</div>
+					</div>
+					<div class="col">
+						<div class="footer-section2">
+							<h5 class="mb-4 text-uppercase fw-bold">Categories</h5>
+							<ul class="list-unstyled">
+
+								<% if(category.length > 0){
+									category.forEach((ele) => { 
+										if(ele.isDeleted === false){ %>	
+											<li class="mb-1"><a href="javascript:;"><i class='bx bx-chevron-right'></i> <%= ele.name %></a>
+											</li>
+											<% } %>
+										<% }) } %>									
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!--end row-->
+			</div>
+		</section>
+
+		<!-- <section class="footer-strip text-center py-3 border-top positon-absolute bottom-0">
+			<div class="container">
+				<div class="d-flex flex-column flex-lg-row align-items-center gap-3 justify-content-between">
+					<p class="mb-0">Copyright © 2022. All right reserved.</p>
+					<div class="payment-icon">
+						<div class="row row-cols-auto g-2 justify-content-end">
+							<div class="col">
+								<img src="userAssets/images/icons/visa.png" alt="" />
+							</div>
+							<div class="col">
+								<img src="userAssets/images/icons/paypal.png" alt="" />
+							</div>
+							<div class="col">
+								<img src="userAssets/images/icons/mastercard.png" alt="" />
+							</div>
+							<div class="col">
+								<img src="userAssets/images/icons/american-express.png" alt="" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section> -->
+	</footer>
+	<!--end footer section-->
+	
 	<!-- Bootstrap JS -->
 	<script src="/userAssets/js/bootstrap.bundle.min.js"></script>
 	<!--plugins-->
 	<script src="/userAssets/js/jquery.min.js"></script>
 	<script src="/userAssets/plugins/OwlCarousel/js/owl.carousel.min.js"></script>
 	<script src="/userAssets/plugins/OwlCarousel/js/owl.carousel2.thumbs.min.js"></script>
-	<script src="/userAssets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+	<!-- <script src="/userAssets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script> -->
 	<!--app JS-->
 	<script src="/userAssets/js/app.js"></script>
 	<script src="/userAssets/js/index.js"></script>
+	<!-- Include SweetAlert from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 </body>
 
 

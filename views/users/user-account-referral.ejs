@@ -1,0 +1,122 @@
+
+<%- include('../layouts/header') %>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<!--end top header wrapper-->
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">My Orders</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Account</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Wallet</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<h3 class="d-none">Account</h3>
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+
+						
+									<%- include('../layouts/userDashboard') %>
+
+									<div class="col-lg-8">
+                                        <div class="card shadow-sm mb-4 border">
+                                            <div class="card-body">
+                                    
+                                                <!-- Display Referral Information -->
+                                                <div class="row">
+                                                    <div class="col-10 col-lg-10 col-md-10">
+                                                        <h4 class="mb-4">Referral Link</h4>
+                                    
+                                                        <!-- Display the referral link here -->
+                                                        <div class="mb-3">
+                                                            <label for="referralLink" class="form-label">Your Referral Link:</label>
+                                                            <div class="input-group">
+                                                                <!-- <input type="text" class="form-control" id="referralLink" value="localhost:3000/register?referralId=<%=referralCode %>" readonly> -->
+                                                                <input type="text" class="form-control" id="referralLink" value="localhost:3000/register?referralId=<%=encodeURIComponent(	) %>" readonly>
+
+                                                                <button class="btn btn-outline-secondary" type="button" onclick="copyReferralLink()">Copy</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-2 col-lg-2 col-md-2">
+                                                        <!-- Add any additional actions or links here -->
+                                                    </div>
+                                                </div>
+                                    
+                                                <!-- Referral Action Buttons -->
+                                             
+                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- JavaScript to copy referral link to clipboard -->
+                                    <script>
+                                        function copyReferralLink() {
+                                            var referralLink = document.getElementById("referralLink");
+                                            referralLink.select();
+                                            document.execCommand("copy");
+                                        }
+                                    </script>
+                                    
+                                    
+                                    
+                                    
+                                    
+									
+								</div>
+                                
+
+
+
+
+                                
+								<!--end row-->
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+
+	</div>
+
+
+ 
+    
+	<!-----------------------------------------------------------MODAL--------------------------------------------------------->
+
+
+	
+
+
+
+
+	
+	
+	<%- include('../layouts/footer') %>
+
+	
+	

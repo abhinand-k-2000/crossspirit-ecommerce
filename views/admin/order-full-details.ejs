@@ -1,0 +1,109 @@
+<%- include('../layouts/admHeader') %>
+
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Order Details</h2>
+        </div>
+        <div>
+            <input type="text" placeholder="Search order ID" class="form-control bg-white" />
+        </div>
+    </div>
+    <div class="card mb-4">
+        <!-- <header class="card-header">
+            <div class="row gx-3">
+                Search and filter options go here
+            </div>
+        </header> -->
+        <!-- card-header end// -->
+        <div class="card-body">
+            <!-- User Details -->
+            <div class="user-details">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4>User Details</h4>
+                    <h4>Address</h4>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <!-- Left Side: User Name and Mobile Number -->
+                    <div class="left-details">
+                        <p>User Name : <span class="fw-bolder p-2"> <%= order[0].userDetails.name %></span></p>
+                        <p>Email : <span class="fw-bolder p-2"> <%= order[0].userDetails.email %></span></p>
+                        <p>Mobile Number : <span class="fw-bolder p-2"> <%= order[0].userDetails.mobile %></span></p>
+                    </div>
+        
+                    <!-- Right Side: Address -->
+                    <div class="right-details">
+                        <p>Street Address:<span class="fw-bolder p-2"> <%= address.streetaddress %></span></p>
+                        <p>City:<span class="fw-bolder p-2"> <%= address.city %></span></p>
+                        <p>State: <span class="fw-bolder p-2"><%= address.state %></span></p>
+                        <p>Pincode: <span class="fw-bolder p-2"><%= address.pincode %></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <!-- card-body end// -->
+    </div>
+
+    <!-- Product Details -->
+    <div class="card mb-4">
+        <header class="card-header">
+            <h3>Product Details</h3>
+        </header>
+    
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product Image</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% order.forEach((product) => { %>
+                    <tr>
+                        <td>
+                            <img src="/products/<%=product.itemsDetails.images[0] %>" alt="Product Image" style="max-width: 100px; max-height: 100px;">
+                        </td>
+                        <td><%=product.itemsDetails.name %></td>
+                        <td><%=product.itemsDetails.price %></td>
+                        <td><%=product.items.quantity %></td>
+                        <td><%=product.items.status %></td>
+                        <td>
+                            <form action="/admin/order/update-order-status?orderId=<%= product._id %>&productId=<%= product.items.product_id %>" method="POST" class="d-flex align-items-center">
+                                <div class="me-2">
+                                    <select class="form-select" id="orderStatus" name="orderStatus">
+                                        <option value="Pending" <%= product.items.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                        <option value="Shipped" <%= product.items.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                        <option value="Delivered" <%= product.items.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                        <option value="Cancelled" <%= product.items.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                    </select>
+                                </div>
+                                <% if (product.items.status === 'Returned') { %>
+                                    <p class="text-success">Returned</p>
+                                <% } else if (product.items.status !== 'Cancelled') { %>
+                                    <button type="submit" class="btn btn-dark btn-sm">Submit</button>
+                                <% } else { %>
+                                    <p class="text-danger">Cancelled</p>
+                                <% } %>
+                            </form>
+                            
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        
+    </div>
+    
+</section>
+
+
+            <!-- content-main end// -->
+    
+            <%- include('../layouts/admFooter') %>

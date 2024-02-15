@@ -1,0 +1,51 @@
+<%- include('../layouts/admHeader') %>
+
+<section class="content-main">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title">Referral Offer</h2>
+    </div>
+    <div>
+      <a href="/admin/referral/add-referral" class="btn btn-primary btn-sm rounded">Create new</a>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-6">
+        <div class="card card-product-grid" style="border: 1px solid #ccc; border-radius: 10px; overflow: hidden; transition: transform 0.2s;">
+            <!-- Referral Offer Image -->
+            
+
+            <% referral.forEach((item) => { %>
+                <div class="info-wrap d-flex flex-column align-items-start p-3">
+                    <!-- Referral Offer Details -->
+                    <h5 class="title mb-2" style="font-size: 1.2rem; color: #333;">Special Referral Offer</h5>
+                    <p class="description mb-3" style="font-size: 1rem; color: #555;">Get exclusive rewards when you refer your friends!</p>
+                    <p class="amount mb-3" style="font-size: 1rem; color: #007bff;">Referral Bonus: Rs. <%= item.referralBonus %></p>
+                    <p class="amount mb-3" style="font-size: 1rem; color: #007bff;">Sign-Up Bonus: Rs. <%= item.signUpBonus %></p>
+    
+                    <!-- Edit Button -->
+                    <div class="d-flex">
+                        <!-- <i class="material-icons md-edit mr-1" style="color: #28a745;"></i> -->
+                        <!-- <span style="font-size: 1rem; color: #28a745;">Edit</span> -->
+                    </div>
+                </div>
+            <% }) %>
+
+            
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+</section>
+<!-- content-main end// -->
+
+
+
+
+<%- include('../layouts/admFooter') %>

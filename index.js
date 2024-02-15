@@ -1,24 +1,31 @@
+require('dotenv').config()
 const express = require('express');
-const dotenv = require('dotenv');
 const path = require('path');
-const cookieParser = require('cookie-parser');
+const session = require('express-session')
+const cookieParser = require('cookie-parser'); 
 const dbConnect = require('./config/dbConnect')
 
+
+
 const app = express();
- 
-//Loading environment variables
-dotenv.config({path: './config/.env'}); 
 
 //database connecting  
 dbConnect();
+ 
+app.use(session({
+  secret: process.env.SESSIONSECRET,
+  resave: true,
+  saveUninitialized: true
+}));
 
 app.use(cookieParser())
-
-
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
+
+
+ 
 // Cache clearing     
 app.use((req, res, next) => {
     if (res.headersSent) {
@@ -36,7 +43,7 @@ app.use((req, res, next) => {
 //Load assets for user and admin
 app.use(express.static('assets'))
 app.use(express.static('uploads'))
-
+ 
 
 
 app.use(express.json())
@@ -44,12 +51,12 @@ app.use(express.urlencoded({extended: true}))
 
 //Setting up view engine
 app.set('view engine', 'ejs')
-
+  
 
 //Loading Middleware to fetch category data and make it available globally
 const userController = require('./controllers/userController')
 app.use(userController.loadCategoriesMiddleware);
-
+ 
 
 
 app.use((req, res, next) => {
@@ -68,12 +75,32 @@ const user_route = require('./routes/userRoute');
 const admin_route = require('./routes/adminRoute');
 const category_route = require('./routes/categoryRoute');
 const product_route = require('./routes/productRoute');
+const cart_route = require('./routes/cartRoute')
+const offer_route = require('./routes/offerRoute')
+     
+app.use('/', user_route, cart_route)
+app.use('/admin', admin_route, category_route, product_route, offer_route )
+// app.use('/admin', category_route)
+// app.use('/admin', product_route)
 
-app.use('/', user_route)
-app.use('/admin', admin_route)
-app.use('/admin', category_route)
-app.use('/admin', product_route)
+
+// Importing error handling middleware
+const errorHandler = require('./middleware/errorMiddleware');
+app.use(errorHandler);
+
+app.all('*', (req, res, next) => {
+  // res.status(404).json({
+  //   status: 'fail',
+  //   message: `Can't find ${req.originalUrl} on the server`
+  // })
+  res.render('404')
+})
+  
 
 
-const port = process.env.PORT || 8000
+
+const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`server running at http://localhost:${port}`))
+
+
+   

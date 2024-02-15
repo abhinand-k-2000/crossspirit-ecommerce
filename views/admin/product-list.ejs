@@ -39,12 +39,12 @@
                                                     <img src="/products/<%=ele.images[0]%>" class="img-sm img-fluid img-thumbnail" alt="Item" />
                                                 </td>
                                                 <td><%= ele.name %></td>
-                                                <td><%= ele.price %></td>
+                                                <td>Rs. <%= ele.price %></td>
                                                 <td><%= ele.category_id.name %></td>
                                                 <td><%= ele.countInStock %></td>
                                                 <td class="col-action">
                                                     <div class="btn-group ">
-                                                        <a href="/admin/edit-product/<%= ele._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                                        <a href="/admin/edit-product/<%= ele._id %>" class="btn btn-sm font-sm rounded btn-dark">
                                                             <i class="material-icons md-edit"></i> Edit
                                                         </a>
 
@@ -53,11 +53,11 @@
 
                                                         <% if (!ele.isDeleted) { %>
                                                             <form action="/admin/unlist-product/<%= ele._id %>" method="post">
-                                                                <button type="submit" class="btn px-3 py-1.5 btn-sm font-sm btn-danger rounded">Unlist</button>
+                                                                <button type="submit" class="btn px-3 py-1.5 btn-sm font-sm btn-danger rounded" style="margin-left: 0.5em;">Unlist</button>
                                                             </form>
                                                         <% } else { %>
                                                             <form action="/admin/list-product/<%= ele._id %>" method="post">
-                                                                <button type="submit" class="btn px-4 btn-sm font-sm btn-success rounded">List</button>
+                                                                <button type="submit" class="btn px-4 btn-sm font-sm btn-success rounded" style="margin-left: 0.5em;">List</button>
                                                             </form>
                                                         <% } %>
 
@@ -89,20 +89,30 @@
                     <!-- card-body end// -->
                 </div>
                 <!-- card end// -->
-                <!-- <div class="pagination-area mt-30 mb-50">
+
+                <div class="pagination-area mt-15 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">16</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                            </li>
+                
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                
+                            <% if (currentPage < totalPages) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">
+                                        <i class="material-icons md-chevron_right"></i>
+                                    </a>
+                                </li>
+                            <% } %>
+                
                         </ul>
                     </nav>
-                </div> -->
+                </div>
+
+
             </section>
             <!-- content-main end// -->
 

@@ -8,7 +8,7 @@
 				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
 					<div class="container">
 						<div class="page-breadcrumb d-flex align-items-center">
-							<h3 class="breadcrumb-title pe-3">Sign Up</h3>
+							<h3 class="breadcrumb-title pe-3">OTP</h3>
 							<div class="ms-auto">
 								<nav aria-label="breadcrumb">
 									<ol class="breadcrumb mb-0 p-0">
@@ -16,7 +16,7 @@
 										</li>
 										<li class="breadcrumb-item"><a href="javascript:;">Authentication</a>
 										</li>
-										<li class="breadcrumb-item active" aria-current="page">Sign Up</li>
+										<li class="breadcrumb-item active" aria-current="page">OTP</li>
 									</ol>
 								</nav>
 							</div>
@@ -27,27 +27,43 @@
 
 				<!--start shop cart-->
 				<section class="py-0 py-lg-5">
-                    <div class="container form-container ">
-                        <h2 class="text-center mb-4">OTP Verification</h2>
-                    
-                        <form class="row g-3 d-flex flex-column justify-content-center align-items-center" action="/otpVerify" method="POST">
-                            <div class="col-lg-4 col-md-10">
-                            <label for="inputOTP" class="form-label">Enter OTP</label>
-                            <input type="text" class="form-control" id="inputOTP" name="otp" required>
-                            </div>
-                            <div class="col-6 text-center">
-                            <button type="submit" class="btn btn-dark btn-block"><i class='bx bx-user'></i> Verify OTP</button>
-                            </div>
-                            <%
-                                if(typeof message !== 'undefined'){
-                                    %>
-                                    <p class="text-center mt-3"> <%= message %></p>
-                                    <%
-                                }
-                            %>
-                        </form>
-                        </div>								
+					<div class="container">
+						<div class="card form-card mx-auto mt-5" style="max-width: 500px;">
+							<div class="card-body">
+								<h2 class="card-title text-center mb-4">OTP Verification</h2>
+								<p id="timer" class="text-center"></p> 
+								<form class="row g-3 d-flex flex-column justify-content-center align-items-center" action="/otpVerify" method="POST">
+									<div class="col-lg-12">
+										<label for="inputOTP" class="form-label">Enter OTP</label>
+										<input type="number" class="form-control" id="inputOTP" name="otp" required>
+									</div>
+									<div class="col-12 text-center">
+										<button type="submit" class="btn btn-dark btn-block"><i class='bx bx-user'></i> Verify OTP</button>
+									</div>
+									<% if(typeof message !== 'undefined'){ %>
+										<h5 class="text-center text-danger mt-3"> <%= message %></h5>
+									<% } %>
+								</form>
+				
+								<div class="text-center mt-3" id="resendOTPContainer" style="display: none;">
+									<form action="/resent-otp" method="POST">
+									  <button type="submit" class="btn btn-link" id="resendOTPBtn">Resend OTP</button>
+									</form>
+								</div>
+								  
+								<div class="text-center mt-3" id="resendOTPContainer">
+									<p id="timer"></p> <!-- Display timer here -->
+									<form action="/resent-otp" method="POST">
+										<button type="submit" class="btn btn-link" id="resendOTPBtn" onclick="startTimer(300)" style="text-decoration: none;"></button>
+									</form>
+								</div>
+								  
+
+							</div>
+						</div>
+					</div>
 				</section>
+				
 				<!--end shop cart-->
 			</div>
 		</div>
@@ -57,6 +73,38 @@
 		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a><!--End Back To Top Button-->
 	</div>
 	<!--end wrapper-->
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+		  setTimeout(function () {
+			document.getElementById("resendOTPContainer").style.display = "block";
+		  }, 5000); // 5000 milliseconds (5 seconds)
+		});
+	  </script>
+	  
+	  <script>
+		function startTimer(duration) {
+			var timer = duration, minutes, seconds;
+			setInterval(function () {
+				minutes = parseInt(timer / 60, 10);
+				seconds = parseInt(timer % 60, 10);
+	
+				minutes = minutes < 10 ? "0" + minutes : minutes;
+				seconds = seconds < 10 ? "0" + seconds : seconds;
+	
+				document.getElementById("timer").textContent = minutes + ":" + seconds;
+	
+				if (--timer < 0) {
+					timer = duration;
+				}
+			}, 1000);
+		}
+	
+		// Start the timer immediately when the page loads
+		window.onload = function () {
+			startTimer(300); // 300 seconds = 5 minutes
+		};
+	</script>
+	  
 
 	
 	<%- include('../layouts/footer') %>

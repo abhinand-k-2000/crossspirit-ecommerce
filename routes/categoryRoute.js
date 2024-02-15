@@ -19,4 +19,4 @@ category_route.post('/edit-category/:id', categoryController.upload.single('imag
 
 
 
-module.exports = category_route    
+module.exports = category_route

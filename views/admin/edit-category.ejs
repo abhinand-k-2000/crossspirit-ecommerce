@@ -13,7 +13,7 @@
                     <h4>Category Details</h4>
                 </div>
                 <div class="card-body">
-                    <form enctype="multipart/form-data" action="/admin/edit-category/<%= category._id %>" method="POST">
+                    <form enctype="multipart/form-data" action="/admin/edit-category/<%= category._id %>" method="POST" onsubmit="return validateForm()">
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Category Name</label>
                             <input
@@ -24,14 +24,15 @@
                                 name="name"
                                 value="<%= category.name %>"
                             />
+                            <span id="nameError" class="text-danger"></span>
                         </div>
 
                         
                         <div class="mb-4">
                             <% if(category.imagePath){ %>
 
-                                <label for="existing_image" class="form-label">Existing Image</label>
-                                <img src="/category/<%= category.imagePath %>" alt="Existing Image" class="img-fluid mb-2" />
+                                <!-- <label for="existing_image" class="form-label">Existing Image</label> -->
+                                <img src="/category/<%= category.imagePath %>" alt="Existing Image" class="mb-2" id="imgView" style="height: 20em;" />
                             <% } %>
                             
                         </div>
@@ -39,21 +40,23 @@
                         <div class="mb-4">
                             <label for="media_upload" class="form-label">New Image Upload</label>
                             <div class="input-upload">
-                                <img src="/adminAssets/imgs/theme/upload.svg" alt="" />
+                                <img src="/adminAssets/imgs/theme/upload.svg" alt="image" />
                                 <input
                                     class="form-control"
                                     type="file"
                                     id="media_upload"
                                     name="image"
+                                    onchange="viewImage(event)"
                                 />
                             </div>
+                            <span id="imageError" class="text-danger"></span>
                         </div>
                         <button type="submit" class="btn btn-md rounded font-sm hover-up">
                             Update
                         </button>
 
                         <% if(typeof message !== 'undefined'){ %>
-                            <h4 class="text-center mt-3" style="color:  color "><%= message %></h4>
+                            <h4 class="text-center mt-3 <%= color %>" ><%= message %></h4>
                         <% } %>
                     </form>
                 </div>
@@ -61,6 +64,37 @@
         </div>
     </div>
 </section>
+
+<script>
+    function viewImage(event) {
+        document.getElementById("imgView").src = URL.createObjectURL(event.target.files[0])
+    }
+</script>
+
+<script>
+    function validateForm() {
+        var name = document.getElementById("product_name").value;
+        var image = document.getElementById("media_upload").value;
+
+        // Validate name
+        if (name.trim() === "") {
+            document.getElementById("nameError").innerText = "Name cannot be empty";
+            return false;
+        } else {
+            document.getElementById("nameError").innerText = "";
+        }
+
+        // // Validate image
+        // if (image.trim() === "") {
+        //     document.getElementById("imageError").innerText = "Image is required";
+        //     return false;
+        // } else {
+        //     document.getElementById("imageError").innerText = "";
+        // }
+
+        return true;
+    }
+</script>
 
 
 <%- include('../layouts/admFooter') %>

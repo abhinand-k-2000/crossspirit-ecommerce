@@ -1,4 +1,22 @@
 <%- include('../layouts/admHeader') %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<style>
+    .image-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .delete-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        cursor: pointer;
+        color: black; /* Change color as needed */
+        background-color: white; /* Optional: Background color for better visibility */
+    }
+</style>
 
 <section class="content-main">
     <div class="row">
@@ -17,10 +35,11 @@
                     <h4>Basic</h4>
                 </div>
                 <div class="card-body">
-                    <form enctype="multipart/form-data" action="/admin/edit-product/<%=product._id%>" method="POST">
+                    <form enctype="multipart/form-data" action="/admin/edit-product/<%=product._id%>" method="POST" onsubmit="return validateForm()">
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Product Name</label>
-                            <input type="text" placeholder="Type here" name="name" class="form-control" id="product_name" value="<%=product.name%>" pattern="^[a-zA-Z0-9\s]+$"/>
+                            <input type="text" placeholder="Type here" name="name" class="form-control" id="product_name" value="<%=product.name%>"  pattern="^[a-zA-Z0-9\s]+$"/>
+                            <!-- <small id="nameError" class="error-message text-danger"></small> -->
                         </div>                 
                         <div class="mb-4">
                             <label class="form-label">Description</label>
@@ -31,40 +50,57 @@
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
                                     <div class="row gx-2">
-                                        <input placeholder="$" type="text" name="price" value="<%=product.price %>" class="form-control"  />
+                                        <input placeholder="Rs." type="text" name="price" value="<%=product.price %>" id="price" class="form-control"  />
+                                        <!-- <small id="priceError" class="error-message text-danger"></small> -->
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Stock</label>
-                                    <input placeholder="" type="text" name="countInStock" value="<%=product.countInStock %>" class="form-control"  />
+                                    <input placeholder="" type="text" name="countInStock" value="<%=product.countInStock %>" class="form-control" id="stock" />
+                                    <!-- <small id="stockError" class="error-message text-danger"></small> -->
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Color</label>
-                                    <input placeholder="" type="text" name="color" value="<%=product.color %>" class="form-control"  />
+                                    <input placeholder="" type="text" name="color" value="<%=product.color %>" class="form-control" id="color"  />
+                                    <!-- <small id="colorError" class="error-message text-danger"></small> -->
                                 </div>
                             </div>
                         </div>
                         <h5 class="mb-3">Categories</h5>
-                        <% category.forEach(category => { %>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="category_id" value="<%= category._id %>" id="product-cat-<%= category._id %>"   />
-                                <label class="form-check-label" for="product-cat-<%= category._id %>"><%= category.name %></label>
-                            </div>
-                        <% }); %>
-                    
-                        <div class="mb-4">
+                            <% category.forEach(category => { %>
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                        type="radio" 
+                                        name="category_id" 
+                                        value="<%= category._id %>" 
+                                        id="product-cat-<%= category._id %>" 
+                                        <% if (String(category._id) === String(product.category_id)) { %> 
+                                            checked <% } %> 
+                                    />
+                                    <label class="form-check-label" for="product-cat-<%= category._id %>"><%= category.name %></label>
+                                </div>
+                            <% }); %>
+
+
+
+                        <div class="mt-4">
                             <% if (product.images && product.images.length > 0) { %>
                                 <div class="d-flex flex-wrap gap-3">
-                                    <% product.images.forEach(image => { %>
-                                        <img src="/products/<%= image %>" alt="Existing Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                                    <% product.images.forEach((image, index) => { %>    
+                                        <div class="image-container" data-index="<%= index %>">
+                                            <img src="/products/<%= image %>" id="imgView" alt="Existing Image" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                                            <span class="delete-icon" onclick="deleteImage('<%= product._id %>', '<%= image %>')">&#10006;</span>
+
+                                        </div>
                                     <% }); %>
                                 </div>
                             <% } %>
                         </div>
+                        <div id="imagePreviewContainer" class="d-flex flex-wrap gap-3"></div>
                     
                         <div class="col-lg-3">
                             <div class="card mb-4">
@@ -73,24 +109,157 @@
                                 </div> -->
                                 <div class="card-body">
                                     <div class="input-upload">
-                                        <img src="/adminAssets/imgs/theme/upload.svg" alt="" />
-                                        <input class="form-control" multiple name="images"  type="file" />
+                                        <!-- <img src="/adminAssets/imgs/theme/upload.svg" alt="" /> -->
+                                        <input class="form-control" multiple name="images" id="imageInput" type="file" onchange="viewImage(event)"/>
                                     </div>
+                                    
                                 </div>
+                                
                             </div>
                         </div>
+                        
                         <div class="col-lg-3">
                             <div>
                                 <button class="btn btn-md rounded font-sm hover-up" type="submit">Update</button>
                             </div>
                         </div>
                     </form>
+
+                    <script>
+                        function viewImage(event) {
+                            var previewContainer = document.getElementById("imagePreviewContainer");
+                    
+                            // Display existing images
+                            var existingImages = document.querySelectorAll('.existing-image');
+                            existingImages.forEach(function(existingImage) {
+                                previewContainer.appendChild(existingImage.cloneNode(true));
+                            });
+                    
+                            if (event.target.files) {
+                                for (var i = 0; i < event.target.files.length; i++) {
+                                    var reader = new FileReader();
+                                    var newImage = document.createElement('img');
+                                    newImage.className = 'img-thumbnail';
+                                    newImage.style.maxWidth = '100px';
+                                    newImage.style.maxHeight = '100px';
+                    
+                                    reader.onload = function (e) {
+                                        newImage.src = e.target.result;
+                                        previewContainer.appendChild(newImage.cloneNode(true));
+                                    };
+                    
+                                    reader.readAsDataURL(event.target.files[i]);
+                                }
+                            }
+                        }
+                    </script>
+                    
+
+
+
+
+
+
+
+
+
+                    <script>
+                        function validateForm() {
+                            var productName = document.getElementById("product_name").value.trim();
+                            var price = document.getElementById("price").value.trim();
+                            var stock = document.getElementById("stock").value.trim();
+                            var color = document.getElementById("color").value.trim();
+                            var uploadedImages = document.getElementById("imageInput").files.length;
+                            var existingImages = document.querySelectorAll('.image-container').length;
+
+
+                            if (!productName) {
+                                showAlert("Error", "Product Name cannot be empty");
+                                return false;
+                            }
+                
+                            if (!price) {
+                                showAlert("Error", "Price cannot be empty");
+                                return false;
+                            }
+                
+                            if (isNaN(price)) {
+                                showAlert("Error", "Price must be a valid number");
+                                return false;
+                            }
+
+                            if(!stock) {
+                                showAlert("Error", "Stock cannot be empty");
+                                return false
+                            }
+
+                            if(isNaN(stock)) {
+                                showAlert("Error", "Stock must be a valid number");
+                                return false;
+                            }
+
+                            if(!color) {
+                                showAlert("Error", "Color cannot be empty")
+                                return false
+                            }
+
+                            if (!/^[a-zA-Z\s]+$/.test(color)) {
+                                showAlert("Error", "Color must contain only letters");
+                                return false;
+                            }
+
+                             // Validate image count
+                             var totalImages = existingImages + uploadedImages;
+
+                            if (totalImages  < 3) {
+                                showAlert("Error", "Please upload at least 3 images");
+                                return false;
+                            }
+                
+                            return true;
+                        }
+                
+                        function showAlert(title, message) {
+                            Swal.fire({
+                                title: title,
+                                text: message,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    </script>
                     
                 </div>
             </div>
-        </div>
+        </div> 
     </div>
 </section>
+
+
+<script>
+    // Define the deleteImage function
+async function deleteImage(productId, index) {
+const imageId = index; // Assuming index is used as the imageId
+const imageContainer = document.querySelector(`.image-container[data-index="${index}"]`);
+
+try {
+    const response = await fetch(`/admin/product-image-delete/${productId}/images/${imageId}`, {
+        method: 'DELETE',
+    });
+
+    if (response.ok) {
+        // Handle success, redirect to the updated page
+        window.location.href = `/admin/edit-product/${productId}`;
+    } else {
+        // Handle error
+        console.error('Error deleting image:', response.statusText);
+    }
+} catch (error) {
+    console.error('Error deleting image:', error.message);
+}
+}
+
+</script>
 
 
 

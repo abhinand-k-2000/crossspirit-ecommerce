@@ -23,8 +23,21 @@
                 ></span>
                 <div class="text">
                   <h6 class="mb-1 card-title">Revenue</h6>
-                  <span>$13,456.5</span>
+                  <span>Rs. <%= Revenue %></span>
                   <span class="text-sm"> Shipping fees are not included </span>
+                </div>
+              </article>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="card card-body mb-4">
+              <article class="icontext">
+                <span class="icon icon-sm rounded-circle bg-info-light"
+                  ><i class="text-info material-icons  md-person"></i></span>
+                <div class="text">
+                  <h6 class="mb-1 card-title">Customers</h6>
+                  <span><%=userCount%></span>
+                  <span class="text-sm"> Happy Customers </span>
                 </div>
               </article>
             </div>
@@ -37,7 +50,7 @@
                 ></span>
                 <div class="text">
                   <h6 class="mb-1 card-title">Orders</h6>
-                  <span>53.668</span>
+                  <span><%= orderCount%></span>
                   <span class="text-sm"> Excluding orders in transit </span>
                 </div>
               </article>
@@ -51,8 +64,8 @@
                 ></span>
                 <div class="text">
                   <h6 class="mb-1 card-title">Products</h6>
-                  <span>9.856</span>
-                  <span class="text-sm"> In 19 Categories </span>
+                  <span><%= productCount%></span>
+                  <span class="text-sm"> In <%=categoryCount %> Categories </span>
                 </div>
               </article>
             </div>
@@ -61,26 +74,120 @@
             <div class="card card-body mb-4">
               <article class="icontext">
                 <span class="icon icon-sm rounded-circle bg-info-light"
-                  ><i class="text-info material-icons md-shopping_basket"></i
+                  ><i class="text-info material-icons md-highlight_off"></i
                 ></span>
                 <div class="text">
-                  <h6 class="mb-1 card-title">Monthly Earning</h6>
-                  <span>$6,982</span>
+                  <h6 class="mb-1 card-title">Cancelled Orders</h6>
+                  <span><%= cancelledOrder %></span>
                   <span class="text-sm"> Based in your local time. </span>
                 </div>
               </article>
             </div>
           </div>
+       
         </div>
-        <!-- <div class="row">
-          <div class="col-xl-8 col-lg-12">
-            <div class="card mb-4">
-              <article class="card-body">
-                <h5 class="card-title">Sale statistics</h5>
-                <canvas id="myChart" height="120px"></canvas>
-              </article>
-            </div>
-            <div class="row">
+         <!-- <div class="row">
+          <div class="col-xl-8 col-lg-12"> -->
+
+
+
+
+            
+        <!----------------------------------------- CHART IMPLEMENTATION------------------------------------------------------------------------------>
+        <div class="card mb-4">
+          <article class="card-body">
+            <h5 class="card-title">Sale statistics</h5>
+            <!-- Add a select element for the filter -->
+            <label for="chartFilter">Select Chart Interval:</label>
+            <select id="chartFilter" onchange="updateChart()" style="padding: .5em;">
+              <option value="daily">Daily</option>
+              <option value="monthly">Monthly</option>
+            </select>
+            <canvas id="myChart" height="120px"></canvas>
+          </article>
+        </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          
+
+
+            
+            <script>
+              const labels = <%- JSON.stringify(dailyLabels) %>;            
+              const data = <%- JSON.stringify(dailyData) %>;
+
+
+              
+            
+              // Create the chart initially
+              const ctx = document.getElementById('myChart').getContext('2d');
+              const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    label: 'Order Count',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                  }]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                  },
+                  
+                }
+              });
+            
+              // Function to update the chart based on the selected filter
+              function updateChart() {
+                const chartFilter = document.getElementById('chartFilter').value;
+            
+                // Update the data based on the selected filter
+                if (chartFilter === 'daily') {
+                  myChart.data.labels = <%- JSON.stringify(dailyLabels) %>;
+                  myChart.data.datasets[0].data = <%- JSON.stringify(dailyData) %>;
+                } else if (chartFilter === 'monthly') {
+                  myChart.data.labels = <%- JSON.stringify(monthlyLabels) %>;
+                  myChart.data.datasets[0].data = <%- JSON.stringify(monthlyData) %>;
+                }
+            
+                // Update the chart data and re-render
+                myChart.update();
+              }
+            </script>
+            
+            
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           <!-- <div class="row">
               <div class="col-lg-5">
                 <div class="card mb-4">
                   <article class="card-body">
@@ -258,7 +365,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> --
           <div class="col-xl-4 col-lg-12">
             <div class="card mb-4">
               <article class="card-body">

@@ -1,0 +1,241 @@
+<%- include('../layouts/header') %>
+<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+<style>
+	.table td 
+{
+    text-align: center; 
+    vertical-align: middle;
+}
+</style>
+
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">My Orders</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Account</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">My Orders</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<h3 class="d-none">Account</h3>
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+
+									<!-- <div class="col-lg-4">
+										<div class="card shadow-none mb-3 mb-lg-0 border">
+											<div class="card-body">
+												<div class="list-group list-group-flush">	<a href="account-dashboard.html" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Dashboard <i class='bx bx-tachometer fs-5'></i></a>
+													<a href="account-orders.html" class="list-group-item active d-flex justify-content-between align-items-center">Orders <i class='bx bx-cart-alt fs-5'></i></a>
+													<a href="account-downloads.html" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Downloads <i class='bx bx-download fs-5'></i></a>
+													<a href="account-addresses.html" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Addresses <i class='bx bx-home-smile fs-5'></i></a>
+													<a href="account-payment-methods.html" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Payment Methods <i class='bx bx-credit-card fs-5'></i></a>
+													<a href="account-user-details.html" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Account Details <i class='bx bx-user-circle fs-5'></i></a>
+													<a href="#" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Logout <i class='bx bx-log-out fs-5'></i></a>
+												</div>
+											</div>
+										</div>
+									</div> -->
+
+									<%- include('../layouts/userDashboard') %>
+
+									<div class="col-lg-8">
+										<div class="card shadow-none mb-0">
+											<div class="card-body">
+												<div class="table-responsive">
+													<table class="table">
+														<thead class="table-light">
+															<tr>
+																<th class="text-center">Image</th>
+																<th class="text-center">Name</th>
+																<th class="text-center">Price</th>
+																<th class="text-center">Quantity</th>
+																<th class="text-center">Date</th>
+																<th class="text-center">Status</th>
+																<th class="text-center">Actions</th>
+																<th class="text-center">Invoice</th>
+															</tr>
+														</thead>
+														<tbody>
+															<% orders.forEach((order) => { %>
+																<tr class="text-center">
+																	<td>
+																		<a href="/order-full-details?orderId=<%=order._id %>&productId=<%=order.productDetails._id %>">
+																			<img src="/products/<%=order.productDetails.images[0] %>" class="img-fluid" alt="Product Image" style="max-height: 7rem;">
+																		</a>
+																	</td>
+																	<td><%= order.productDetails.name %></td>
+																	<td>Rs. <%= order.items.price %></td>
+																	<td><%= order.items.quantity %></td>
+																	<td><%= new Date(order.date).toLocaleDateString('en-GB') %></td>
+																	<td class="text-primary" id="showStatus_<%= order.items.product_id %>"><%= order.items.status %></td>
+																	<td>
+																		<div class="d-flex justify-content-center align-items-center gap-2">
+																			<!-- <a href="/order-full-details?orderId=<%=order._id %>&productId=<%=order.productDetails._id %>" class="btn btn-dark btn-sm rounded-0">View</a> -->
+
+																			<!-- <% if (order.items.status !== 'Cancelled') { %>
+																				<form id="cancelForm" action="/order-cancel?orderId=<%= order._id %>&productId=<%= order.productDetails._id %>" method="post">
+																				  <button type="button" class="btn btn-warning btn-sm" onclick="showConfirmation()">Cancel</button>
+																				</form>
+																			  <% } else { %>
+																				<p class="text-danger">Cancelled</p>
+																			  <% } %> -->
+
+																			  <% if (order.items.status !== 'Cancelled') { %>
+																				<form class="cancelForm" action="/order-cancel" method="post" data-order-id="<%= order._id %>" data-product-id="<%= order.items.product_id %>">
+																				  <input type="hidden" name="orderId" value="<%= order._id %>">
+																				  <input type="hidden" name="productId" value="<%= order.items.product_id %>">
+																				  <input type="hidden" name="pname" value="<%= order.productDetails.name %>">
+																				  <input type="hidden" name="cancellationReason">
+																			  
+																				  <% if (order.items.status === 'Delivered') { %>
+																					<% if (order.items.returnStatus === 'Returned') { %>
+																					  <p class="text-success">Returned</p>
+																					<% } else { %>
+																					  <button type="button" class="btn btn-warning btn-sm fw-bold" id="returnButton_<%=order.items.product_id%>" onclick="showReturnPrompt('<%= order._id %>', '<%= order.items.product_id %>')">Return</button>
+																					<% } %>
+																				  <% } else if (order.items.status === 'Pending' || order.items.status === 'Shipped') { %>
+																					<button type="button" class="btn btn-warning btn-sm fw-bolder" onclick="showCancellationPrompt(this)">Cancel</button>
+																				  <% } %>
+																			  
+																				</form>
+																			  <% } else { %>
+																				<p class="text-danger">Cancelled</p>
+																			  <% } %>
+																			  
+																			
+																			
+
+
+																			</a>
+																		</div>
+																	</td>
+																	<td>
+																		<a href="/invoice-generate?orderId=<%=order._id %>" target="_blank" class="btn btn-sm "><i class="bx bxs-download" style="font-size: 24px;"></i>
+																		
+																	</td>
+																</tr>
+															<% }) %>
+														</tbody>
+													</table>
+													  
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<script>
+										function showReturnPrompt(orderId, productId) {
+											// Use SweetAlert to prompt the user for the return reason
+											Swal.fire({
+												title: 'Provide Reason for Return',
+												input: 'text',
+												inputLabel: 'Reason',
+												inputPlaceholder: 'Enter your reason',
+												showCancelButton: true,
+												confirmButtonText: 'Submit',
+												cancelButtonText: 'Cancel',
+											}).then((result) => {
+												if (result.isConfirmed) {
+													// User provided a reason, proceed with the API call
+													const returnReason = result.value;
+										
+													// Use AJAX or fetch to call the '/order-return' API with orderId, productId, and returnReason
+													fetch('/order-return', {
+														method: 'POST',
+														headers: {
+															'Content-Type': 'application/json',
+														},
+														body: JSON.stringify({ orderId: orderId, productId: productId, returnReason: returnReason }),
+													})
+													.then(response => {
+														// Handle the response as needed
+														document.getElementById("showStatus_" + productId).innerHTML = "Returned";
+														document.getElementById("returnButton_" + productId).style.display = 'none'
+														console.log('Return API response:', response);
+													})
+													.catch(error => {
+														// Handle errors
+														console.error('Error calling Return API:', error);
+													});
+												}
+											});
+										}
+										</script>
+										
+									
+
+
+
+
+									
+								</div>
+								<!--end row-->
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+
+		<script>
+			function showCancellationPrompt(button) {
+				// Use SweetAlert input mode to get the cancellation reason
+				Swal.fire({
+					title: 'Enter the reason for cancellation:',
+					input: 'text',
+					inputAttributes: {
+						autocapitalize: 'off'
+					},
+					showCancelButton: true,
+					confirmButtonText: 'Submit',
+					showLoaderOnConfirm: true,
+					preConfirm: (reason) => {
+						return new Promise((resolve) => {
+							if (reason.trim() === "") {
+								Swal.showValidationMessage('Cancellation reason cannot be empty');
+							} else {
+								// Set the value of the hidden input for cancellation reason in the corresponding form
+								const form = button.closest(".cancelForm");
+								form.querySelector("input[name='cancellationReason']").value = reason;
+								resolve();
+							}
+						});
+					},
+					allowOutsideClick: () => !Swal.isLoading()
+				}).then((result) => {
+					if (result.isConfirmed) {
+						const form = button.closest(".cancelForm");
+			
+						// Submit the corresponding form
+						form.submit();
+					}
+				});
+			}
+			</script>
+		  
+		  
+
+
+
+		<%- include('../layouts/footer') %>
+		

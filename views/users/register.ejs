@@ -25,7 +25,7 @@
 					</div>
 				</section>
 				<!--end breadcrumb-->
-
+			
 				<!--start shop cart-->
 				<section class="py-0 py-lg-5">
 					<div class="container">
@@ -40,58 +40,73 @@
 													<p>Already have an account? <a href="/login">Sign in here</a>
 													</p>
 												</div>
-												<div class="d-grid">
+												<!-- <div class="d-grid">
 													<a class="btn my-4 shadow-sm btn-white" href="javascript:;"> <span class="d-flex justify-content-center align-items-center">
 														<img class="me-2" src="userAssets/images/icons/search.svg" width="16" alt="Image Description">
 														<span>Sign Up with Google</span>
 														</span>
 													</a> <a href="javascript:;" class="btn btn-white"><i class="bx bxl-facebook"></i>Sign Up with Facebook</a>
-												</div>
-												<div class="login-separater text-center mb-4"> <span>OR SIGN UP WITH EMAIL</span>
+												</div> -->
+												<!-- <div class="login-separater text-center mb-4 mt-3"> <span>OR SIGN UP WITH EMAIL</span>
 													<hr/>
-												</div>
+												</div> -->
 												<div class="form-body">
 
 													<!--Form for registration-->
-													<form class="row g-3" action="/register", method="POST" onsubmit="return validateForm()">
+													<!--  -->
+
+
+													<form class="row g-3" method="POST" onsubmit="return validateForm()"
+
+														<% if (typeof referralId !== 'undefined') { %>
+															action='/register?referralId=<%= referralId %>'
+														<% } else { %>
+															action="/register"
+														<% } %>
+
+													>
 														<div class="col-sm-12">
 															<label for="inputFirstName" class="form-label">Name</label>
-															<input type="text" class="form-control" id="inputFirstName" name="name" placeholder="Jhon" required>
+															<input type="text" class="form-control" id="inputFirstName" name="name" placeholder="Enter name" oninput="validateName()" required>
+															<span id="inputFirstNameError" class="text-danger"> </span>
 														</div>
 														<div class="col-12">
 															<label for="inputEmailAddress" class="form-label">Email Address</label>
-															<input type="email" class="form-control" id="inputEmailAddress" name="email" placeholder="Enter email" required>
+															<input type="email" class="form-control" id="inputEmailAddress" name="email" placeholder="Enter email" oninput="validateEmail()" required>
+															<span id="inputEmailAddressError" class="text-danger"></span>
 														</div>
-														
-														
-
 
 														<div class="col-sm-12">
 															<label for="inputMobile" class="form-label">Mobile</label>
-															<input type="tel" class="form-control" id="inputMobile" name="mobile" placeholder="Enter mobile no." required>
+															<input type="tel" class="form-control" id="inputMobile" name="mobile" placeholder="Enter mobile no." oninput="validateMobile()" required>
+															<span id="inputMobileError" class="text-danger"></span>
 														</div>
 														<div class="col-12">
 															<label for="inputChoosePassword" class="form-label">Password</label>
 															<div class="input-group" id="show_hide_password">
-																<input type="password" class="form-control border-end-0" id="inputChoosePassword" name="password" placeholder="Enter Password" required> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
+																<input type="password" class="form-control " id="inputChoosePassword" name="password" placeholder="Enter Password" oninput="validatePassword()" required> 
+																<!-- <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a> -->
 															</div>
+															<p id="inputChoosePasswordError" class="text-danger"></p>
 														</div>
 														<div class="col-12">
 															<div class="d-grid">
 																<button type="submit" class="btn btn-dark"><i class='bx bx-user'></i>Sign up</button>
 															</div>
 														</div>
+													</form>
 
-														<%
+
+
+
+												</div>
+												<%
 															if(typeof message !== 'undefined'){
 																%>
-																<p class="text-center mt-3"> <%= message %></p>
+																<p class="text-center text-danger mt-3"> <%= message %></p>
 																<%
 															}
 														%>
-													</form>
-
-												</div>
 											</div>
 										</div>
 									</div>
@@ -109,49 +124,115 @@
 		
 
 		<!--end footer section-->
-		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+		<!--Start Back To Top Button-->
+		 <!-- <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a> -->
 		<!--End Back To Top Button-->
 	</div>
 	<!--end wrapper-->
-
+	
 
 	<!-- Script file-->
 	<script>
+		function validateName() {
+			var nameInput = document.getElementById('inputFirstName');
+			var nameError = document.getElementById('inputFirstNameError');
+			var name = nameInput.value.trim();
+	
+			// Regular expression to match only letters and spaces
+			var nameRegex = /^[A-Za-z ]+$/;
+	
+			if (name === '') {
+				nameError.innerText = 'Name is required.';
+				nameInput.style.border = '1px solid red'; // Set border color to red on error
+			} else if (!nameRegex.test(name)) {
+				nameError.innerText = 'Enter a valid name';
+				nameInput.style.border = '1px solid red'; // Set border color to red on error
+			} else {
+				nameError.innerText = ''; // Clear the error message
+				nameInput.style.border = ''; // Reset border color
+			}
+		}
+	
+		function validateEmail() {
+			var emailInput = document.getElementById('inputEmailAddress');
+			var emailError = document.getElementById('inputEmailAddressError');
+			var email = emailInput.value.trim();
+	
+			// Simple email validation (you can customize it based on your needs)
+			var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	
+			if (email === '') {
+				emailError.innerText = 'Email is required.';
+				emailInput.style.border = '1px solid red'; // Set border color to red on error
+			} else if (!emailRegex.test(email)) {
+				emailError.innerText = 'Enter a valid email address.';
+				emailInput.style.border = '1px solid red'; // Set border color to red on error
+			} else {
+				emailError.innerText = ''; // Clear the error message
+				emailInput.style.border = ''; // Reset border color
+			}
+		}
+	
+		function validateMobile() {
+			var mobileInput = document.getElementById('inputMobile');
+			var mobileError = document.getElementById('inputMobileError');
+			var mobile = mobileInput.value.trim();
+	
+			// Simple mobile number validation (you can customize it based on your needs)
+			var mobileRegex = /^[0-9]{10}$/;
+	
+			if (mobile === '') {
+				mobileError.innerText = 'Mobile number is required.';
+				mobileInput.style.border = '1px solid red'; // Set border color to red on error
+			} else if (!mobileRegex.test(mobile)) {
+				mobileError.innerText = 'Enter a valid mobile number.';
+				mobileInput.style.border = '1px solid red'; // Set border color to red on error
+			} else {
+				mobileError.innerText = ''; // Clear the error message
+				mobileInput.style.border = ''; // Reset border color
+			}
+		}
+	
+		function validatePassword() {
+			var passwordInput = document.getElementById('inputChoosePassword');
+			var passwordError = document.getElementById('inputChoosePasswordError');
+			var password = passwordInput.value.trim();
+	
+			// Simple password validation (you can customize it based on your needs)
+			var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+	
+			if (password === '') {
+				passwordError.innerText = 'Password is required.';
+				passwordInput.style.border = '1px solid red'; // Set border color to red on error
+			} else if (!passwordRegex.test(password)) {
+				passwordError.innerText = 'Password must be minimum 8 characters.';
+				passwordInput.style.border = '1px solid red'; // Set border color to red on error
+			} else {
+				passwordError.innerText = ''; // Clear the error message
+				passwordInput.style.border = '2px solid #52CC7A'; // Set the green border style with thickness (adjust thickness as needed)
+			}
+		}
+	
 		function validateForm() {
-			var nameInput = document.getElementById('inputFirstName').value.trim();
-			var email = document.getElementById('inputEmailAddress').value;
-			var emailRegex = /^[^\s@]+@gmail\.com$/i;
+			// Call all individual validation functions
+			validateName();
+			validateEmail();
+			validateMobile();
+			validatePassword();
 	
-			var mobile = document.getElementById('inputMobile').value;
-			var mobileRegex = /^\d{10}$/;
-	
-			var password = document.getElementById('inputChoosePassword').value;
-			var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/;
-	
-			if (nameInput === "" || !/^[a-zA-Z]+$/.test(nameInput)) {
-				alert("Please enter a valid name");
-				return false;
+			// Check if any error message exists
+			var errorMessages = document.querySelectorAll('[id$="Error"]');
+			for (var i = 0; i < errorMessages.length; i++) {
+				if (errorMessages[i].innerText.trim() !== '') {
+					return false; // Prevent form submission if there are errors
+				}
 			}
 	
-			
-			if (!mobileRegex.test(mobileInput) || /^0+$/.test(mobileInput)) {
-				alert('Invalid mobile number. Please enter a 10-digit number.');
-				return false;
-			}
-	
-			if (!emailRegex.test(email)) {
-				alert('Invalid email. Please enter a valid Gmail address.');
-				return false;
-			}
-	
-	
-			if (!passwordRegex.test(password)) {
-				alert('Invalid password. It should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
-				return false;
-			}
-	
+			// If all validations pass, the form will be submitted
 			return true;
-	    }
+		}
 	</script>
+	
+	
 	
 	<%- include('../layouts/footer') %>

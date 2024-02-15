@@ -1,0 +1,203 @@
+
+<%- include('../layouts/header') %>
+<!-- Include SweetAlert CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+		<!--end top header wrapper-->
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">My Orders</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Account</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Account Details</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<h3 class="d-none">Account</h3>
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+
+						
+									<%- include('../layouts/userDashboard') %>
+
+									<div class="col-lg-8">
+										<div class="card shadow-none mb-0 border">
+											<div class="card-body">
+												<% if (typeof error !== 'undefined') { %>
+													<div class="alert alert-danger" role="alert">
+														<%= error %>
+													</div>
+												<% } %>
+									
+												<form class="row g-3" id="editUserForm" method="POST">
+									
+													<div class="col-12">
+														<label class="form-label">Display Name</label>
+														<input type="text" readonly class="form-control" name="name" value="<%= user.name %>">
+													</div>
+													<div class="col-12">
+														<label class="form-label">Email address</label>
+														<input type="email" readonly class="form-control" name="email" value="<%= user.email %>">
+													</div>
+													<div class="col-12">
+														<label class="form-label">Mobile</label>
+														<input type="tel" readonly class="form-control" name="mobile" value="<%= user.mobile %>">
+													</div>
+									
+													<div class="col-12">
+														<button type="button" class="btn btn-dark p-2" data-bs-toggle="modal" data-bs-target="#editUserModal">Edit Changes</button>
+													</div>
+												</form>
+											</div>
+										</div>
+									</div>
+									
+								</div>
+								<!--end row-->
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+
+	</div>
+
+	<!-----------------------------------------------------------MODAL--------------------------------------------------------->
+
+
+	<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg"> <!-- modal-lg class for larger modal -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editUserModalLabel">Edit User Details</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Add your form fields for editing -->
+					<!-- For example, you can copy the fields from the original form here -->
+					<form action="/update-user-account" method="POST">
+						<div class="mb-3">
+							<label for="editedName" class="form-label">Name</label>
+							<input type="text" class="form-control" id="editedName" name="editedName" value="<%= user.name %>">
+						</div>
+						<div class="mb-3">
+							<label for="editedEmail" class="form-label">Email</label>
+							<input type="email" class="form-control" id="editedEmail" name="editedEmail" value="<%= user.email %>">
+						</div>
+						<div class="mb-3">
+							<label for="editedMobile" class="form-label">Mobile</label>
+							<input type="tel" class="form-control" id="editedMobile" name="editedMobile" value="<%= user.mobile %>">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-dark">Save Changes</button>
+					</div>
+					</form>
+			</div>
+		</div>
+	</div>
+	
+
+	<script>
+		// Handle form submission
+		$('#editUserForm').submit(function (e) {
+			e.preventDefault(); // Prevent the default form submission
+			// Additional logic for handling the form submission via AJAX or other methods
+		});
+	</script>
+	<!-----------------------------------------------------------MODAL--------------------------------------------------------->
+
+
+
+	<!-- <script>
+		const form = document.querySelector('form');
+
+form.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    // Get the current values from the form
+    const currentName = form.name.value;
+    const currentEmail = form.email.value;
+    const currentMobile = form.mobile.value;
+
+    // Check if any changes were made
+    if (currentName === "<%= user.name %>" && currentEmail === "<%= user.email %>" && currentMobile === "<%= user.mobile %>") {
+        // No changes made, show a different message
+        Swal.fire({
+            icon: 'info',
+            title: 'No Changes',
+            text: 'No changes were made to the user account.',
+        });
+        return;
+    }
+
+    try {
+        const response = await fetch('/update-user-account', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: currentName,
+                email: currentEmail,
+                mobile: currentMobile,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Show success alert using SweetAlert
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'User account updated successfully!',
+            });
+        } else {
+            // Show error alert using SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: `Error: ${data.error}`,
+            });
+            event.preventDefault(); // Prevent form submission in case of error
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        // Show error alert using SweetAlert
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'An error occurred while updating user account',
+        });
+        event.preventDefault(); // Prevent form submission in case of error
+    }
+});
+
+	</script> -->
+	
+	<%- include('../layouts/footer') %>
+
+	
+	

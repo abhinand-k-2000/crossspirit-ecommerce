@@ -1,0 +1,133 @@
+<%- include('../layouts/admHeader') %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-header">
+                <h2 class="content-title">Add New Coupon</h2>
+            </div>
+            
+                <% if(typeof message !== 'undefined'){ %>
+                    <p class=" mt-3 <%=color%>" ><%= message %></p>
+      
+                  <% } %>
+        </div>
+        <div class="col-lg-6">
+            <div class="card mb-4">
+             
+                <div class="card-body">
+
+                    <form  action="/admin/coupon/add-coupon" method="POST"  >
+
+                        <div class="mb-4">
+                            <label for="couponCode" class="form-label">Coupon Code</label>
+                            <input type="text" placeholder="Type here" name="couponCode" class="form-control" id="couponCode" oninput="validateCouponCode()" />
+                            <small id="couponCodeError" class="text-danger"></small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" name="description" class="form-control" rows="4" required ></textarea>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Min. amount</label>
+                                    <div class="row gx-2">
+                                        <input placeholder="Rs." type="number" name="minAmount" class="form-control" required oninput="validateMinAmount()"  />
+                                    </div>
+                                    <small id="minAmountError" class="text-danger"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Flat Discount</label>
+                                    <input placeholder="Rs." type="number" name="discount" class="form-control" required oninput="validateDiscount()" />
+                                    <small id="discountError" class="text-danger"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Starting Date</label>
+                                    <input type="date" name="startingDate" class="form-control" required oninput="validateStartingDate()" min="<%= new Date().toISOString().split('T')[0] %>" />
+                                    <small id="startingDateError" class="text-danger"></small>
+                                </div>
+                            </div>
+                            
+
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="date" name="expiryDate" class="form-control" required oninput="validateExpiryDate()" min="<%= new Date().toISOString().split('T')[0] %>" />
+                                    <small id="expiryDateError" class="text-danger"></small>
+                                </div>
+                            </div>
+                        </div>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div>
+                <button class="btn btn-md rounded font-sm hover-up" type="submit">Add</button>
+            </div>
+        </div>
+    </form>
+    </div>
+</section>
+
+
+<script>
+    function validateCouponCode() {
+        const couponCodeInput = document.querySelector('input[name="couponCode"]');
+        const couponCodeError = document.getElementById('couponCodeError');
+
+        if (!couponCodeInput.value.trim()) {
+            couponCodeError.textContent = 'Coupon code is required.';
+            couponCodeInput.setCustomValidity('Coupon code is required.');
+        } else {
+            couponCodeError.textContent = '';
+            couponCodeInput.setCustomValidity('');
+        }
+    }
+
+    function validateMinAmount() {
+        const minAmountInput = document.querySelector('input[name="minAmount"]');
+        const minAmountError = document.getElementById('minAmountError');
+
+        if (isNaN(minAmountInput.value) || parseFloat(minAmountInput.value) < 0) {
+            minAmountError.textContent = 'Please enter a valid positive number.';
+            minAmountInput.setCustomValidity('Please enter a valid positive number.');
+        } else {
+            minAmountError.textContent = '';
+            minAmountInput.setCustomValidity('');
+        }
+    }
+
+    function validateFlatDiscount() {
+    const discountInput = document.querySelector('input[name="discount"]');
+    const discountError = document.getElementById('discountError');
+
+    if (isNaN(discountInput.value) || parseFloat(discountInput.value) < 0) {
+        discountError.textContent = 'Please enter a valid positive number for the flat discount.';
+        discountInput.setCustomValidity('Please enter a valid positive number for the flat discount.');
+    } else {
+        discountError.textContent = '';
+        discountInput.setCustomValidity('');
+    }
+}
+
+</script>
+
+     
+            <%- include('../layouts/admFooter') %>

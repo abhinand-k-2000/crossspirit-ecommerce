@@ -1,0 +1,306 @@
+<%- include('../layouts/header') %>
+
+		<!--end top header wrapper-->
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Shop Cart</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Shop</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Shop Cart</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+
+				<% if(cart.length > 0){ %>
+
+
+				<section class="py-4">
+					<div class="container">
+						<div class="shop-cart">
+							<div class="row">
+								<div class="col-12 col-xl-8">
+									<div class="shop-cart-list mb-3 p-3">
+
+										
+										<hr>
+										<!-- <% for(let i = 0; i < cart.length; i++){ %>
+
+											<div class="row align-items-center g-3">
+												<div class="col-12 col-lg-6">
+													<div class="d-lg-flex align-items-center gap-3">
+														<div class="cart-img text-center text-lg-start">
+															<img src="/products/<%=cart[i].productDetails.images[0] %>" width="130" alt="">
+														</div>
+														<div class="cart-detail text-center text-lg-start">
+															<h6 class="mb-2"><%= cart[i].productDetails.name %></h6>
+															<p class="mb-0">Size: <span>Regular</span>
+															</p>
+															<p class="mb-2">Color: <span>White & Blue</span>
+															</p>
+															<h5 class="mb-0">Rs. <%= cart[i].productDetails.price %></h5>
+														</div>
+													</div>
+												</div>
+												<div class="col-12 col-lg-3">
+													<div class="cart-action text-center">
+														<input type="number" class="form-control rounded-0" value="1" min="1">
+													</div>
+												</div>
+												<div class="col-12 col-lg-3">
+													<div class="text-center">
+														<div class="d-flex gap-3 justify-content-center justify-content-lg-end">
+															<form action="/remove-item/<%=cart[i].productDetails._id %>" method="POST">
+																<button type="submit" class="btn btn-outline-dark rounded-0 btn-ecomm">
+																  <i class='bx bx-x'></i>Remove
+																</button>
+															  </form>
+															  
+															<a href="javascript:;" class="btn btn-light rounded-0 btn-ecomm"><i class='bx bx-heart me-0'></i></a>
+														</div>
+													</div>
+												</div>
+											</div>
+											<hr>	
+										<% } %> -->
+
+										<% for (let i = 0; i < cart.length; i++) { %>
+											<div class="row align-items-center g-3" data-product-id="<%= cart[i].productDetails._id %>">
+												<div class="col-12 col-lg-6">
+													<div class="d-lg-flex align-items-center gap-3">
+														<div class="cart-img text-center text-lg-start">
+															<img src="/products/<%= cart[i].productDetails.images[0] %>" width="130" alt="">
+														</div>
+														<div class="cart-detail text-center text-lg-start">
+															<h6 class="mb-2"><%= cart[i].productDetails.name %></h6>
+															<p class="mb-0">Size: <span>Regular</span></p>
+															<p class="mb-2">Color: <span>White & Blue</span></p>
+															<!-- <h5 class="mb-0">Rs. <%= cart[i].productDetails.price %></h5> -->
+														
+
+															<h5 class="mb-0">Rs. <%= cart[i].items.price %></h5>
+															
+															
+														</div>
+													</div>
+												</div>
+
+
+												
+													<div class="col-12 col-lg-3">
+														<form id="quantityform-<%= cart[i].productDetails._id %>" class="quantity-form" action="/update-quantity/<%= cart[i].productDetails._id %>" method="post">
+														  <div class="qty mt-5">
+															<% if(cart[i].productDetails.countInStock !== 0){ %>
+															<button type="submit" class="minus bg-dark">-</button>
+															<input type="number" class="count" name="quantity" value="<%= cart[i].items.quantity %>" data-product-id="<%= cart[i].productDetails._id %>" data-count-in-stock="<%= cart[i].productDetails.countInStock %>">
+															<button type="submit" class="plus bg-dark">+</button>
+															
+															<% }else{ %>
+																<p>Out of Stock</p>
+																<% } %>
+														  </div>
+														  <% if(cart[i].productDetails.countInStock !== 0 && cart[i].items.quantity >= cart[i].productDetails.countInStock){ %>
+															<small class="text-danger ">Limit reached</small>
+															  <% } %>
+														</form>
+														
+														
+													  </div>
+												
+
+
+											
+												
+												  
+												  		
+											
+
+												<div class="col-12 col-lg-3">
+													<div class="text-center">
+														<div class="d-flex gap-3 justify-content-center justify-content-lg-end">
+															<!-- <button onclick="removeItem('<%= cart[i].productDetails._id %>')" class="btn btn-outline-dark rounded-0 btn-ecomm"> -->
+																<form action="/remove-item/<%= cart[i].productDetails._id %>" method="POST">
+															<button onclick="removeItem('<%= cart[i].productDetails._id %>')" class="btn btn-danger rounded-0 btn-ecomm" type="submit">
+																<i class='bx bx-x'></i>Remove
+															</button>
+
+														</form>
+															<!-- <a href="javascript:;" class="btn btn-light rounded-0 btn-ecomm"><i class='bx bx-heart me-0'></i></a> -->
+														</div>
+													</div>
+												</div>
+											</div>
+											<hr>
+										<% } %>
+
+										
+										<div class="d-lg-flex align-items-center gap-2">
+											<a href="/" class="btn btn-dark btn-ecomm"><i class='bx bx-shopping-bag'></i> Continue Shoping</a>
+											<!-- <a href="javascript:;" class="btn btn-light btn-ecomm ms-auto"><i class='bx bx-x-circle'></i> Clear Cart</a> -->
+											<!-- <a href="javascript:;" class="btn btn-white btn-ecomm"><i class='bx bx-refresh'></i> Update Cart</a> -->
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-xl-4">
+									<div class="checkout-form p-3 bg-light">
+										<!-- <div class="card rounded-0 border bg-transparent shadow-none">
+											<div class="card-body">
+												<p class="fs-5">Apply Discount Code</p>
+												<div class="input-group">
+													<input type="text" class="form-control rounded-0" placeholder="Enter discount code">
+													<button class="btn btn-dark btn-ecomm" type="button">Apply</button>
+												</div>
+											</div>
+										</div>
+										 -->
+										<div class="card rounded-0 border bg-transparent mb-0 shadow-none">
+											<div class="card-body">
+												<p class="mb-2">Subtotal: <span class="float-end">Rs. <%= totalPrice %></span>
+												</p>
+												<p class="mb-2">Shipping: <span class="float-end">--</span>
+												</p>
+												<p class="mb-2">Taxes: <span class="float-end">---</span>
+												</p>
+												<p class="mb-0">Discount: <span class="float-end">--</span>
+												</p>
+												<div class="my-3 border-top"></div>
+												<h5 class="mb-0">Order Total: <span class="float-end">Rs. <%= totalPrice %></span></h5>
+												<div class="my-4"></div>
+												<div class="d-grid"> <a href="/checkout-details" class="btn btn-dark btn-ecomm">Proceed to Checkout</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--end row-->
+						</div>
+					</div>
+				</section>
+
+
+				<% } else { %>
+					<div class="text-center">
+					  
+					  <img src="/userAssets/images/cart.jpg" class="img-fluid" style="max-width: 200px; margin: 20px auto;" alt="Load cart">
+					  <p>Your cart is empty</p>
+					  <a href="/" class="btn btn-dark btn-ecomm">Continue Shopping</a>
+					</div>
+				  <% } %>
+				  
+
+				<!--end shop cart-->
+			</div>
+		</div>
+	</div>
+	<!--end wrapper-->
+
+	<!-- //Loading the script file for removing the item from the cart -->
+	<script src="/userAssets/js/cart.js"></script>
+	<!-- // --------------------------------------------------------------- -->
+	
+	<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('.qty').forEach((qty, index) => {
+    const input = qty.querySelector('.count');
+    const increment = qty.querySelector('.plus');
+    const decrement = qty.querySelector('.minus');
+
+    increment.addEventListener('click', () => {
+      // Check if the quantity is less than countInStock before incrementing
+      if (parseInt(input.value) < parseInt(input.dataset.countInStock)) {
+        input.value = Math.max(parseInt(input.value) + 1, 1);
+        updateQuantity(input.dataset.productId, 1); // Call the updateQuantity function
+      }
+    });
+
+    decrement.addEventListener('click', () => {
+      input.value = Math.max(parseInt(input.value) - 1, 1);
+      updateQuantity(input.dataset.productId, -1); // Call the updateQuantity function
+    });
+  });
+});
+			
+		</script>	
+
+	<style>
+		.qty .count {
+    color: #000;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 30px;
+    padding: 0 2px
+    ;min-width: 35px;
+    text-align: center;
+}
+.qty .plus {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    color: white;
+    width: 30px;
+    height: 30px;
+    font: 30px/1 Arial,sans-serif;
+    text-align: center;
+    border-radius: 50%;
+    }
+.qty .minus {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    color: white;
+    width: 30px;
+    height: 30px;
+    font: 30px/1 Arial,sans-serif;
+    text-align: center;
+    border-radius: 50%;
+    background-clip: padding-box;
+}
+div {
+    text-align: center;
+}
+.minus:hover{
+    background-color: #717fe0 !important;
+}
+.plus:hover{
+    background-color: #717fe0 !important;
+}
+/*Prevent text selection*/
+/* span{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+} */
+input{  
+    border: 0;
+    width: 2%;
+}
+nput::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input:disabled{
+    background-color:white;
+}
+         
+	</style>
+	
+	<%- include('../layouts/footer') %>
