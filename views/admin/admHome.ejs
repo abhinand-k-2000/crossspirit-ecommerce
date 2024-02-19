@@ -93,7 +93,7 @@
 
 
             
-        <!----------------------------------------- CHART IMPLEMENTATION------------------------------------------------------------------------------>
+        <!-----------------------------------------ORDER CHART IMPLEMENTATION------------------------------------------------------------------------------>
         <div class="card mb-4">
           <article class="card-body">
             <h5 class="card-title">Sale statistics</h5>
@@ -106,6 +106,19 @@
             <canvas id="myChart" height="120px"></canvas>
           </article>
         </div>
+        <!-----------------------------------------END OF ORDER CHART IMPLEMENTATION------------------------------------------------------------------------------>
+        
+      
+        <!-----------------------------------------CATEGORY CHART IMPLEMENTATION------------------------------------------------------------------------------> 
+        <div class=" card mb-4 chart-container">
+          <article class="card-body">
+            <h5 class="card-title">Category-wise Sales Overview</h5>
+            <canvas id="categoryChart" class="mb-4"></canvas>
+          </article>
+         
+        </div>
+        <!-----------------------------------------EBD OF CATEGORY CHART IMPLEMENTATION------------------------------------------------------------------------------>
+
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
           
@@ -113,6 +126,51 @@
 
             
             <script>
+              const categoryCounts = <%- JSON.stringify(categoryData) %>;
+
+              
+              const categories = categoryCounts.map(entry => entry.category);
+              const counts = categoryCounts.map(entry => entry.count);
+
+              // Create a bar chart using Chart.js
+              const ctx2 = document.getElementById('categoryChart').getContext('2d');
+              ctx2.canvas.parentNode.style.height = '30em'
+         
+
+              new Chart(ctx2, {
+                type: 'pie',
+                data: {
+                  labels: categories,
+                  datasets: [{
+                    label: 'Category Counts',
+                    data: counts,
+                    backgroundColor: [
+                      'rgb(255, 99, 132)',
+                      'rgb(75, 192, 192)',
+                      'rgb(255, 205, 86)',
+                      'rgb(201, 203, 207)',
+                      'rgb(54, 162, 235)'
+                    ], 
+                    borderColor: 'rgba(75, 192, 192, 1)',     // Adjust as needed
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  scales: {
+                    // y: {
+                    //   beginAtZero: true,
+                    //   ticks: {
+                    //   stepSize: 1
+                    // }
+                    // }
+                  },
+                  maintainAspectRatio: false, // Set to false to allow manual control over the size
+                  responsive: true
+                
+                }
+              });
+
+
               const labels = <%- JSON.stringify(dailyLabels) %>;            
               const data = <%- JSON.stringify(dailyData) %>;
 
@@ -128,15 +186,24 @@
                   datasets: [{
                     label: 'Order Count',
                     data: data,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    backgroundColor: [
+                      'rgb(255, 99, 132)',
+                      'rgb(75, 192, 192)',
+                      'rgb(255, 205, 86)',
+                      'rgb(201, 203, 207)',
+                      'rgb(54, 162, 235)'
+                    ],
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2
+                    borderWidth: 2,
                   }]
                 },
                 options: {
                   scales: {
                     y: {
-                      beginAtZero: true
+                      beginAtZero: true,
+                      ticks: {
+                      stepSize: 1
+                    }
                     }
                   },
                   

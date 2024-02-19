@@ -9,6 +9,7 @@ const Wishlist = require("../models/wishlistModel")
 const Coupon = require("../models/couponModel")
 const Wallet = require("../models/walletModel")
 const Referral = require("../models/referralCodeModel")
+const Banner = require("../models/bannerModel")
 
 const nodemailer = require("nodemailer");
 const mailgen = require("mailgen");
@@ -110,8 +111,12 @@ let globalName, globalEmail, globalMobile, globalPassword;
 // Load Home Page
 const loadHomePage = async (req, res) => {
   try {
-    const productData = await Product.find().populate('offer');
-    res.render("index", { product: productData });
+    const productData = await Product.find()
+      .populate('offer')
+      .limit(4)
+      .sort({dateCreated: -1});
+    const banner = await Banner.find()
+    res.render("index", { product: productData, banner });
   } catch (error) {
     console.log(error);
   } 
@@ -246,7 +251,6 @@ const verifyOtp = async (req, res, next) => {
   let parsedOtp = parseInt(userOtp);
   try {
     const otpRecord = await Otp.findOne({ email: globalEmail, otp: userOtp });
-
     if (otpRecord && otpRecord.expiry > new Date()) {
       if (parsedOtp === otpRecord.otp) {
         let user = new User({
@@ -571,16 +575,19 @@ const loadWishlist = async (req, res, next) => {
       {
         $lookup: {
           from: "offers",
-          localField: "productDetails.offer", // Updated to use the product's offer field
+          localField: "productDetails.offer",
           foreignField: "_id",
           as: "offers"
         }
       },
       {
-        $unwind: "$offers"
+        $unwind: {
+          path: "$offers",
+          preserveNullAndEmptyArrays: true // Include documents with empty "offers" array
+        }
       }
     ]);
-
+    
     res.render("wishlist", { wishlistData });
   } catch (error) {
     console.error(error);
@@ -592,6 +599,7 @@ const addToWishlist = async (req, res, next) => {
   try {
     const userId = res.locals.user._id;
     const productId = req.query.productId;
+
     // Check if the user already has a wishlist
     const user = await Wishlist.findOne({ user_id: userId });
 
@@ -601,8 +609,12 @@ const addToWishlist = async (req, res, next) => {
         user_id: userId,
         items: [{ product_id: productId }],
       });
-      await wishlist.save();
-      return res.json("Wishlist created and product added");   
+
+      const wishlistData = await wishlist.save();
+      
+      const itemCount = wishlistData.items.length; // Count of items in the wishlist
+
+      return res.json({ message: "Wishlist created and product added", itemCount });
     }
 
     // Check if the product is already in the wishlist
@@ -618,12 +630,15 @@ const addToWishlist = async (req, res, next) => {
     user.items.push({ product_id: productId });
     await user.save();
 
-    res.json("Product added to the wishlist");
+    const itemCount = user.items.length; // Count of items in the wishlist
+
+    res.json({ message: "Product added to the wishlist", itemCount });
   } catch (error) {
     console.error(error);
     next(error);
   }
 };
+
 
 const removeFromWishlist = async (req, res, next) => {
   try {
@@ -636,12 +651,21 @@ const removeFromWishlist = async (req, res, next) => {
       { $pull: { items: { product_id: new mongoose.Types.ObjectId(productId) } } }
     );
 
-    res.redirect('/wishlist')
+    // Fetch the updated wishlist data after the removal
+    const updatedWishlist = await Wishlist.findOne({ user_id: userId });
+    
+    // Get the count of items in the wishlist
+    const itemCount = updatedWishlist ? updatedWishlist.items.length : null;
+
+    console.log(`Item Count in Wishlist:`, itemCount);
+
+    res.status(200).json({ message: "Product removed from wishlist", itemCount });
   } catch (error) {
     console.error(error);
     next(error);
   }
 };
+
 
 async function fetchWishlistItemCount (req, res, next) {
   try {
@@ -671,6 +695,9 @@ async function fetchWishlistItemCount (req, res, next) {
 //=======================================================END OF WISHLIST--================================================>
 
 
+
+
+//=======================================================ADDRESS=================================================================>
 const loadUserAddress = async (req, res, next) => {
   try {
     
@@ -774,7 +801,6 @@ const deleteAddress = async (req, res, next) => {
   }
 };
 
-
 const editAddress = async (req, res, next) => {
   const addressId = req.params.id; 
   const userId = res.locals.user._id;
@@ -816,6 +842,9 @@ const editAddress = async (req, res, next) => {
    next(error)
  }
 };
+
+//=======================================================END OF ADDRESS=================================================================>
+
 
 
 const loadChangePassword = (req, res) => {
@@ -976,16 +1005,20 @@ const createOrder = async (req, res, next) => {
     const cart = await Cart.findOne({ user_id: userId });
 
     // Calculate the total amount
-    const totalAmount = cart.items.reduce((total, item) => {
+    let totalAmount = cart.items.reduce((total, item) => {
       return total + item.quantity * item.price;
     }, 0);
+
+    if (cart.discount > 0) {
+      totalAmount -= cart.discount;
+    }
 
     if (paymentMethod === 'Wallet') {
 
       const wallet = await Wallet.findOne({ user_id: userId });
 
       if (!wallet) {
-        return res.status(400).json({ message: "Insufficient Balance in Wallet!"})
+        return res.status(400).json({ message: "Insufficient Balance in Wallet!" });
       }
 
       if (wallet) {
@@ -1001,7 +1034,8 @@ const createOrder = async (req, res, next) => {
           amount: totalAmount,
           description: "Debited",
           current_balance: wallet.balance
-        })
+        });
+
         await wallet.save();
       }
     }
@@ -1032,8 +1066,8 @@ const createOrder = async (req, res, next) => {
       );
     }
 
-    // Optionally, clear the user's cart after the order is placed
-    await Cart.findOneAndUpdate({ user_id: userId }, { items: [] });
+    // Clearing the user's cart after the order is placed
+    await Cart.deleteOne({ user_id: userId });
 
     // Respond with a success status and the order information
     res.status(200).json({ success: true, order });
@@ -1042,6 +1076,7 @@ const createOrder = async (req, res, next) => {
     next(error);
   }
 };
+
 
 
 
@@ -1349,7 +1384,6 @@ const invoiceGeneration = async (req, res, next) => {
 
 
 //===============================================COUPON================================================
-
 const applyCoupon = async (req, res, next) => {
   try {
     const userId = res.locals.user._id;
@@ -1360,11 +1394,8 @@ const applyCoupon = async (req, res, next) => {
     }
 
     const { couponCode } = req.body;
-    console.log("couponCode:", couponCode);
 
     const coupon = await Coupon.findOne({ couponCode: couponCode });
-
-    console.log("COUPON:", coupon);
 
     if (!coupon) {
       console.log("Invalid coupon");
@@ -1391,7 +1422,7 @@ const applyCoupon = async (req, res, next) => {
     await cart.save();
 
     // Respond with a success message or updated cart information
-    res.json({ success: true, message: "Coupon applied" });
+    res.json({ success: true, message: "Coupon applied", discount: cart.discount, totalPrice: cart.totalProductsPrice });
     return;
   } catch (error) {
     console.error("Error applying coupon:", error);
@@ -1400,9 +1431,6 @@ const applyCoupon = async (req, res, next) => {
   }
 };
 
-
-
-   
 const removeCoupon = async (req, res, next) => {
   try {
     const userId = res.locals.user._id;
@@ -1414,6 +1442,7 @@ const removeCoupon = async (req, res, next) => {
 
     // Check if a discount exists before attempting to remove it
     if (cart.discount !== undefined) {
+      console.log("cart entry")
       // Restore the original totalProductsPrice by adding back the discount
       cart.totalProductsPrice = cart.totalProductsPrice + cart.discount;
 
@@ -1423,20 +1452,22 @@ const removeCoupon = async (req, res, next) => {
       // Save the cart and await the save operation
       await cart.save();
     }
-
     // Respond with a success message or updated cart information
-    // res.json({ message: "Coupon removed successfully", updatedCart: cart });
-    res.redirect('/checkout-details')
+    res.json({ success: true, message: "Coupon removed successfully", updatedCart: cart });
+    // res.redirect('/checkout-details')
   } catch (error) {
     console.error(error);
     // Handle the error and pass it to the error handling middleware
     next(error);
   }
 };
-
 //===============================================END OF COUPON================================================
 
-//===============================================WALLET================================================
+
+
+
+
+//=======================================================WALLET================================================
 const loadWallet = async (req, res) => {
   try {
     const userId = res.locals.user._id;
@@ -1446,7 +1477,6 @@ const loadWallet = async (req, res) => {
     console.log(error)
   }
 }
-
 
 const addAmountToWallet = async (req, res, next) => {
   try {
@@ -1513,7 +1543,6 @@ const razorpayWalletPayment = async (req, res) => {
   }
 }
  
-
 const withdrawAmountFromWallet = async (req, res, next) => {
   try {
     const userId = res.locals.user._id;
@@ -1567,8 +1596,11 @@ const loadTransactionHistory = async (req, res, next) => {
     res.render('user-account-transactions', { wallet });
   } catch (error) {
     console.log(error);
+    next(error)
   }
 };
+
+//===============================================END OF WALLET================================================
 
 
 const loadUserReferral = async (req, res, next) => {
@@ -1584,49 +1616,104 @@ const loadUserReferral = async (req, res, next) => {
 
 const loadShopGrid = async (req, res) => {
   try {
-      // Get the selected categories from the query parameters
-      
-      // Fetch products and categories
-      const products = await Product.find().populate('offer');
-      const categories = await Category.find();
-      console.log(products)
-    
-      res.render('shop-grid', { products, categories });
-  } catch (error) { 
-      console.log(error);
-  }
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+
+    // Fetch all products without any filters
+    const products = await Product.find()
+      .populate('offer')
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const categories = await Category.find();
+
+    // Include necessary information in the rendering context
+    res.render('shop-grid', {
+      products,
+      categories,
+      currentPage: page,
+      totalPages: Math.ceil(products.length / limit),
+      limit,
+      selectedCategories: [],
+      minPrice: 0,
+      maxPrice: Infinity,
+    });
+  } catch (error) {
+    console.error('Error loading all products:', error);
+    // Handle error response
+    res.status(500).send('Internal Server Error');
+  } 
 };
  
+
+// const loadFilter = async (req, res) => {
+//   try {
+    
+//     const selectedCategories = req.query.categories ? req.query.categories.split(',') : [];
+
+//       // Build a query object to filter products based on selected categories
+//       const query = selectedCategories.length > 0 ? { category_id: { $in: selectedCategories } } : {};
+
+
+//       const products = await Product.find(query);
+//       const categories = await Category.find();
+
+//       res.json({ products, categories });
+
+//       console.log(selectedCategories)
+//       console.log(query)   
+       
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
 const loadFilter = async (req, res) => {
   try {
     
-    const selectedCategories = req.query.categories ? req.query.categories.split(',') : [];
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
 
-      // Build a query object to filter products based on selected categories
-      const query = selectedCategories.length > 0 ? { category_id: { $in: selectedCategories } } : {};
+    // Get selected categories and price range from query parameters
+    const categoryIds = req.query.categories ? req.query.categories.split(',') : [];
+    const minPrice = req.query.minPrice || 0;
+    const maxPrice = req.query.maxPrice || Infinity;
+ 
+    const query = {};
 
+// Add category filter if categoryIds are present
+    if (categoryIds.length > 0) {
+      query.category_id = { $in: categoryIds };
+    }
 
-      const products = await Product.find(query);
-      const categories = await Category.find();
+    query.price = { $gte: minPrice, $lte: maxPrice };
 
-      res.json({ products, categories });
+    // Fetch products and categories with applied filters
+    const products = await Product.find(query)
+      .populate('offer')
+      .skip((page - 1) * limit)
+      .limit(limit);
 
-      console.log(selectedCategories)
-      console.log(query)   
-       
+    const categories = await Category.find();
+
+    res.json({
+      products,
+      categories,
+      currentPage: page,
+      totalPages: Math.ceil(products.length / limit),
+      limit,
+      selectedCategories: categoryIds,
+      minPrice,
+      maxPrice,
+    });
+   
   } catch (error) {
-    console.log(error)
+    console.error('Error applying filters:', error);
+    // Handle error response
+    res.status(500).send('Internal Server Error');
   }
-}
+};
 
-const loadSearch = async (req, res) => {
-  try {
-        
-  } catch (error) {
-    console.log(error)
-  }
-}
 
 const searchResult = async (req, res) => {
   try {
@@ -1635,10 +1722,6 @@ const searchResult = async (req, res) => {
     // Using a simple regex to perform a case-insensitive search on the product name
     const products = await Product.find({ name: { $regex: new RegExp(searchTerm, 'i') } }).populate('offer');
     console.log(products)
-
-  
-  
-
     // res.json({ products });
     res.render('search', {products})
   } catch (error) {
@@ -1698,7 +1781,6 @@ module.exports = {
   loadShopGrid,
   loadFilter,
   orderReturn,
-  loadSearch,
   searchResult
   
 };

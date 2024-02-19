@@ -216,9 +216,13 @@
 	  
 			if (response.ok) {
 			  const result = await response.text();
+			  const resultObject = JSON.parse(result); // Parse the JSON string
 			  console.log(result); // Log or handle the response
+			  console.log(resultObject.message); // Log or handle the response
+			  console.log(resultObject.itemCount)
 	  
 			  // Update the button text to "Already Added"
+			  document.getElementById("wishlistCount").innerHTML = resultObject.itemCount
 			  button.textContent = 'Already Added';
 			  button.disabled = true; // Optionally disable the button
 
@@ -228,7 +232,7 @@
           title: 'Product Added',
           text: 'The product has been added to your wishlist.',
           showConfirmButton: false, // Hides the OK button
-          timer: 1500, // Disappears after 1500 milliseconds (1.5 seconds)
+          timer: 1000, // Disappears after 1500 milliseconds (1.5 seconds)
           position: 'top', // Places the notification at the top of the screen
           customClass: {
             container: 'swal-container-custom', // Custom class for the container

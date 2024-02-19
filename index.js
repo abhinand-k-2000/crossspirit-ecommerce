@@ -12,6 +12,9 @@ const app = express();
 //database connecting  
 dbConnect();
  
+
+
+
 app.use(session({
   secret: process.env.SESSIONSECRET,
   resave: true,
@@ -77,9 +80,10 @@ const category_route = require('./routes/categoryRoute');
 const product_route = require('./routes/productRoute');
 const cart_route = require('./routes/cartRoute')
 const offer_route = require('./routes/offerRoute')
+const banner_route = require('./routes/bannerRoute')
      
 app.use('/', user_route, cart_route)
-app.use('/admin', admin_route, category_route, product_route, offer_route )
+app.use('/admin', admin_route, category_route, product_route, offer_route, banner_route )
 // app.use('/admin', category_route)
 // app.use('/admin', product_route)
 

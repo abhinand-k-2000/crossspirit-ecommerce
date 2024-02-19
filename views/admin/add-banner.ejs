@@ -1,0 +1,104 @@
+<%- include('../layouts/admHeader') %>
+
+<section class="content-main">
+  <div class="row">
+    <div class="col-9">
+      <div class="content-header">
+        <h2 class="content-title">Add New Banner</h2>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Banner Details</h4>
+        </div>
+        <div class="card-body">
+          <form
+            enctype="multipart/form-data"
+            action="/admin/banner/add-banner"
+            method="POST"
+            onsubmit="return validateForm()"
+          >
+            <div class="mb-4">
+              <label for="banner_title" class="form-label">Banner Title</label>
+              <input
+                type="text"
+                placeholder="Type here"
+                class="form-control"
+                id="banner_title"
+                name="title"
+                required
+              />
+              <span id="nameError" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Description</label>
+                <textarea placeholder="Type here" name="description" class="form-control" rows="4" required ></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label for="media_upload" class="form-label">Image Upload</label>
+              <div class="input-upload">
+                <img src="/adminAssets/imgs/theme/upload.svg" alt=""  id="imgView"/>
+                <input
+                  class="form-control"
+                  type="file"
+                  id="media_upload"
+                  name="image"
+                  required
+                  onchange="viewImage(event)"
+                />
+              </div>
+              <span id="imageError" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-md rounded font-sm hover-up">
+              Submit
+            </button>
+
+            <% if(typeof message !== 'undefined'){ %>
+              <h4 class="text-center mt-3 <%=color %>"><%= message %></h4>
+
+            <% } %>
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+  function viewImage(event) {
+      document.getElementById("imgView").src = URL.createObjectURL(event.target.files[0])
+  }
+</script>
+
+
+<script>
+  function validateForm() {
+      var name = document.getElementById("banner_title").value;
+      var image = document.getElementById("media_upload").value;
+
+      // Validate name
+      if (name.trim() === "") {
+          document.getElementById("nameError").innerText = "Name cannot be empty";
+          return false;
+      } else {
+          document.getElementById("nameError").innerText = "";
+      }
+
+      // Validate image
+      if (image.trim() === "") {
+          document.getElementById("imageError").innerText = "Image is required";
+          return false;
+      } else {
+          document.getElementById("imageError").innerText = "";
+      }
+
+      return true;
+  }
+</script>
+
+<%- include('../layouts/admFooter') %>

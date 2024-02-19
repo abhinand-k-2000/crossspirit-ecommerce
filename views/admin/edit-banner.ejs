@@ -1,0 +1,104 @@
+<%- include('../layouts/admHeader') %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Edit Baneer</h2>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Banner Details</h4>
+                </div>
+                <div class="card-body">
+                    <form enctype="multipart/form-data" action="/admin/banner/edit-banner/<%= banner._id %>" method="POST" onsubmit="return validateForm()">
+                        <div class="mb-4">
+                            <label for="banner_title" class="form-label">Banner title</label>
+                            <input
+                                type="text"
+                                placeholder="Type here"
+                                class="form-control"
+                                id="banner_title"
+                                name="title"
+                                value="<%= banner.title %>"
+                            />
+                            <span id="nameError" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" name="description" class="form-control" rows="4" required ><%= banner.description %></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <% if(banner.imagePath){ %>
+
+                                <!-- <label for="existing_image" class="form-label">Existing Image</label> -->
+                                <img src="/banner/<%= banner.imagePath %>" alt="Existing Image" class="mb-2" id="imgView" style="height: 10em;" />
+                            <% } %>
+                            
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="media_upload" class="form-label">New Image Upload</label>
+                            <div class="input-upload">
+                                <!-- <img src="/adminAssets/imgs/theme/upload.svg" alt="image" /> -->
+                                <input
+                                    class="form-control"
+                                    type="file"
+                                    id="media_upload"
+                                    name="image"
+                                    onchange="viewImage(event)"
+                                />
+                            </div>
+                            <span id="imageError" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-md rounded font-sm hover-up">
+                            Update
+                        </button>
+
+                        <% if(typeof message !== 'undefined'){ %>
+                            <h4 class="text-center mt-3 <%= color %>" ><%= message %></h4>
+                        <% } %>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function viewImage(event) {
+        document.getElementById("imgView").src = URL.createObjectURL(event.target.files[0])
+    }
+</script>
+
+<script>
+    function validateForm() {
+        var name = document.getElementById("banner_title").value;
+        var image = document.getElementById("media_upload").value;
+
+        // Validate name
+        if (name.trim() === "") {
+            document.getElementById("nameError").innerText = "Name cannot be empty";
+            return false;
+        } else {
+            document.getElementById("nameError").innerText = "";
+        }
+
+        // // Validate image
+        // if (image.trim() === "") {
+        //     document.getElementById("imageError").innerText = "Image is required";
+        //     return false;
+        // } else {
+        //     document.getElementById("imageError").innerText = "";
+        // }
+
+        return true;
+    }
+</script>
+
+
+<%- include('../layouts/admFooter') %>

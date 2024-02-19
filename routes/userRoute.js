@@ -67,16 +67,16 @@ router.get('/product-detail/:id', productController.viewProductDetails)
 // -------------------------------------WISHLIST ROUTES -------------------------------------------------------------
 router.get('/wishlist',requireAuth, userController.loadWishlist)
 router.post('/add-to-wishlist',requireAuth, userController.addToWishlist)  
-router.post('/remove-from-wishlist', userController.removeFromWishlist)
+router.delete('/remove-from-wishlist', userController.removeFromWishlist)
 // -------------------------------------END OF WISHLIST ROUTES -------------------------------------------------------------
    
 
-// Address Loading, adding, deleteing
+//------------------------------------------------ADDRESS------------------------------------------------------------------------
 router.get('/user-address', userController.loadUserAddress)
 router.post('/add-address', userController.addAddress)   
 router.post('/delete-address/:id', userController.deleteAddress);
 router.post('/edit-address/:id', userController.editAddress)
-
+//------------------------------------------------END OF ADDRESS------------------------------------------------------------------------
 
 
 
@@ -110,7 +110,7 @@ router.get('/wallet/transactions', userController.loadTransactionHistory)
    
 router.get('/shop-grid', userController.loadShopGrid)   
 
-router.get('/shop-grid/filter', userController.loadFilter)
+router.get('/applyFilters', userController.loadFilter)
 
 // router.get('/search', userController.loadSearch)
 router.get('/search', userController.searchResult)  

@@ -17,7 +17,7 @@
              
                 <div class="card-body">
 
-                    <form  action="/admin/coupon/add-coupon" method="POST"  >
+                    <form  action="/admin/coupon/add-coupon" method="POST" onsubmit="return validateForm()" >
 
                         <div class="mb-4">
                             <label for="couponCode" class="form-label">Coupon Code</label>
@@ -45,7 +45,7 @@
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Flat Discount</label>
-                                    <input placeholder="Rs." type="number" name="discount" class="form-control" required oninput="validateDiscount()" />
+                                    <input placeholder="Rs." type="number" name="discount" class="form-control" required oninput="validateFlatDiscount()" />
                                     <small id="discountError" class="text-danger"></small>
                                 </div>
                             </div>
@@ -58,7 +58,7 @@
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Starting Date</label>
-                                    <input type="date" name="startingDate" class="form-control" required oninput="validateStartingDate()" min="<%= new Date().toISOString().split('T')[0] %>" />
+                                    <input type="date" name="startingDate" class="form-control" id="startingDate" required oninput="validateStartingDate()" min="<%= new Date().toISOString().split('T')[0] %>" />
                                     <small id="startingDateError" class="text-danger"></small>
                                 </div>
                             </div>
@@ -67,23 +67,25 @@
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Expiry Date</label>
-                                    <input type="date" name="expiryDate" class="form-control" required oninput="validateExpiryDate()" min="<%= new Date().toISOString().split('T')[0] %>" />
+                                    <input type="date" name="expiryDate" class="form-control" id="expiryDate" required oninput="validateExpiryDate()" min="<%= new Date().toISOString().split('T')[0] %>" />
                                     <small id="expiryDateError" class="text-danger"></small>
                                 </div>
                             </div>
                         </div>
-                      
-                    </div>
+                        <div class="col-lg-3">
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit">Add</button>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
-            <div>
-                <button class="btn btn-md rounded font-sm hover-up" type="submit">Add</button>
-            </div>
-        </div>
-    </form>
     </div>
+        
+    
+   
 </section>
 
 
@@ -126,6 +128,45 @@
         discountInput.setCustomValidity('');
     }
 }
+
+    function validateStartingDate() {
+        var startingDate = document.getElementById("startingDate").value;
+        var expiryDate = document.getElementById("expiryDate").value;
+
+        if (expiryDate !== "" && expiryDate < startingDate) {
+            document.getElementById("expiryDateError").innerText = "Expiry date cannot be before the starting date.";
+        } else {
+            document.getElementById("expiryDateError").innerText = "";
+        }
+    }
+
+    function validateExpiryDate() {
+        var startingDate = document.getElementById("startingDate").value;
+        var expiryDate = document.getElementById("expiryDate").value;
+
+        if (startingDate !== "" && expiryDate < startingDate) {
+            document.getElementById("expiryDateError").innerText = "Expiry date cannot be before the starting date.";
+        } else {
+            document.getElementById("expiryDateError").innerText = "";
+        }
+    }
+
+    function validateForm() {
+        validateStartingDate();
+        validateExpiryDate();
+
+        // Check if there are any errors
+        var startingDateError = document.getElementById("startingDateError").innerText;
+        var expiryDateError = document.getElementById("expiryDateError").innerText;
+
+        if (startingDateError || expiryDateError) {
+            // There are errors, prevent form submission
+            return false;
+        }
+
+        // No errors, allow form submission
+        return true;
+    }
 
 </script>
 

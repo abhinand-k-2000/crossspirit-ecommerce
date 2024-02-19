@@ -137,7 +137,7 @@ const loadHome = async (req, res, next) => {
         $match: {
           date: {
             $gte: new Date(moment().subtract(30, "days").startOf("day")),
-          },
+          }, 
         },
       },
       {
@@ -169,6 +169,56 @@ const loadHome = async (req, res, next) => {
     const monthlyLabels = monthlyOrderData.map((item) => item._id);
     const monthlyData = monthlyOrderData.map((item) => item.orderCount);
 
+    const categoryData = await Order.aggregate([
+      {
+        $match: {}
+      },
+      {
+        $unwind: "$items"
+      },
+      {
+        $lookup: 
+        {
+          from: "products",
+          localField: "items.product_id",
+          foreignField: "_id",
+          as: "products"
+        }
+      },
+      {
+        $unwind: "$products"
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "products.category_id",
+          foreignField: "_id",
+          as: "category"
+        }
+      },
+      {
+        $unwind: "$category"
+      },
+      {
+        $group: {
+          _id: "$category.name",
+          count: {$sum: 1}
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          category: "$_id",
+          count: 1
+        }
+      }
+    ])
+    
+    console.log(categoryData)
+
+
+    
+
     // Render the admin home page with data
     res.render("admHome", {
       userCount,
@@ -181,6 +231,7 @@ const loadHome = async (req, res, next) => {
       dailyData,
       monthlyLabels,
       monthlyData,
+      categoryData
     });
   } catch (error) {
     console.error('Error in loadHome function:', error);
@@ -411,90 +462,6 @@ const updateOrderStatus = async (req, res, next) => {
   }
 };
 
-// const loadSalesReport =  async (req, res, next) => {
-//   try {
-
-//     const startDateDaily = moment().startOf('day').toDate();
-//     const endDateDaily = moment().endOf('day').toDate();
-
-//     const startDateWeekly = moment().startOf('isoWeek').toDate();
-//     const endDateWeekly = moment().endOf('isoWeek').toDate();
-
-//     const startDateYearly = moment().startOf('year').toDate();
-//     const endDateYearly = moment().endOf('year').toDate();
-
-//     const dailySales = await Order.aggregate([
-//       {
-//         $match: {
-//           date: {$gte: startDateDaily, $lte: endDateDaily}
-//         }
-//       },
-//       {
-//         $unwind: "$items"
-//       },
-//       {
-//         $lookup: {
-//           from: "products",
-//           localField: "items.product_id",
-//           foreignField: "_id",
-//           as: "productDetails"
-//         }
-//       },
-//       {
-//         $unwind: "$productDetails"
-//       }
-//     ])
-
-//     const weeklySales = await Order.aggregate([
-//       {
-//         $match: {
-//           date: {$gte: startDateWeekly, $lte: endDateWeekly}
-//         }
-//       },
-//       {
-//         $unwind: "$items"
-//       },
-//       {
-//         $lookup: {
-//           from: "products",
-//           localField: "items.product_id",
-//           foreignField: "_id",
-//           as: "productDetails"
-//         }
-//       },
-//       {
-//         $unwind: "$productDetails"
-//       }
-//     ])
-
-//     const yearlySales = await Order.aggregate([
-//       {
-//         $match: {
-//           date: {$gte: startDateYearly, $lte: endDateYearly}
-//         }
-//       },
-//       {
-//         $unwind: "$items"
-//       },
-//       {
-//         $lookup: {
-//           from: "products",
-//           localField: "items.product_id",
-//           foreignField: "_id",
-//           as: "productDetails"
-//         }
-//       },
-//       {
-//         $unwind: "$productDetails"
-//       }
-//     ])
-
-//     res.render("sales-report",{ dailySales, weeklySales, yearlySales });
-//   } catch (error) {
-//     console.log("Error in loading sales report: ", error)
-//     next(error)
-//   }
-// };
 
 const loadSalesReport = async (req, res, next) => {
   // Calculate default start and end dates (e.g., last 7 days)
@@ -540,27 +507,27 @@ const loadSalesReport = async (req, res, next) => {
 };
 
 
-const displaySalesReport = async (req, res) => {
+const displaySalesReport = async (req, res, next) => {
   try {
-
     // Calculate default start and end dates (e.g., last 7 days) for rendering the form again
-    const defaultStartDate =  moment(req.body.startDate).format('YYYY-MM-DD');
-    const defaultEndDate = moment(req.body.endDate).format('YYYY-MM-DD');
+    const defaultStartDate = req.query.startDate ? req.query.startDate : moment().subtract(7, 'days').format('YYYY-MM-DD');
+    const defaultEndDate = req.query.endDate ? req.query.endDate : moment().format('YYYY-MM-DD');
 
-    const startDate = req.body.startDate? new Date(req.body.startDate): moment().startOf("day").toDate();
-    const endDate = req.body.endDate? new Date(req.body.endDate): moment().endOf("day").toDate();
+    const startDate = req.query.startDate ? new Date(req.query.startDate) : moment().startOf("day").toDate();
+    const endDate = req.query.endDate ? new Date(req.query.endDate) : moment().endOf("day").toDate();
 
-    const count = await Order.countDocuments({   
+    const count = await Order.countDocuments({
       date: { $gte: startDate, $lte: endDate }
     });
-    
+
     console.log('Total number of documents:', count);
+
     // Use the start and end dates to fetch data from the Order collection
     const salesData = await Order.aggregate([
       {
-        $match: {   
+        $match: {
           date: { $gte: startDate, $lte: endDate },
-        },  
+        },
       },
       {
         $unwind: "$items"
@@ -579,7 +546,7 @@ const displaySalesReport = async (req, res) => {
       // Add other aggregation stages as needed
     ]).catch((error) => {
       console.error("Error in aggregation pipeline:", error);
-      throw error; // Re-throw the error to be caught by the global error handler
+      throw new Error("Error in finding the sales report"); // Re-throw the error to be caught by the global error handler
     });
 
     // Render the sales-report view with the aggregated salesData
@@ -589,6 +556,7 @@ const displaySalesReport = async (req, res) => {
     next(error);
   }
 };
+
 
 
 const generateSalesReportPdf = async (req, res) => {
@@ -761,6 +729,24 @@ const editCoupon = async (req, res) => {
   }
 };
 
+const deleteCoupon = async (req, res, next) => {
+  try {
+    const {couponId} = req.body;
+    const result = await Coupon.deleteOne({_id: couponId})
+
+    if(result.deletedCount === 1){
+      res.status(200).json({message: "Coupon Deleted successfully"})
+    } else {
+      res.status(404).json({message: "Coupon not found"})
+    }
+    
+
+  } catch (error) {
+    console.log(error);
+    next(error)
+  }
+}
+
 //====================================================END OF COUPONS ===============================================
 
 
@@ -847,6 +833,7 @@ module.exports = {
   addCoupon,
   loadEditCoupon,
   editCoupon,
+  deleteCoupon,
   loadAddReferral,
   addReferral,
   loadReferral

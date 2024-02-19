@@ -12,7 +12,42 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script> -->
 
 
+<script>
+  window.onload = function () {
+      // Get the current date in the format YYYY-MM-DD
+      var currentDate = new Date();
+      
+      // Format the date to YYYY-MM-DD
+      var maxDate = currentDate.toISOString().split('T')[0];
 
+      // Set the maximum value for the start date input
+      document.getElementById("startDate").max = maxDate;
+  };
+
+  function validateDates() {
+      var startDate = document.getElementById("startDate").value;
+      var endDate = document.getElementById("endDate").value;
+
+      // Parse the dates into Date objects
+      var startDateObj = new Date(startDate);
+      var endDateObj = new Date(endDate);
+
+      // Check if the start date is after the current date
+      if (startDateObj > new Date()) {
+          alert("Start date should not be after today.");
+          return false;
+      }
+
+      // Check if the start date is after the end date
+      if (startDateObj >= endDateObj) {
+          alert("Start date should be before the end date.");
+          return false;
+      }
+
+      // All validations passed
+      return true;
+  }
+</script>
 
 
 
@@ -41,7 +76,7 @@
         </div> -->
         
         <div class="col-lg-8 col-md-12">
-          <form id="salesReportForm" method="POST" action="/admin/sales-report">
+          <form id="salesReportForm" method="GET" action="/admin/sales-report-filter" onsubmit="return validateDates()"> 
             <div class="row align-items-center">
               <div class="col-lg-3 col-md-4">
                 <label for="startDate">Start Date:</label>

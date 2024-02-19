@@ -1,97 +1,79 @@
 <%- include('../layouts/header') %>
-<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 		<!--start slider section-->
-		<!-- <section class="slider-section mb-4">
+		<section class="slider-section mb-4">
 			<div class="first-slider p-0"> 
 
 				<div class="banner-slider owl-carousel owl-theme">
-					<div class="item"> 
-						<div class="position-relative">
-							<div class="position-absolute top-50 slider-content translate-middle">
-								<h3 class="h3 fw-bold d-none d-md-block">New Trending</h3>
-								<h1 class="h1 fw-bold">Women Fashion</h1>
-								<p class="fw-bold text-dark d-none d-md-block"><i>Last call for upto 15%</i></p>
-								<div class=""><a class="btn btn-dark btn-ecomm px-4" href="shop-grid.html">Shop Now</a>
-								</div>
-							  </div> 
-							<a href="javascript:;">
-								<img src="userAssets/images/banners/02.png" class="img-fluid" alt="...">
-							</a>
+					<% banner.forEach((item) => { %>
+						<div class="item"> 
+							<div class="position-relative">
+								<div class="position-absolute top-50 slider-content translate-middle">
+									<h3 class="h3 fw-bold d-none d-md-block"><%= item.description%></h3>
+									<h1 class="h1 fw-bold"><%= item.title %></h1>
+									<!-- <p class="fw-bold text-dark d-none d-md-block"><i>Last call for upto 15%</i></p> -->
+									<div class="">
+										<!-- <a class="btn btn-dark btn-ecomm px-4" href="shop-grid.html">Shop Now</a> -->
+									</div>
+								  </div> 
+								<a href="javascript:;">
+									<img src="/banner/<%=item.imagePath %>" class="img-fluid" alt="...">
+								</a>
+							</div>
 						</div>
-					</div>
-					<div class="item">
-						<div class="position-relative">
-							<div class="position-absolute top-50 slider-content translate-middle">
-								<h3 class="h3 fw-bold d-none d-md-block">New Trending</h3>
-								<h1 class="h1 fw-bold">Men Fashion</h1>
-								<p class="fw-bold text-dark d-none d-md-block"><i>Last call for upto 15%</i></p>
-								<div class=""><a class="btn btn-dark btn-ecomm px-4" href="shop-grid.html">Shop Now</a>
-								</div>
-							  </div>
-							<a href="javascript:;">
-								<img src="userAssets/images/banners/02.png" class="img-fluid" alt="...">
-							</a>
-						</div>
-					</div>
-					<div class="item">
-						<div class="position-relative">
-							<div class="position-absolute top-50 slider-content translate-middle">
-								<h3 class="h3 fw-bold d-none d-md-block">New Trending</h3>
-								<h1 class="h1 fw-bold">Kids Fashion</h1>
-								<p class="fw-bold text-dark d-none d-md-block"><i>Last call for upto 15%</i></p>
-								<div class=""><a class="btn btn-dark btn-ecomm px-4" href="shop-grid.html">Shop Now</a>
-								</div>
-							  </div>
-							<a href="javascript:;">
-								<img src="userAssets/images/banners/04.png" class="img-fluid" alt="...">
-							</a>
-						</div>
-					</div>
+
+					<% }) %>
+					
+				
+					
 				</div>
 
 			</div>
-		</section> -->
+		</section>
 		<!--end slider section-->
 
 <!--start carousel-->
-<div id="myCarousel" class="carousel slide" data-bs-ride="carousel" style="width: 100%; max-width: 100%; height: 450px; overflow: hidden;">
-	<div class="carousel-inner" style="width: 100%; height: 450px;">
-  
-	  <!-- Slide 1 -->
-	  <div class="carousel-item active" style="width: 100%; height: 400px;">
-		<img src="userAssets/images/banners/02.png" class="d-block w-100" alt="userAssets/images/banners/04.png">
-		<div class="carousel-caption d-none d-md-block">
-		  <a href="#" class="btn btn-light btn-ecomm px-4 rounded">Shop Now</a>
+
+<!-- <section class="slider-section mb-4">
+	<div id="myCarousel" class="carousel slide" data-bs-ride="carousel" style="width: 100%; max-width: 100%; height: 450px; overflow: hidden;">
+		<div class="carousel-inner" style="width: 100%; height: 450px;">
+	  
+	
+		  <div class="carousel-item active" style="width: 100%; height: 400px;">
+			<img src="userAssets/images/banners/02.png" class="d-block w-100" alt="userAssets/images/banners/04.png">
+			<div class="carousel-caption d-none d-md-block">
+			  <a href="#" class="btn btn-light btn-ecomm px-4 rounded">Shop Now</a>
+			</div>
+		  </div>
+	
+		  <div class="carousel-item" style="width: 100%; height: 400px;">
+			<img src="userAssets/images/banners/04.png" class="d-block w-100" alt="userAssets/images/banners/04.png">
+			<div class="carousel-caption d-none d-md-block">
+			  <a href="#" class="btn btn-light btn-ecomm px-4 rounded">Shop Now</a>
+			</div>
+		  </div>
+	  
+		
+		  <div class="carousel-item" style="width: 100%; height: 400px;">
+			<img src="userAssets/images/banners/04.png" class="d-block w-100" alt="userAssets/images/banners/04.png">
+			<div class="carousel-caption d-none d-md-block">
+			  <a href="#" class="btn btn-light btn-ecomm px-4 rounded">Shop Now</a>
+			</div>
+		  </div>
+	  
 		</div>
+	  
+		<button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+		  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+		  <span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+		  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+		  <span class="visually-hidden">Next</span>
+		</button>
 	  </div>
-  
-	  <!-- Slide 2 -->
-	  <div class="carousel-item" style="width: 100%; height: 400px;">
-		<img src="userAssets/images/banners/04.png" class="d-block w-100" alt="userAssets/images/banners/04.png">
-		<div class="carousel-caption d-none d-md-block">
-		  <a href="#" class="btn btn-light btn-ecomm px-4 rounded">Shop Now</a>
-		</div>
-	  </div>
-  
-	  <!-- Slide 3 -->
-	  <div class="carousel-item" style="width: 100%; height: 400px;">
-		<img src="userAssets/images/banners/04.png" class="d-block w-100" alt="userAssets/images/banners/04.png">
-		<div class="carousel-caption d-none d-md-block">
-		  <a href="#" class="btn btn-light btn-ecomm px-4 rounded">Shop Now</a>
-		</div>
-	  </div>
-  
-	</div>
-  
-	<button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-	  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-	  <span class="visually-hidden">Previous</span>
-	</button>
-	<button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-	  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-	  <span class="visually-hidden">Next</span>
-	</button>
-  </div>
+</section> -->
+
   
   
   
@@ -192,10 +174,10 @@
 
 						  <!-- Listing Products-->
 						  
-						
+
 
 								<div class="product-grid">
-									<div class="row row-cols-sm-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 row-cols-xxl-5  g-sm-4">
+									<div class="row ">
 										<% if(product.length > 0){
 												for(let i = 0; i < product.length; i++){ %>
 
@@ -205,9 +187,9 @@
 													
 											<div class="card">
 												<div class="position-relative overflow-hidden">
-													<div class="add-cart position-absolute top-0 end-0 mt-3 me-3">
+													<!-- <div class="add-cart position-absolute top-0 end-0 mt-3 me-3">
 														<a href="javascript:;"><i class="fa-solid fa-cart-shopping"></i></a>
-													  </div>
+													  </div> -->
 												
 												  <!-- The detail of the product is sent through params-->
 												  <a href="/product-detail/<%= product[i]._id %>">
@@ -334,7 +316,12 @@
 									  </div><!--end row-->
 								</div>
 					</div>
+					<div class="text-center">
+						<a class="btn btn-sm " href="/shop-grid" >Load more</a>
+					</div>
 				</section>
+
+			
 
 				<!--end Featured product-->
 				<!-- Include this script after jQuery -->

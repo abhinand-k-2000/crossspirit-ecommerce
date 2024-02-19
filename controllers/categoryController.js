@@ -144,7 +144,7 @@ const updateCategory = async (req, res, next) => {
 
     // Update the category data with the new values
     const updateCategory = {
-      ...(name && { name }),
+      ...(name && { name }),   
       imagePath: updatedImagePath,
     };
 

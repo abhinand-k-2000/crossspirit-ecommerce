@@ -17,7 +17,7 @@
              
                 <div class="card-body">
 
-                    <form  action="/admin/coupon/edit-coupon?couponId=<%=coupon._id%>" method="POST"  >
+                    <form  action="/admin/coupon/edit-coupon?couponId=<%=coupon._id%>" method="POST" onsubmit="return validateForm()" >
 
                         <div class="mb-4">
                             <label for="couponCode" class="form-label">Coupon Code</label>
@@ -58,7 +58,7 @@
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Starting Date</label>
-                                    <input type="date" name="startingDate" value="<%= new Date(coupon.startingDate).toISOString().split('T')[0] %>" class="form-control" required oninput="validateStartingDate()"  />
+                                    <input type="date" name="startingDate" id="startingDate" value="<%= new Date(coupon.startingDate).toISOString().split('T')[0] %>" class="form-control" required min="<%= new Date().toISOString().split('T')[0] %>" oninput="validateStartingDate()"  />
                                     <small id="startingDateError" class="text-danger"></small>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
                             <div class="col-lg-4">
                                 <div class="mb-4"> 
                                     <label class="form-label">Expiry Date</label>
-                                    <input type="date" name="expiryDate" value="<%= new Date(coupon.expiryDate).toISOString().split('T')[0] %>" class="form-control" required oninput="validateExpiryDate()"  />
+                                    <input type="date" name="expiryDate" id="expiryDate" value="<%= new Date(coupon.expiryDate).toISOString().split('T')[0] %>" class="form-control" required min="<%= new Date().toISOString().split('T')[0] %>" oninput="validateExpiryDate()"  />
                                     <small id="expiryDateError" class="text-danger"></small>
                                 </div>
                             </div>
@@ -75,7 +75,7 @@
 
                         <div class="col-lg-3">
                             <div>
-                                <button class="btn btn-md rounded font-sm hover-up" type="submit">Add</button>
+                                <button class="btn btn-md rounded font-sm hover-up" type="submit">Update</button>
                             </div>
                         </div>
                     </form>
@@ -129,6 +129,44 @@
     }
 }
 
+    function validateStartingDate() {
+        var startingDate = document.getElementById("startingDate").value;
+        var expiryDate = document.getElementById("expiryDate").value;
+
+        if (expiryDate !== "" && expiryDate < startingDate) {
+            document.getElementById("expiryDateError").innerText = "Expiry date cannot be before the starting date.";
+        } else {
+            document.getElementById("expiryDateError").innerText = "";
+        }
+    }
+
+    function validateExpiryDate() {
+        var startingDate = document.getElementById("startingDate").value;
+        var expiryDate = document.getElementById("expiryDate").value;
+
+        if (startingDate !== "" && expiryDate < startingDate) {
+            document.getElementById("expiryDateError").innerText = "Expiry date cannot be before the starting date.";
+        } else {
+            document.getElementById("expiryDateError").innerText = "";
+        }
+    }
+
+    function validateForm() {
+        validateStartingDate();
+        validateExpiryDate();
+
+        // Check if there are any errors
+        var startingDateError = document.getElementById("startingDateError").innerText;
+        var expiryDateError = document.getElementById("expiryDateError").innerText;
+
+        if (startingDateError || expiryDateError) {
+            // There are errors, prevent form submission
+            return false;
+        }
+
+        // No errors, allow form submission
+        return true;
+    }
 </script>
 
      

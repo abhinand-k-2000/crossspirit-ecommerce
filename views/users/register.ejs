@@ -205,7 +205,7 @@
 				passwordError.innerText = 'Password is required.';
 				passwordInput.style.border = '1px solid red'; // Set border color to red on error
 			} else if (!passwordRegex.test(password)) {
-				passwordError.innerText = 'Password must be minimum 8 characters.';
+				passwordError.innerText = 'Password must be minimum 8 characters with a number.';
 				passwordInput.style.border = '1px solid red'; // Set border color to red on error
 			} else {
 				passwordError.innerText = ''; // Clear the error message

@@ -53,7 +53,7 @@ admin_route.post('/order/update-order-status', adminController.updateOrderStatus
 
 // ================================================SALES REPORT====================================================
 admin_route.get('/sales-report', adminController.loadSalesReport);
-admin_route.post('/sales-report', adminController.displaySalesReport);
+admin_route.get('/sales-report-filter', adminController.displaySalesReport);
 admin_route.get('/generate-order-summary-pdf', adminController.generateSalesReportPdf)
 // ================================================END OF SALES REPORT=============================================
 
@@ -65,6 +65,7 @@ admin_route.get('/coupon/add-coupon', adminController.loadAddCoupon)
 admin_route.post('/coupon/add-coupon', adminController.addCoupon)
 admin_route.get('/coupon/edit-coupon', adminController.loadEditCoupon)
 admin_route.post('/coupon/edit-coupon', adminController.editCoupon)
+admin_route.delete('/coupon/delete-coupon', adminController.deleteCoupon)
 //=====================================================COUPONS==========================================
 
  
