@@ -13,10 +13,10 @@ const Banner = require("../models/bannerModel")
 
 const nodemailer = require("nodemailer");
 const mailgen = require("mailgen");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const path = require("path")
 const ejs = require("ejs")
-const puppeteer = require("puppeteer")
+const puppeteer = require("puppeteer-core")
 const authService = require("../services/jwt");
 const mongoose = require("mongoose");
 const Razorpay = require('razorpay')
@@ -718,7 +718,7 @@ const addAddress = async (req, res, next) => {
     const { streetAddress, city, state, pinCode } = req.body;
 
     if (!streetAddress && !city && !state && !pinCode) {
-      const message = "Please enter at least one address field.";
+      // const message = "Please enter at least one address field.";
       // return res.render('user-account-address');
       return res.redirect("/user-address");
     }

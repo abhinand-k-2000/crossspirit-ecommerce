@@ -11,7 +11,7 @@ const mongoose = require("mongoose");
 const moment = require("moment");
 const path = require("path");
 const ejs = require("ejs");
-const puppeteer = require("puppeteer")
+const puppeteer = require("puppeteer-core")
 
 const authService = require("../services/jwt");
 
