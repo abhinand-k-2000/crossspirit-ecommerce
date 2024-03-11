@@ -29,7 +29,7 @@
     
 
 
-	<title>Shopingo - eCommerce HTML Template</title>
+	<title>CrossSpirit Fashion</title>
 </head>
 
 <body>
@@ -103,18 +103,21 @@
 											<li class="nav-item" style="position: relative;">
 												<a href="/wishlist" class="nav-link cart-link">
 													<i class='bx bx-heart'></i>
-													<span id="wishlistCount" class="alert-count" style="background-color: black; color: white; border-radius: 50%; padding: 0px 6px; position: absolute; top: 8px; right: -2px; font-size: .5em;">
+													<span id="wishlistCount" class="alert-count" style="<%= wishlistItemCount > 0 ? 'background-color: black; color: white; border-radius: 50%; padding: 0px 6px; position: absolute; top: 8px; right: -2px; font-size: .5em;' : 'display: none;' %>">
 														<%= wishlistItemCount %>
+													</span>
 												</a>
+												
 											</li>
 											
 											<li class="nav-item" style="position: relative;">
 												<a href="/cart" class="nav-link cart-link">
 													<i class='bx bx-shopping-bag'></i>
-													<span class="alert-count fw-bolder" style="background-color: black; color: white; border-radius: 50%; padding: 0px 6px; position: absolute; top: 8px; right: -2px; font-size: .5em;">
-    													<%= cartItemCount %>
+													<span class="alert-count fw-bolder" style="<%= cartItemCount > 0 ? 'background-color: black; color: white; border-radius: 50%; padding: 0px 6px; position: absolute; top: 8px; right: -2px; font-size: .5em;' : 'display: none;' %>">
+														<%= cartItemCount %>
 													</span>
 												</a>
+												
 											</li>
 											
 											

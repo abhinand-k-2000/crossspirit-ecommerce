@@ -1,6 +1,5 @@
 require('dotenv').config()
 const express = require('express');
-const path = require('path');
 const session = require('express-session')
 const cookieParser = require('cookie-parser'); 
 const dbConnect = require('./config/dbConnect')
@@ -25,9 +24,6 @@ app.use(cookieParser())
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
-
-
  
 // Cache clearing     
 app.use((req, res, next) => {
@@ -40,17 +36,9 @@ app.use((req, res, next) => {
     next();
 });
 
- 
-
-
 //Load assets for user and admin
 app.use(express.static('assets'))
 app.use(express.static('uploads'))
- 
-
-
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
 
 //Setting up view engine
 app.set('view engine', 'ejs')
@@ -59,8 +47,6 @@ app.set('view engine', 'ejs')
 //Loading Middleware to fetch category data and make it available globally
 const userController = require('./controllers/userController')
 app.use(userController.loadCategoriesMiddleware);
- 
-
 
 app.use((req, res, next) => {
     if (req.path.startsWith('/admin')) { 
@@ -84,14 +70,13 @@ const banner_route = require('./routes/bannerRoute')
      
 app.use('/', user_route, cart_route)
 app.use('/admin', admin_route, category_route, product_route, offer_route, banner_route )
-// app.use('/admin', category_route)
-// app.use('/admin', product_route)
 
 
 // Importing error handling middleware
 const errorHandler = require('./middleware/errorMiddleware');
 app.use(errorHandler);
 
+// Catch all routes
 app.all('*', (req, res, next) => {
   // res.status(404).json({
   //   status: 'fail',

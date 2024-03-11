@@ -268,7 +268,7 @@ const listCustomers = async (req, res, next) => {
   }
 };
 
-const blockUser = async (req, res, next) => {
+const  blockUser = async (req, res, next) => {
   try {
     const id = req.params.userId;
     const userData = await User.findByIdAndUpdate(

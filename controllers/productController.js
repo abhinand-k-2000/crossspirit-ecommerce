@@ -61,7 +61,7 @@ const addProduct = async (req, res, next) => {
   }
 };
 
-const viewProductDetails = async (req, res) => {
+const viewProductDetails = async (req, res, next) => {
   try {
     let id = req.params.id;
     let productId = new mongoose.Types.ObjectId(req.params.id)
@@ -85,14 +85,16 @@ const viewProductDetails = async (req, res) => {
         }
   
       ]);
+        
       return res.render("product-details", { product: productData, wishlistData });
 
     } else{
       res.render("product-details", { product: productData });
     }
-    
+     
   } catch (error) {
-    console.log(error);
+    console.log(error); 
+    next(error)
   }
 };
 
@@ -181,7 +183,6 @@ const updateProduct = async (req, res, next) => {
         existingProduct.images.push(filename);
       }
     }
-
     // Save the updated product
     const updatedProduct = await existingProduct.save();
 
@@ -190,6 +191,7 @@ const updateProduct = async (req, res, next) => {
     // return res.render('editProduct', { product: updatedProduct, categories: fetchCategories, message: 'Product updated successfully' });
   } catch (error) {
     console.log("Error from updateProduct ", error);
+
     next(error);
   }
 };

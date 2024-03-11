@@ -4,6 +4,7 @@ const router = express.Router()
 
 const userController = require('../controllers/userController')
 const cartController = require('../controllers/cartController')
+const productController = require('../controllers/productController')
 
 
 const { requireAuth, checkUser } = require('../middleware/authMiddleware')
@@ -41,27 +42,39 @@ router.post('/forgot-password-otp', userController.forgotPasswordOtp)
 router.post('/fortgot-password-otp-verify', userController.verifyForgotPasswordOtp)
 router.post('/new-password', userController.newPassword)
 
-
-//Loading user dashboard 
-router.get('/dashboard', requireAuth, userController.loadDashboard)
-router.get('/user-account-details', userController.loadAccountDetails)   
-router.post('/update-user-account', userController.updateUserAccount)
-router.get('/user-change-password', userController.loadChangePassword)
-router.post('/user-change-password', userController.changePassword)
-router.get('/logout', userController.userLogout)
-router.get('/orders', userController.loadOrders)
-router.get('/order-full-details', userController.loadOrderFullDetails)
-router.post('/order-cancel', userController.orderCancel)     
-router.post('/order-return', userController.orderReturn)
-router.get('/user-account-referral', userController.loadUserReferral)      
-
-
-    
-const productController = require('../controllers/productController')
-
 //View product details
 router.get('/product-detail/:id', productController.viewProductDetails)
 // router.get('/product-detail', productController.viewProductDetails)
+
+
+router.get('/shop-grid', userController.loadShopGrid)   
+
+router.get('/applyFilters', userController.loadFilter)
+
+// router.get('/search', userController.loadSearch)
+router.get('/search', userController.searchResult)  
+
+
+// middleware for authorization
+
+
+//Loading user dashboard 
+router.get('/dashboard', requireAuth, userController.loadDashboard)
+router.get('/user-account-details',requireAuth, userController.loadAccountDetails)   
+router.post('/update-user-account',requireAuth, userController.updateUserAccount)
+router.get('/user-change-password',requireAuth, userController.loadChangePassword)
+router.post('/user-change-password',requireAuth, userController.changePassword)
+router.get('/logout', userController.userLogout)
+router.get('/orders',requireAuth, userController.loadOrders)
+router.get('/order-full-details',requireAuth, userController.loadOrderFullDetails)
+router.post('/order-cancel',requireAuth, userController.orderCancel)     
+router.post('/order-return',requireAuth, userController.orderReturn)
+router.get('/user-account-referral',requireAuth, userController.loadUserReferral)      
+
+
+    
+
+
 
 
 // -------------------------------------WISHLIST ROUTES -------------------------------------------------------------
@@ -72,7 +85,7 @@ router.delete('/remove-from-wishlist', userController.removeFromWishlist)
    
 
 //------------------------------------------------ADDRESS------------------------------------------------------------------------
-router.get('/user-address', userController.loadUserAddress)
+router.get('/user-address',requireAuth, userController.loadUserAddress)
 router.post('/add-address', userController.addAddress)   
 router.post('/delete-address/:id', userController.deleteAddress);
 router.post('/edit-address/:id', userController.editAddress)
@@ -80,16 +93,16 @@ router.post('/edit-address/:id', userController.editAddress)
 
 
 
-router.get('/checkout-details', userController.loadCheckoutDetails)
-router.get('/checkout-payment', userController.loadCheckoutPayment)
+router.get('/checkout-details',requireAuth, userController.loadCheckoutDetails)
+router.get('/checkout-payment',requireAuth, userController.loadCheckoutPayment)
 
-router.post('/create-order', userController.createOrder)
-router.get('/order-confirmation', userController.loadThankYouPage);
+router.post('/create-order',requireAuth, userController.createOrder)
+router.get('/order-confirmation',requireAuth, userController.loadThankYouPage);
 
 // Online payment ==>  Razor pay 
 router.post('/create-razorpay-order', userController.razorpayPayment);
 
-router.get('/invoice-generate', userController.invoiceGeneration)
+router.get('/invoice-generate',requireAuth, userController.invoiceGeneration)
 
 
 //=====================================================COUPONS==========================================
@@ -101,19 +114,14 @@ router.post('/coupon/remove-coupon', userController.removeCoupon)
 
 
 //=====================================================END OF WALLET==========================================
-router.get('/wallet', userController.loadWallet)
+router.get('/wallet',requireAuth, userController.loadWallet)
 router.post('/wallet/add-amount', userController.addAmountToWallet)
 router.post('/wallet/razorpay-payment-wallet', userController.razorpayWalletPayment)
 router.post('/wallet/withdraw-amount', userController.withdrawAmountFromWallet)
-router.get('/wallet/transactions', userController.loadTransactionHistory)     
+router.get('/wallet/transactions',requireAuth, userController.loadTransactionHistory)     
 //=====================================================END OF WALLET==========================================
    
-router.get('/shop-grid', userController.loadShopGrid)   
 
-router.get('/applyFilters', userController.loadFilter)
-
-// router.get('/search', userController.loadSearch)
-router.get('/search', userController.searchResult)  
 
 module.exports = router
 

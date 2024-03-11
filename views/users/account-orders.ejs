@@ -74,6 +74,8 @@
 															</tr>
 														</thead>
 														<tbody>
+															<% if(orders.length != 0){ %>
+															
 															<% orders.forEach((order) => { %>
 																<tr class="text-center">
 																	<td>
@@ -133,6 +135,13 @@
 																	</td>
 																</tr>
 															<% }) %>
+														<% } else { %>
+															<tr>
+																<td colspan="8" class="text-center" style="padding-top: 2em;">
+																	<p class="text-success">Ready to start shopping? Place your first order now!</p>
+																</td>
+															</tr>
+														<% } %>
 														</tbody>
 													</table>
 													  

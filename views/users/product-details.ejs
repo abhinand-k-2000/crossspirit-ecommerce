@@ -148,10 +148,12 @@
 											<!--end row-->
 											<div class="d-flex gap-2 mt-3" >
 												<% if(product.countInStock !== 0){%>
-													<form action="/add-to-cart/<%=product._id%>" method="post">
-														<button type="submit" class="btn btn-dark btn-ecomm" name="addToCart" ><i class="bx bxs-cart-add"></i>Add to Cart
+													<!-- <form action="/add-to-cart/<%=product._id%>" method="post"> -->
+
+														<button type="button" id="addToCartButton" class="btn btn-dark btn-ecomm" name="addToCart" onclick="addToCart('<%= product._id %>')" >
+															<i class="bx bxs-cart-add"></i>Add to Cart
 														</button>
-													  </form>
+													  <!-- </form> -->
 												<% }else{ %>
 													<h6 class="text-danger mt-2 ">Out of Stock</h6>
 												<% } %>
@@ -202,7 +204,8 @@
 
 	
 	
-
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 	<script>
 		const addToWishlist = async () => {
 		  try {
@@ -252,6 +255,74 @@
 			console.error(error);
 		  }
 		};
+
+
+		async function addToCart(productId) {
+			try {
+
+				const response = await fetch(`/add-to-cart/${productId}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+
+				if (!response.ok) {
+				throw new Error(`Failed to add item to cart: ${response.statusText}`);
+				}
+
+				console.log("Item added to cart successfully!");
+
+				Toastify({
+					text: "Item added to Cart",
+					className: "info",
+					gravity: "top",
+					position: "center",
+					style: {
+						// background: "linear-gradient(to right, #00b09b, #96c93d)",
+						background: "green"
+					}
+				}).showToast();
+				
+				document.getElementById('addToCartButton').innerText = 'Go to Cart';
+				document.getElementById('addToCartButton').removeEventListener('click', addToCart);
+				document.getElementById('addToCartButton').addEventListener('click', () => {
+					window.location.href = '/cart';
+				});
+
+			} catch (error) {
+				console.error("Error adding item to cart:", error);
+			}
+		}
+
+			
+
+		window.addEventListener('load', async() => {
+			try {
+				const response = await fetch('/get-cart-status');
+				const cartState = await response.json();
+				
+				const productId = '<%= product._id %>';
+				let isInCart = false;
+				cartState.products.forEach((item) => {
+					if(item.product_id == productId){
+						isInCart = true;
+					}
+				})
+
+					const addToCartButton = document.getElementById('addToCartButton');
+					
+
+				if(isInCart){
+					document.getElementById('addToCartButton').innerText = 'Go to Cart';
+				}
+
+			} catch (error) {
+				console.log("Error fetching cart state: ",error)
+			}
+		})
+
+
 	  </script>
 
 

@@ -183,6 +183,7 @@
 <script>
 	function confirmRazorpayPayment() {
 	  // Fetch order details from the server
+
 	  fetch('/create-razorpay-order', {
 		method: 'POST',
 		headers: {
@@ -190,6 +191,7 @@
 		}
 	  })
 	  .then(response => response.json())
+	  
 	  .then(order => {
 		// Log order details for debugging
 		console.log('Received order details:', order);
@@ -520,10 +522,26 @@
 														</p>
 														<p class="mb-2">Taxes: <span class="float-end">--</span>
 														</p>
-														<p class="mb-0">Discount: <span class="float-end">--</span>
+														<p class="mb-0">Discount: <span class="float-end">
+														
+															<% if (typeof couponAmount !== 'undefined') { %>
+																Rs. <%= couponAmount %>
+															<% } else { %>
+																--
+															<% } %>
+															
+														</span>
 														</p>
 														<div class="my-3 border-top"></div>
-														<h5 class="mb-0">Order Total: <span class="float-end">Rs. <%= cart.totalProductsPrice %></span></h5>
+														<h5 class="mb-0">Order Total: <span class="float-end">
+															<% if (typeof couponAmount !== 'undefined') { %>
+																Rs. <%= cart.totalProductsPrice - couponAmount %>
+															<% } else { %>
+																Rs. <%= cart.totalProductsPrice %>
+															<% } %>
+															
+															
+														</span></h5>
 													</div>
 												</div>
 											</div>

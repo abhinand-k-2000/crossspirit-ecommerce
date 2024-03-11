@@ -31,78 +31,156 @@
 						<div class="card form-card mx-auto mt-5" style="max-width: 500px;">
 							<div class="card-body">
 								<h2 class="card-title text-center mb-4">OTP Verification</h2>
-								<p id="timer" class="text-center"></p> 
-								<form class="row g-3 d-flex flex-column justify-content-center align-items-center" action="/otpVerify" method="POST">
 									<div class="col-lg-12">
 										<label for="inputOTP" class="form-label">Enter OTP</label>
-										<input type="number" class="form-control" id="inputOTP" name="otp" required>
+										<input type="tel" class="form-control" id="inputOTP" name="otp" required>
 									</div>
-									<div class="col-12 text-center">
-										<button type="submit" class="btn btn-dark btn-block"><i class='bx bx-user'></i> Verify OTP</button>
-									</div>
-									<% if(typeof message !== 'undefined'){ %>
-										<h5 class="text-center text-danger mt-3"> <%= message %></h5>
-									<% } %>
-								</form>
-				
-								<div class="text-center mt-3" id="resendOTPContainer" style="display: none;">
-									<form action="/resent-otp" method="POST">
-									  <button type="submit" class="btn btn-link" id="resendOTPBtn">Resend OTP</button>
-									</form>
-								</div>
-								  
-								<div class="text-center mt-3" id="resendOTPContainer">
-									<p id="timer"></p> <!-- Display timer here -->
-									<form action="/resent-otp" method="POST">
-										<button type="submit" class="btn btn-link" id="resendOTPBtn" onclick="startTimer(300)" style="text-decoration: none;"></button>
-									</form>
-								</div>
-								  
+									<p id="errorMessage" class="text-danger text-center fw-bold mt-2">	</p>
 
+									<div class="col-12 mt-3 text-center">
+										<button type="button" id="verifyButton" class="btn btn-dark btn-block" onclick="verifyOtp()"><i class='bx bx-user'></i> Verify OTP</button>
+									</div>
+									<p id="timer" class="text-center text-primary fw-bold mt-1"></p> 
+									<p id="resendButton" class="text-center text-primary fw-bold mt-1" style="display:none; cursor: pointer; " onclick="resendOtp()">Resend Otp</p> 
 							</div>
 						</div>
 					</div>
 				</section>
+
+													<!-- Add a toast container -->
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+    <div id="successToast" class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="successToastBody" class="toast-body">
+            User created successfully!
+        </div>
+    </div>
+</div>
 				
 				<!--end shop cart-->
 			</div>
 		</div>
 		<!--end page wrapper -->
-
-
-		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a><!--End Back To Top Button-->
 	</div>
 	<!--end wrapper-->
 	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-		  setTimeout(function () {
-			document.getElementById("resendOTPContainer").style.display = "block";
-		  }, 5000); // 5000 milliseconds (5 seconds)
-		});
-	  </script>
-	  
-	  <script>
-		function startTimer(duration) {
-			var timer = duration, minutes, seconds;
-			setInterval(function () {
-				minutes = parseInt(timer / 60, 10);
-				seconds = parseInt(timer % 60, 10);
-	
-				minutes = minutes < 10 ? "0" + minutes : minutes;
-				seconds = seconds < 10 ? "0" + seconds : seconds;
-	
-				document.getElementById("timer").textContent = minutes + ":" + seconds;
-	
-				if (--timer < 0) {
-					timer = duration;
-				}
-			}, 1000);
+
+let timerSeconds = 60; 
+    let timerInterval;
+
+    function startTimer() {
+        timerInterval = setInterval(function () {
+            timerSeconds--;
+            updateTimerDisplay();
+
+            if (timerSeconds === 0) {
+                clearInterval(timerInterval);
+                document.getElementById("resendButton").style.display = "block";
+                document.getElementById("timer").style.display = "none";
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        document.getElementById("timer").innerText = `Resend OTP in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+	startTimer();
+
+	async function resendOtp(){
+		try {
+			const response = await fetch('/resent-otp', {
+				method: 'POST'
+			})
+			const responseData = await response.json();
+			console.log("response: ", responseData);
+			if(responseData.success){
+				// alert("otp has resend")
+				const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+				const toastBody = document.getElementById('successToastBody');
+				toastBody.innerText = 'Otp has been sent!'
+                successToast.show();
+				timerSeconds = 60;
+			document.getElementById("resendButton").style.display = "none";
+			document.getElementById("timer").style.display = "block";
+			startTimer();
+			} else {
+				console.log("response error: ", responseData.message)
+				document.getElementById('errorMessage').innerHTML = responseData.message
+			}
+		} catch (error) {
+			console.log(error)
 		}
+	} 
+
+
+
+
+async function verifyOtp() {
+        const otpValue = document.getElementById('inputOTP').value;
+        try {
+            const response = await fetch('/otpVerify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ otp: otpValue })
+            });
+            const responseData = await response.json();
+			console.log("Response: ", responseData)
+
+            if (responseData.success) {
+                // Success case
+				const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+				const toastBody = document.getElementById('successToastBody');
+				toastBody.innerText = ' User created successfully!'
+                successToast.show();
+
+                // Redirect to the login page after a delay (adjust the delay as needed)
+                setTimeout(() => {
+                    window.location.href = responseData.redirect;
+                }, 1000);
+            } else {
+                // Error case
+                console.error("Error:", responseData.message);
+				document.getElementById('errorMessage').innerHTML = responseData.message
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            alert("An error occurred. Please try again.");
+        }
+    }
+
+
+
+
+		// document.addEventListener("DOMContentLoaded", function () {
+		//   setTimeout(function () {
+		// 	document.getElementById("resendOTPContainer").style.display = "block";
+		//   }, 5000); // 5000 milliseconds (5 seconds)
+		// });
+
+		// function startTimer(duration) {
+		// 	var timer = duration, minutes, seconds;
+		// 	setInterval(function () {
+		// 		minutes = parseInt(timer / 60, 10);
+		// 		seconds = parseInt(timer % 60, 10);
 	
-		// Start the timer immediately when the page loads
-		window.onload = function () {
-			startTimer(300); // 300 seconds = 5 minutes
-		};
+		// 		minutes = minutes < 10 ? "0" + minutes : minutes;
+		// 		seconds = seconds < 10 ? "0" + seconds : seconds;
+	
+		// 		document.getElementById("timer").textContent = minutes + ":" + seconds;
+	
+		// 		if (--timer < 0) {
+		// 			timer = duration;
+		// 		}
+		// 	}, 1000);
+		// }
+	
+		// // Start the timer immediately when the page loads
+		// window.onload = function () {
+		// 	startTimer(300); // 300 seconds = 5 minutes
+		// };
 	</script>
 	  
 

@@ -158,7 +158,6 @@ console.log("Register session: ", req.session.referralId)
       });
     }
 
-    // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(password)) {
       return res.render("register", {
@@ -167,11 +166,14 @@ console.log("Register session: ", req.session.referralId)
     }
 
   try {
-    // Additional validations can be added as needed...
-    globalName = name;
-    globalEmail = email;
-    globalMobile = mobile;
-    globalPassword = await securePassword(password);
+
+
+    req.session.userData = {
+      name: name,
+      email: email,
+      mobile: mobile,
+      password: await securePassword(password)
+  };
 
     const existingUser = await User.findOne({ email });
 
@@ -181,8 +183,6 @@ console.log("Register session: ", req.session.referralId)
       });
     }
     
-    
-
     // email verification
     OTP = generateOtp();
     console.log(OTP);
@@ -213,31 +213,34 @@ const resentOtp = async (req, res, next) => {
   try {
     OTP = generateOtp();
     console.log(OTP);
+    const userDataFromSession = req.session.userData;
+    const {email} = userDataFromSession
 
     // Find the existing OTP record in the Otp collection
-    let existingOtp = await Otp.findOne({ email: globalEmail });
+    let existingOtp = await Otp.findOne({ email: email });
 
     if (!existingOtp) {
       // If the user doesn't exist, create a new document
       existingOtp = new Otp({
-        email: globalEmail,
+        email: email,
         otp: OTP,
-        expiry: new Date(Date.now() + 300000), // 5 minutes expiry
+        expiry: new Date(Date.now() + 60000), 
       });
     } else {
       // Update the existing OTP record with the new OTP and a new expiry time
       existingOtp.otp = OTP;
-      existingOtp.expiry = new Date(Date.now() + 300000); // 5 minutes expiry
+      existingOtp.expiry = new Date(Date.now() + 60000); // 1 minutes expiry
     }
-
+   
     // Save the updated or new OTP record
     const updatedOtp = await existingOtp.save();
 
     if (updatedOtp) {
-      sendOtp(globalEmail, OTP);
-      res.render("otp");
+      sendOtp(email, OTP);
+      return res.json({success: true, message: "Otp sent successfully"})
+
     } else {
-      res.render("otp", { message: "Failed to update/create OTP. Please try again." });
+      return res.json({success: false, message: "Failed to send Otp. Please try again."})
     }
   } catch (error) {
     console.log("Error in resend otp", error);
@@ -248,25 +251,39 @@ const resentOtp = async (req, res, next) => {
 
 const verifyOtp = async (req, res, next) => {
   const userOtp = req.body.otp;
-  let parsedOtp = parseInt(userOtp);
+
+  const userDataFromSession = req.session.userData;
+  if (!userDataFromSession) {
+      // Handle the case where user data is not in the session
+      return res.status(400).json({ success: false, message: "User data not found in session" });
+  }
+  if(userOtp.trim() === ''){
+    return res.json({success: false, message: "Enter the Otp"})
+  } 
+  if (!/^\d+$/.test(userOtp)) {
+    return res.json({ success: false, message: "OTP should be a number" });
+  }
+
   try {
-    const otpRecord = await Otp.findOne({ email: globalEmail, otp: userOtp });
+    const otpRecord = await Otp.findOne({ email: userDataFromSession.email });
+
     if (otpRecord && otpRecord.expiry > new Date()) {
-      if (parsedOtp === otpRecord.otp) {
+      if (userOtp === otpRecord.otp) {
         let user = new User({
-          name: globalName,
-          email: globalEmail,
-          mobile: globalMobile,
-          password: globalPassword,  
+          name: userDataFromSession.name,
+          email: userDataFromSession.email,
+          mobile: userDataFromSession.mobile,
+          password: userDataFromSession.password,  
           referralCode: shortid.generate()
         });
 
         try {
           let userData = await user.save();
-          console.log(userData)
 
           // Remove the OTP record from the collection after successful verification
-          await Otp.deleteOne({ email: globalEmail, otp: userOtp });
+          await Otp.deleteOne({ email: userDataFromSession.email, otp: userOtp });
+          // Clear the user data from the session after successful creation
+          delete req.session.userData;
 
           // Create a wallet for the user
           const wallet = new Wallet({
@@ -286,10 +303,10 @@ const verifyOtp = async (req, res, next) => {
               const referralOffer = await Referral.findOne();
 
               if (referralOffer) {
-                const referredUserWallet = await Wallet.findOne({ user_id: referredUser ._id });
+                const referredUserWallet = await Wallet.findOne({ user_id: referredUser._id });
                 const signUpUserWallet = await Wallet.findOne({ user_id: userData._id})  
 
-            // Adding amount to the wallet of Referrer
+                // Adding amount to the wallet of Referrer
                 if (referredUserWallet) {
                   referredUserWallet.balance += referralOffer.referralBonus,
                   referredUserWallet.wallet_history.push({
@@ -301,7 +318,7 @@ const verifyOtp = async (req, res, next) => {
 
                   await referredUserWallet.save();
 
-                  // Adding amount ot the wallet of Sign-Up user
+                  // Adding amount to the wallet of Sign-Up user
                   if (signUpUserWallet) {
                     signUpUserWallet.balance += referralOffer.signUpBonus,
                     signUpUserWallet.wallet_history.push({
@@ -311,11 +328,7 @@ const verifyOtp = async (req, res, next) => {
                       current_balance: signUpUserWallet.balance 
                     })
                   }
-
                   await signUpUserWallet.save();
-
-            
-                
 
                   // Log the successful referral
                   console.log(`Referral success: ${referredUser.email} credited with ${referralOffer.referralBonus}`);
@@ -323,27 +336,130 @@ const verifyOtp = async (req, res, next) => {
               }
             }
           }
-
-          return res.redirect("/login");
+          // Return success response for fetch request
+          return res.json({ success: true, message: "User created successfully", redirect: "/login" });
+        
         } catch (userCreationError) {
           console.error('Error creating user:', userCreationError);
-          return res.render("otp", { message: "Error creating user. Please try again." });
+          // Return error response for fetch request
+          return res.json({ success: false, message: "Error creating user. Please try again." });
         }
       } else {
-        return res.render("otp", { message: "Incorrect OTP" });
+        // Return error response for fetch request
+        return res.json({ success: false, message: "Incorrect OTP" });
       }
     } else {
-      return res.render("otp", { message: "Incorrect or expired OTP" });
+      // Return error response for fetch request
+      return res.json({ success: false, message: "OTP expired. Click resend for a new one" });
     }
   } catch (error) {
     console.error('Error verifying OTP:', error);
-    return res.render("otp", { message: "An error occurred. Please try again." });
+    // Return error response for fetch request
+    return res.json({ success: false, message: "An error occurred. Please try again." });
   }
 };
 
 
 
+// const verifyOtp = async (req, res, next) => {
+//   const userOtp = req.body.otp;
+//   let parsedOtp = parseInt(userOtp);
+
+//   try {
+//     const otpRecord = await Otp.findOne({ email: globalEmail, otp: userOtp });
+
+//     if (otpRecord && otpRecord.expiry > new Date()) {
+//       if (parsedOtp === otpRecord.otp) {
+//         let user = new User({
+//           name: globalName,
+//           email: globalEmail,
+//           mobile: globalMobile,
+//           password: globalPassword,  
+//           referralCode: shortid.generate()
+//         });
+
+//         try {
+//           let userData = await user.save();
+//           console.log(userData)
+
+//           // Remove the OTP record from the collection after successful verification
+//           await Otp.deleteOne({ email: globalEmail, otp: userOtp });
+
+//           // Create a wallet for the user
+//           const wallet = new Wallet({
+//             user_id: userData._id,
+//             balance: 0,
+//             wallet_history: []
+//           });
+
+//           await wallet.save();
+
+//           if (req.session.referralId) { 
+//             const referralId = req.session.referralId;
+//             const referredUser = await User.findOne({ referralCode: referralId });
+//             const signUpUser = await User.findById(userData._id)
+
+//             if (referredUser) {  
+//               const referralOffer = await Referral.findOne();
+
+//               if (referralOffer) {
+//                 const referredUserWallet = await Wallet.findOne({ user_id: referredUser ._id });
+//                 const signUpUserWallet = await Wallet.findOne({ user_id: userData._id})  
+
+//             // Adding amount to the wallet of Referrer
+//                 if (referredUserWallet) {
+//                   referredUserWallet.balance += referralOffer.referralBonus,
+//                   referredUserWallet.wallet_history.push({
+//                     date: new Date(),
+//                     amount: referralOffer.referralBonus,
+//                     description: "Credited (Referral Bonus)",
+//                     current_balance: referredUserWallet.balance 
+//                   }); 
+
+//                   await referredUserWallet.save();
+
+//                   // Adding amount ot the wallet of Sign-Up user
+//                   if (signUpUserWallet) {
+//                     signUpUserWallet.balance += referralOffer.signUpBonus,
+//                     signUpUserWallet.wallet_history.push({
+//                       date: new Date(),
+//                       amount: referralOffer.signUpBonus,
+//                       description: "Credited (Sign-Up Bonus)",
+//                       current_balance: signUpUserWallet.balance 
+//                     })
+//                   }
+
+//                   await signUpUserWallet.save();
+
+//                   // Log the successful referral
+//                   console.log(`Referral success: ${referredUser.email} credited with ${referralOffer.referralBonus}`);
+//                 }
+//               }
+//             }
+//           }
+
+//           return res.redirect("/login");
+//         } catch (userCreationError) {
+//           console.error('Error creating user:', userCreationError);
+//           return res.render("otp", { message: "Error creating user. Please try again." });
+//         }
+//       } else {
+//         return res.render("otp", { message: "Incorrect OTP" });
+//       }
+//     } else {
+//       return res.render("otp", { message: "Incorrect or expired OTP" });
+//     }
+//   } catch (error) {
+//     console.error('Error verifying OTP:', error);
+//     return res.render("otp", { message: "An error occurred. Please try again." });
+//   }
+// };
+
+
+
 //Loading login page of the user 
+
+
 const loadLoginPage = (req, res) => {
   try {
     if (req.cookies["jwt"]) {
@@ -935,7 +1051,8 @@ const loadCheckoutDetails = async (req, res) => {
       address: address?.address || "No address available",
       products: productDetails,
       cart: cart,
-      coupons
+      coupons,
+      couponAmount: req.session.couponAmount
     });
   } catch (error) {
     console.log(error);
@@ -979,7 +1096,8 @@ const loadCheckoutPayment = async (req, res) => {
       products: productDetails,
       productIds: productIds,
       cart: cart,
-      razorpaykey: process.env.RAZORPAY_key_ID
+      razorpaykey: process.env.RAZORPAY_key_ID,
+      couponAmount: req.session.couponAmount
     });
   } catch (error) {
     console.log(error);
@@ -1009,8 +1127,12 @@ const createOrder = async (req, res, next) => {
       return total + item.quantity * item.price;
     }, 0);
 
-    if (cart.discount > 0) {
-      totalAmount -= cart.discount;
+    // if (cart.discount > 0) {
+    //   totalAmount -= cart.discount;
+    // }
+
+    if(req.session.couponAmount) {
+      totalAmount -= req.session.couponAmount
     }
 
     if (paymentMethod === 'Wallet') {
@@ -1111,7 +1233,7 @@ const loadOrders = async (req, res, next) => {
         $sort: {date: -1}
       }
     ])
-    
+    console.log(orderDetails)
     // console.log(orderDetails)
     res.render('account-orders', {
       orders: orderDetails
@@ -1404,25 +1526,32 @@ const applyCoupon = async (req, res, next) => {
 
     // Validate coupon dates and minimum amount
     const currentDate = new Date();
+
     if (currentDate < coupon.startingDate || currentDate > coupon.expiryDate) {
-      console.log("Validity expired");
       return res.status(200).json({ message: "Coupon is not valid during this period" });
     }
 
     if (cart.totalProductsPrice < coupon.minAmount) {
-      console.log("Amount not reached...");
       return res.status(200).json({ message: "Minimum purchase amount not reached" });
     }
 
-    // Apply the discount to the cart
-    cart.discount = coupon.discount;
-    cart.totalProductsPrice -= cart.discount;
+    req.session.couponAmount = coupon.discount
 
-    // Save the cart and await the save operation
-    await cart.save();
+    console.log(req.session.couponAmount)
+
+    // Apply the discount to the cart
+    // cart.discount = coupon.discount;
+    // cart.totalProductsPrice -= cart.discount;
+
+    // // Save the cart and await the save operation
+    // await cart.save();
+
 
     // Respond with a success message or updated cart information
-    res.json({ success: true, message: "Coupon applied", discount: cart.discount, totalPrice: cart.totalProductsPrice });
+    res.json({ success: true, message: "Coupon applied", 
+    discount: cart.discount, 
+    totalPrice: cart.totalProductsPrice,
+    couponAmount: req.session.couponAmount });
     return;
   } catch (error) {
     console.error("Error applying coupon:", error);
@@ -1440,18 +1569,25 @@ const removeCoupon = async (req, res, next) => {
       return res.status(404).json({ message: "Cart not found for the user" });
     }
 
-    // Check if a discount exists before attempting to remove it
-    if (cart.discount !== undefined) {
-      console.log("cart entry")
-      // Restore the original totalProductsPrice by adding back the discount
-      cart.totalProductsPrice = cart.totalProductsPrice + cart.discount;
-
-      // Remove the discount by setting it to undefined
-      cart.discount = undefined;
-
-      // Save the cart and await the save operation
-      await cart.save();
+    if(req.session.couponAmount) {
+      delete req.session.couponAmount
     }
+
+    console.log("removecoupon", req.session.couponAmount)
+    // Check if a discount exists before attempting to remove it
+    // if (cart.discount !== undefined) {
+    //   console.log("cart entry")
+    //   // Restore the original totalProductsPrice by adding back the discount
+    //   cart.totalProductsPrice = cart.totalProductsPrice + cart.discount;
+
+    //   // Remove the discount by setting it to undefined
+    //   cart.discount = undefined;
+
+    //   // Save the cart and await the save operation
+    //   await cart.save();
+    // }
+
+
     // Respond with a success message or updated cart information
     res.json({ success: true, message: "Coupon removed successfully", updatedCart: cart });
     // res.redirect('/checkout-details')
@@ -1646,27 +1782,6 @@ const loadShopGrid = async (req, res) => {
 };
  
 
-// const loadFilter = async (req, res) => {
-//   try {
-    
-//     const selectedCategories = req.query.categories ? req.query.categories.split(',') : [];
-
-//       // Build a query object to filter products based on selected categories
-//       const query = selectedCategories.length > 0 ? { category_id: { $in: selectedCategories } } : {};
-
-
-//       const products = await Product.find(query);
-//       const categories = await Category.find();
-
-//       res.json({ products, categories });
-
-//       console.log(selectedCategories)
-//       console.log(query)   
-       
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
 
 const loadFilter = async (req, res) => {
   try {
@@ -1680,7 +1795,7 @@ const loadFilter = async (req, res) => {
     const maxPrice = req.query.maxPrice || Infinity;
  
     const query = {};
-
+     
 // Add category filter if categoryIds are present
     if (categoryIds.length > 0) {
       query.category_id = { $in: categoryIds };

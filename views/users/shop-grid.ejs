@@ -64,12 +64,12 @@
 												<h6 class="p-1 fw-bold bg-light">Price</h6>
 												<div class="Price-wrapper p-1">
 												  <div class="input-group">
-													<input type="text" class="form-control rounded-0" id="minPrice" placeholder="$10">
-													<span class="input-group-text bg-section-1 border-0">-</span>
-													<input type="text" class="form-control rounded-0" id="maxPrice" placeholder="$10000">
-													<button type="button" class="btn btn-outline-dark rounded-0 ms-2">
-													  <i class='bx bx-chevron-right me-0'></i>
-													</button>
+													<input type="text" class="form-control rounded-0" id="minPrice" placeholder="Rs. 10">
+													<span class="input-group-text bg-section-1 border-0">to</span>
+													<input type="text" class="form-control rounded-0" id="maxPrice" placeholder="Rs. 1000">
+													<!-- <button type="button" class="btn btn-outline-dark rounded-0 ms-2"> -->
+													  <!-- <i class='bx bx-chevron-right me-0'></i>
+													</button> -->
 												  </div>
 												</div>
 											  </div>
@@ -369,7 +369,6 @@
               </div>
             </div>
           `;
-
           // Append the card to the product grid
           productGrid.appendChild(card);
         });
@@ -396,7 +395,7 @@
   // Event listener for the dropdown change event
   sortSelect.addEventListener('change', applyFiltersAndSort);
 });
-
+  
 </script>
 
 

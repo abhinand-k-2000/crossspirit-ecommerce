@@ -89,11 +89,12 @@ const addToCart = async (req, res, next) => {
               totalProductsPrice: discountedPrice,
           });
           await newCart.save();
-      } else {
+      } 
+      else {
           const existingItem = userCart.items.find(item => item.product_id.equals(productData._id));
 
           if (existingItem) {
-              existingItem.quantity += 1;
+              existingItem.quantity = 1;
               existingItem.price = discountedPrice;
               existingItem.totalPrice = existingItem.quantity * existingItem.price;
           } else {
@@ -111,15 +112,28 @@ const addToCart = async (req, res, next) => {
           await userCart.save();
       }
 
-      // res.status(200).json({ message: "Product added to cart successfully" });
-      res.redirect("/cart");
+      res.status(200).json({ message: "Product added to cart successfully" });
+      // res.redirect("/cart");
   } catch (error) {
       console.error("Failed to add the product in the cart:", error);
       next(error);
   }
 };
 
+getCartStatus = async (req, res, next) => {
+  try {
+    const userId = res.locals.user;
+    const cartData = await Cart.findOne({ user_id: userId._id });
 
+    if(cartData){
+      return res.json({products: cartData.items})
+    }
+    
+  } catch (error) {
+    console.log(error)
+    next(error)
+  }
+}
 
 //  Remove a product from the cart
 const removeItem = async (req, res, next) => {
@@ -244,5 +258,6 @@ module.exports = {
   loadCart,
   removeItem,
   updateQuantity,
-  fetchCartItemCount
+  fetchCartItemCount,
+  getCartStatus
 };

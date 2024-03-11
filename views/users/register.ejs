@@ -85,7 +85,7 @@
 															<label for="inputChoosePassword" class="form-label">Password</label>
 															<div class="input-group" id="show_hide_password">
 																<input type="password" class="form-control " id="inputChoosePassword" name="password" placeholder="Enter Password" oninput="validatePassword()" required> 
-																<!-- <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a> -->
+																<a href="javascript:;" class="input-group-text toggle-icon bg-transparent"><i id="showIcon" class='bx bx-hide'></i></a>
 															</div>
 															<p id="inputChoosePasswordError" class="text-danger"></p>
 														</div>
@@ -96,7 +96,7 @@
 														</div>
 													</form>
 
-
+															
 
 
 												</div>
@@ -133,6 +133,23 @@
 
 	<!-- Script file-->
 	<script>
+
+
+		//===========password visible toggle==============
+		const toggleIcon = document.querySelector('.toggle-icon');
+		const showIcon = document.getElementById('showIcon')
+		toggleIcon.addEventListener('click', () =>{
+			const passwordInput = document.getElementById('inputChoosePassword');
+			if(passwordInput.type === 'password'){
+				passwordInput.type = 'text';
+				showIcon.className = 'bx bx-show'
+			} else {
+				passwordInput.type = 'password'
+				showIcon.className = 'bx bx-hide'
+			}
+		})
+		//===========password visible toggle==============
+
 		function validateName() {
 			var nameInput = document.getElementById('inputFirstName');
 			var nameError = document.getElementById('inputFirstNameError');
@@ -159,7 +176,9 @@
 			var email = emailInput.value.trim();
 	
 			// Simple email validation (you can customize it based on your needs)
-			var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			// var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			var emailRegex = /^[^\s@]+@gmail\.com$/;
+
 	
 			if (email === '') {
 				emailError.innerText = 'Email is required.';
@@ -179,7 +198,9 @@
 			var mobile = mobileInput.value.trim();
 	
 			// Simple mobile number validation (you can customize it based on your needs)
-			var mobileRegex = /^[0-9]{10}$/;
+			// var mobileRegex = /^[0-9]{10}$/;
+			var mobileRegex = /^(?!0+$)\d{10}$/;
+
 	
 			if (mobile === '') {
 				mobileError.innerText = 'Mobile number is required.';
@@ -199,13 +220,15 @@
 			var password = passwordInput.value.trim();
 	
 			// Simple password validation (you can customize it based on your needs)
-			var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+			// var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+			var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
+
 	
 			if (password === '') {
 				passwordError.innerText = 'Password is required.';
 				passwordInput.style.border = '1px solid red'; // Set border color to red on error
 			} else if (!passwordRegex.test(password)) {
-				passwordError.innerText = 'Password must be minimum 8 characters with a number.';
+				passwordError.innerText = 'Password must be minimum 8 characters with letters, numbers, and special characters.';
 				passwordInput.style.border = '1px solid red'; // Set border color to red on error
 			} else {
 				passwordError.innerText = ''; // Clear the error message

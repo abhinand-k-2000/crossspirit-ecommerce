@@ -116,6 +116,8 @@
 											</div>
 										</div>
 									</div>
+
+								
 									<div class="col-12 col-xl-4">
 										<div class="order-summary">
 											
@@ -134,7 +136,7 @@
         </div>
 
 
-		<script>
+		<!-- <script>
 			function toggleCouponSection() {
 				var couponSection = document.getElementById('couponSection');
 				if (couponSection.style.display === 'none') {
@@ -143,7 +145,7 @@
 					couponSection.style.display = 'none';
 				}
 			}
-		</script>
+		</script> -->
 											<div class="card rounded-0">
 												
 												<div class="card-body">
@@ -151,19 +153,23 @@
 														<div class="card-body">
 															<p class="fs-5">Apply Discount Code</p>
 
-															<% if(cart.discount){ %>
-																<form id="removeCouponForm" action="/coupon/remove-coupon" method="post" onsubmit="removeCouponFormSubmit(event)">
+														
+																<!-- <form id="removeCouponForm" action="/coupon/remove-coupon" method="post" onsubmit="removeCouponFormSubmit(event)">
 																	<button id="removeCouponButton" class="btn btn-dark btn-ecomm" type="submit" >Remove Coupon</button>
-																</form>
-															<% } else { %>
-																<!-- <form  action="/coupon/apply-coupon" method="post"> -->
+																</form> -->
+
+															
+																	<button id="removeCouponBtn" class="btn btn-dark btn-ecomm" style="display: none;"  onclick="removeCoupon()">Remove Coupon</button>
+														
 																	<div class="input-group" id="applyCouponButton">
 																		<input type="text" class="form-control rounded-0" name="couponCode" id="couponCode" placeholder="Enter coupon code">
-																		<button  class="btn btn-dark btn-ecomm" type="button" onclick="applyCoupon()">Apply</button>
+																		<button  class="btn btn-dark btn-ecomm mt-1" id="applyCouponBtn" type="button" onclick="applyCoupon()">Apply</button>
 																	</div>
-																<!-- </form> -->
-															<% } %>
-															<button id="removeCouponBtn" class="btn btn-dark btn-ecomm" style="display: none;"  onclick="removeCoupon()">Remove Coupon</button>
+															
+															
+																	
+														
+															
 															
 															
 															
@@ -209,14 +215,14 @@
 															</p>
 															<p class="mb-2">Dicount: <span class="float-end" id="showDiscount">--</span>
 															</p>
-															<p class="mb-0">Discount: 
-																<% if(cart.discount){ %>
-																	<span  class="float-end">Rs. <%= cart.discount %></span>
-																<% }else{ %>
-																	<span class="float-end">--</span>
-																<% } %>
+															<!-- <p class="mb-0">Discount: 
 																
-															</p>
+																	<span  class="float-end"></span>
+															
+																	<span class="float-end">--</span>
+															
+																
+															</p> -->
 															<div class="my-3 border-top"></div>
 															<h5 class="mb-0">Order Total: <span class="float-end" id="orderTotal">Rs. <%= cart.totalProductsPrice %></span></h5>
 														</div>

@@ -7,7 +7,7 @@ const otpSchema = mongoose.Schema({
         required: true 
     },
     otp: { 
-        type: Number,
+        type: String,
         required: true
     },
     createdAt: {
@@ -16,8 +16,8 @@ const otpSchema = mongoose.Schema({
     },
     expiry: { 
         type: Date, 
-        expires: '5m', // Set TTL to 5 minutes
-        default: Date.now() + 300000 // Set default value to the current time + 5 minutes in milliseconds
+        expires: 60, // Set TTL to 5 minutes
+        default: Date.now() + 60000 // Set default value to the current time + 5 minutes in milliseconds
     }
   })
 

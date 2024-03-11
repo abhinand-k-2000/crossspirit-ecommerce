@@ -139,26 +139,26 @@ module.exports.addOffer = async (req, res, next) => {
 };
 
 
-const calculateOfferPriceAndUpdateProducts = async (offerId) => {
-    try {
-        // Find the offer document
-        const offer = await Offer.findById(offerId);
+// const calculateOfferPriceAndUpdateProducts = async (offerId) => {
+//     try {
+//         // Find the offer document
+//         const offer = await Offer.findById(offerId);
 
-        // Check if the offer exists and is not expired
-        if (offer) { 
-            const productsToUpdate = await Product.find({ categoryOffer: offer._id });
+//         // Check if the offer exists and is not expired
+//         if (offer) { 
+//             const productsToUpdate = await Product.find({ categoryOffer: offer._id });
 
-            // Update each product's offerPrice based on the percentage
-            for (const product of productsToUpdate) {
-                const CategoryOfferPrice = Math.floor(product.price * (1 - offer.percentage / 100));
-                await Product.findByIdAndUpdate(product._id, { $set: { CategoryOfferPrice } });
-            }
-        } 
+//             // Update each product's offerPrice based on the percentage
+//             for (const product of productsToUpdate) {
+//                 const CategoryOfferPrice = Math.floor(product.price * (1 - offer.percentage / 100));
+//                 await Product.findByIdAndUpdate(product._id, { $set: { CategoryOfferPrice } });
+//             }
+//         } 
         
-    } catch (error) {
-        console.error(error);
-    }
-};
+//     } catch (error) {
+//         console.error(error);
+//     }
+// };
 
 
 
