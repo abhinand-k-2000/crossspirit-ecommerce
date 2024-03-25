@@ -51,16 +51,21 @@
 
 
 												<div class="form-body">
-													<form class="row g-3" action="/login" method="POST">
+													<form class="row g-3" action="/login" method="POST" onsubmit=" return validateForm()">
 														<div class="col-12">
 															<label for="inputEmailAddress" class="form-label">Email Address</label>
-															<input type="email" class="form-control" id="inputEmailAddress" name="email" placeholder="Email Address" required>
+															<input type="text" class="form-control" id="inputEmailAddress" name="email" placeholder="Email Address" oninput="validateEmail()" >
+															<span id="emailError" class="text-danger"></span>
 														</div>
 														<div class="col-12">
 															<label for="inputChoosePassword" class="form-label">Enter Password</label>
 															<div class="input-group" id="show_hide_password">
-																<input type="password" class="form-control border-end-0" id="inputChoosePassword" name="password"  placeholder="Enter Password" required> <a href="javascript:;" class="input-group-text bg-transparent"><i class='bx bx-hide'></i></a>
+																<div class="input-group">
+																	<input type="password" class="form-control border-end-0" id="inputChoosePassword" name="password" placeholder="Enter Password" oninput="validatePassword()" >
+																	<button class="input-group-text toggle-icon bg-transparent" type="button" onclick="togglePasswordVisibility()"><i id="showIcon" class='bx bx-hide'></i></button>
+																  </div>
 															</div>
+															<p id="passwordError" class="text-danger"></p>
 														</div>
 														<!-- <div class="col-md-6">
 															<div class="form-check form-switch">
@@ -110,5 +115,75 @@
 		<!--End Back To Top Button-->
 	</div>
 	<!--end wrapper-->
+
+	<script>
+		const toggleIcon = document.querySelector('.toggle-icon');
+		const showIcon = document.querySelector('#showIcon');
+		toggleIcon.addEventListener('click', () => {
+			const passwordInput = document.getElementById('inputChoosePassword');
+			if(passwordInput.type === 'password'){
+				passwordInput.type = 'text';
+				showIcon.className = 'bx bx-show'
+			} else {
+				passwordInput.type = 'password';
+				showIcon.className = 'bx bx-hide'
+			}
+		})
+
+		function validateEmail() {
+			var emailInput = document.getElementById('inputEmailAddress');
+			var emailError = document.getElementById('emailError');
+			var email = emailInput.value.trim();
+
+			var emailRegex = /^[^\s@]+@gmail\.com$/;
+
+			if (email === '') {
+				emailError.innerHTML = "Email is required";
+				emailInput.style.border = '1px solid red';
+				return false; 
+			} else if (!emailRegex.test(email)) {
+				emailError.innerHTML = "Enter a valid email";
+				emailInput.style.border = '1px solid red';
+				return false; 
+			} else {
+				emailError.innerHTML = '';
+				emailInput.style.border = '1px solid #52CC7A';
+				return true; 
+			}
+		}
+
+function validatePassword() {
+    var passwordInput = document.getElementById('inputChoosePassword');
+    var passwordError = document.getElementById('passwordError');
+	var button = document.querySelector('.toggle-icon');
+    var password = passwordInput.value;
+
+    if (password === '') {
+        passwordError.innerHTML = 'Password is required'; 
+        passwordInput.style.border = '1px solid red'; 
+		button.style.border = '1px solid red';
+        return false; 
+    } else {
+        passwordError.innerHTML = ''; 
+        passwordInput.style.border = '1px solid #52CC7A';
+		button.style.border = '1px solid #52CC7A'; 
+        return true; 
+    }
+}
+
+function validateForm() {
+    if (validateEmail() && validatePassword()) {
+        return true; 
+    } else {
+        return false;
+    }
+}
+
+
+
+
+
+
+	</script>
 	
 	<%- include('../layouts/footer') %>

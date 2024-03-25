@@ -268,7 +268,7 @@ const verifyOtp = async (req, res, next) => {
     const otpRecord = await Otp.findOne({ email: userDataFromSession.email });
 
     if (otpRecord && otpRecord.expiry > new Date()) {
-      if (userOtp === otpRecord.otp) {
+      if (userOtp === otpRecord.otp) { 
         let user = new User({
           name: userDataFromSession.name,
           email: userDataFromSession.email,
@@ -583,7 +583,8 @@ const userLogin = async (req, res) => {
 // Load user dashboard
 const loadDashboard = async (req, res) => {
   try {
-    res.render("dashboard");
+    const currentPage = '/dashboard'
+    res.render("dashboard", {currentPage});
   } catch (error) {
     console.log(error);
   }
@@ -591,7 +592,8 @@ const loadDashboard = async (req, res) => {
 
 const loadAccountDetails = (req, res) => {
   try {
-    res.render("user-account-details");
+    const currentPage = '/user-account-details'
+    res.render("user-account-details", {currentPage});
   } catch (error) {
     console.log(error);
   }
@@ -819,8 +821,8 @@ const loadUserAddress = async (req, res, next) => {
     
     const userId = res.locals.user;
     const addressData = await Address.findOne({ user_id: userId });
-
-    res.render("user-account-address", { address: addressData });
+    const currentPage = '/user-address'
+    res.render("user-account-address", { address: addressData, currentPage });
   } catch (error) {
     console.log("Error in loading user addresses: ", error);
     next(error)
@@ -965,7 +967,8 @@ const editAddress = async (req, res, next) => {
 
 const loadChangePassword = (req, res) => {
   try {
-    res.render("user-account-password");
+    const currentPage = '/user-change-password'
+    res.render("user-account-password", {currentPage});
   } catch (error) {
     console.log(error);
   }
@@ -1234,9 +1237,10 @@ const loadOrders = async (req, res, next) => {
       }
     ])
     console.log(orderDetails)
+    const currentPage = '/orders'
     // console.log(orderDetails)
     res.render('account-orders', {
-      orders: orderDetails
+      orders: orderDetails, currentPage
     })
   } catch (error) {
     console.log("Failed to load order page: ", error)
@@ -1427,9 +1431,9 @@ const razorpayPayment = async (req, res, next) => {
   try {
     // Fetch necessary order details and create a Razorpay order
     const options = {
-      amount: totalAmount * 100 , // Replace with the actual amount in paise (1 INR = 100 paise)
+      amount: totalAmount * 100 , //  actual amount in paise (1 INR = 100 paise)
       currency: 'INR',
-      receipt: 'order_receipt_id_2', // Replace with your order receipt ID
+      receipt: 'order_receipt_id_2',  
     };
 
     const order = await razorpay.orders.create(options);
@@ -1608,7 +1612,8 @@ const loadWallet = async (req, res) => {
   try {
     const userId = res.locals.user._id;
     const wallet = await Wallet.findOne({user_id: userId})
-    res.render('user-account-wallet', {wallet, razorpaykey: process.env.RAZORPAY_key_ID})
+    const currentPage = '/wallet'
+    res.render('user-account-wallet', {wallet, razorpaykey: process.env.RAZORPAY_key_ID, currentPage})
   } catch (error) {
     console.log(error)
   }
@@ -1744,7 +1749,8 @@ const loadUserReferral = async (req, res, next) => {
     const userId = res.locals.user._id;
     const userData = await User.findById(userId)
     const referralCode = userData.referralCode
-    res.render('user-account-referral', {referralCode})
+    const currentPage = '/user-account-referral'
+    res.render('user-account-referral', {referralCode, currentPage})
   } catch (error) {
     console.log(error)
   }

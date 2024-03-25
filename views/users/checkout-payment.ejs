@@ -182,57 +182,133 @@
 <!-- Your JavaScript logic for handling Razorpay payment -->
 <script>
 	function confirmRazorpayPayment() {
-	  // Fetch order details from the server
+    // Fetch order details from the server
+    fetch('/create-razorpay-order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(order => {
+      // Log order details for debugging
+      console.log('Received order details:', order);
+      console.log("payment order created successfully....");
 
-	  fetch('/create-razorpay-order', {
-		method: 'POST',
-		headers: {
-		  'Content-Type': 'application/json',
-		}
-	  })
-	  .then(response => response.json())
+      // Configure Razorpay button
+      var options = {
+        key: '<%=razorpaykey %>',
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.id,
+        name: 'CrossSpirit Fashion',
+        description: 'Order Payment',
+        handler: function (response) {
+          // Handle successful payment
+          console.log('Razorpay payment success:', response);
+
+          // Verify the payment signature
+        
+            createOrder(order.id); // Assuming order.id is the Razorpay order ID
+		
+        },
+        prefill: {
+          name: 'User Name',
+          email: 'user@example.com',
+          contact: '1234567890',
+        },
+        notes: {
+          address: 'User Address',
+        },
+        theme: {
+          color: '#012652',
+        },
+        modal: {
+          confirm_close: true,
+          ondismiss: async (reason) => {
+            // Handle modal dismissal reasons
+            const {
+              reason: paymentReason, field, step, code,
+            } = reason && reason.error ? reason.error : {};
+
+            if (reason === undefined) {
+              console.log('Payment cancelled');
+              // Handle cancellation
+            } else if (reason === 'timeout') {
+              console.log('Payment timed out');
+              // Handle timeout
+            } else {
+              console.log('Payment failed');
+              // Handle other failures
+            }
+          },
+        },
+        retry: {
+          enabled: false,
+        },
+        timeout: 900,
+      };
+
+      var rzp = new Razorpay(options);
+      rzp.open();
+    })
+    .catch(error => {
+      console.error('Error fetching Razorpay order:', error);
+      // Handle error
+    });
+  }
+	// function confirmRazorpayPayment() {
+	//   // Fetch order details from the server
+
+	//   fetch('/create-razorpay-order', {
+	// 	method: 'POST',
+	// 	headers: {
+	// 	  'Content-Type': 'application/json',
+	// 	}
+	//   })
+	//   .then(response => response.json())
 	  
-	  .then(order => {
-		// Log order details for debugging
-		console.log('Received order details:', order);
-		console.log("payment order created successfully....")
+	//   .then(order => {
+	// 	// Log order details for debugging
+	// 	console.log('Received order details:', order);
+	// 	console.log("payment order created successfully....")
   
-		// Configure Razorpay button
-		var options = {
-		  key: '<%=razorpaykey %>',
-		  amount: order.amount,
-		  currency: order.currency,
-		  order_id: order.id,
-		  name: 'CrossSpirit Fashion',
-		  description: 'Order Payment',
-		  handler: function (response) {
-			// Handle successful payment
-			console.log('Razorpay payment success:', response);
+	// 	// Configure Razorpay button
+	// 	var options = {
+	// 	  key: '<%=razorpaykey %>',
+	// 	  amount: order.amount,
+	// 	  currency: order.currency,
+	// 	  order_id: order.id,
+	// 	  name: 'CrossSpirit Fashion',
+	// 	  description: 'Order Payment',
+	// 	  handler: function (response) {
+	// 		// Handle successful payment
+	// 		console.log('Razorpay payment success:', response);
   
-			// Call the create-order API after successful payment
-			createOrder(order.id); // Assuming order.id is the Razorpay order ID
-		  },
-		  prefill: {
-			name: 'User Name',
-			email: 'user@example.com',
-			contact: '1234567890',
-		  },
-		  notes: {
-			address: 'User Address',
-		  },
-		  theme: {
-			color: '#012652',
-		  },
-		};
+	// 		// Call the create-order API after successful payment
+	// 		createOrder(order.id); // Assuming order.id is the Razorpay order ID
+	// 	  },
+	// 	  prefill: {
+	// 		name: 'User Name',
+	// 		email: 'user@example.com',
+	// 		contact: '1234567890',
+	// 	  },
+	// 	  notes: {
+	// 		address: 'User Address',
+	// 	  },
+	// 	  theme: {
+	// 		color: '#012652',
+	// 	  },
+	// 	};
   
-		var rzp = new Razorpay(options);
-		rzp.open();
-	  })
-	  .catch(error => {
-		console.error('Error fetching Razorpay order:', error);
-		// Handle error
-	  });
-	}
+	// 	var rzp = new Razorpay(options);
+	// 	rzp.open();
+	//   })
+	//   .catch(error => {
+	// 	console.error('Error fetching Razorpay order:', error);
+	// 	// Handle error
+	//   });
+	// }
   
 	function createOrder(razorpayOrderId) {
 	  // Call the /create-order API with the Razorpay order ID

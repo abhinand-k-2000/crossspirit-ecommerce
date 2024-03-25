@@ -150,6 +150,7 @@ const loadHome = async (req, res, next) => {
         $sort: { _id: 1 },
       },
     ]);
+    console.log(dailyOrderData)
 
     const monthlyOrderData = await Order.aggregate([
       {
@@ -214,7 +215,7 @@ const loadHome = async (req, res, next) => {
       }
     ])
     
-    console.log(categoryData)
+    // console.log(categoryData)     
 
 
     

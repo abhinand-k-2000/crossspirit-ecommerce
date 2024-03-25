@@ -67,25 +67,26 @@
 													>
 														<div class="col-sm-12">
 															<label for="inputFirstName" class="form-label">Name</label>
-															<input type="text" class="form-control" id="inputFirstName" name="name" placeholder="Enter name" oninput="validateName()" required>
+															<input type="text" class="form-control" id="inputFirstName" name="name" placeholder="Enter name" oninput="validateName()" >
 															<span id="inputFirstNameError" class="text-danger"> </span>
 														</div>
 														<div class="col-12">
 															<label for="inputEmailAddress" class="form-label">Email Address</label>
-															<input type="email" class="form-control" id="inputEmailAddress" name="email" placeholder="Enter email" oninput="validateEmail()" required>
+															<input type="text" class="form-control" id="inputEmailAddress" name="email" placeholder="Enter email" oninput="validateEmail()" >
 															<span id="inputEmailAddressError" class="text-danger"></span>
 														</div>
 
 														<div class="col-sm-12">
 															<label for="inputMobile" class="form-label">Mobile</label>
-															<input type="tel" class="form-control" id="inputMobile" name="mobile" placeholder="Enter mobile no." oninput="validateMobile()" required>
+															<input type="tel" class="form-control" id="inputMobile" name="mobile" placeholder="Enter mobile no." oninput="validateMobile()" >
 															<span id="inputMobileError" class="text-danger"></span>
 														</div>
 														<div class="col-12">
 															<label for="inputChoosePassword" class="form-label">Password</label>
 															<div class="input-group" id="show_hide_password">
-																<input type="password" class="form-control " id="inputChoosePassword" name="password" placeholder="Enter Password" oninput="validatePassword()" required> 
-																<a href="javascript:;" class="input-group-text toggle-icon bg-transparent"><i id="showIcon" class='bx bx-hide'></i></a>
+																<input type="password" class="form-control border-end-0" id="inputChoosePassword" name="password" placeholder="Enter Password" oninput="validatePassword()" > 
+																<button class="input-group-text toggle-icon bg-transparent" type="button" onclick="togglePasswordVisibility()"><i id="showIcon" class='bx bx-hide'></i></button>
+																<!-- <a href="javascript:;" class="input-group-text toggle-icon bg-transparent"><i id="showIcon" class='bx bx-hide'></i></a> -->
 															</div>
 															<p id="inputChoosePasswordError" class="text-danger"></p>
 														</div>
@@ -166,7 +167,7 @@
 				nameInput.style.border = '1px solid red'; // Set border color to red on error
 			} else {
 				nameError.innerText = ''; // Clear the error message
-				nameInput.style.border = ''; // Reset border color
+				nameInput.style.border = '1px solid #52CC7A'; // Reset border color
 			}
 		}
 	
@@ -188,7 +189,7 @@
 				emailInput.style.border = '1px solid red'; // Set border color to red on error
 			} else {
 				emailError.innerText = ''; // Clear the error message
-				emailInput.style.border = ''; // Reset border color
+				emailInput.style.border = '1px solid #52CC7A'; // Reset border color
 			}
 		}
 	
@@ -210,13 +211,14 @@
 				mobileInput.style.border = '1px solid red'; // Set border color to red on error
 			} else {
 				mobileError.innerText = ''; // Clear the error message
-				mobileInput.style.border = ''; // Reset border color
+				mobileInput.style.border = '1px solid #52CC7A'; // Reset border color
 			}
 		}
 	
 		function validatePassword() {
 			var passwordInput = document.getElementById('inputChoosePassword');
 			var passwordError = document.getElementById('inputChoosePasswordError');
+			var button = document.querySelector('.toggle-icon');
 			var password = passwordInput.value.trim();
 	
 			// Simple password validation (you can customize it based on your needs)
@@ -226,13 +228,16 @@
 	
 			if (password === '') {
 				passwordError.innerText = 'Password is required.';
-				passwordInput.style.border = '1px solid red'; // Set border color to red on error
+				passwordInput.style.border = '1px solid red';
+				button.style.border = '1px solid red';
 			} else if (!passwordRegex.test(password)) {
 				passwordError.innerText = 'Password must be minimum 8 characters with letters, numbers, and special characters.';
-				passwordInput.style.border = '1px solid red'; // Set border color to red on error
+				passwordInput.style.border = '1px solid red'; 
+				button.style.border = '1px solid red';
 			} else {
-				passwordError.innerText = ''; // Clear the error message
-				passwordInput.style.border = '2px solid #52CC7A'; // Set the green border style with thickness (adjust thickness as needed)
+				passwordError.innerText = ''; 
+				passwordInput.style.border = '1px solid #52CC7A'; 
+				button.style.border = '1px solid #52CC7A'; 
 			}
 		}
 	
