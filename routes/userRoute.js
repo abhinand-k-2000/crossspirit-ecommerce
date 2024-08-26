@@ -21,7 +21,7 @@ router.use(userController.fetchWishlistItemCount)
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>End of Middlewares for counting the items <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
-//Loading the main page
+//Loading the main page  
 router.get('/', userController.loadHomePage)
    
 //Loading user registration page, Registering new user

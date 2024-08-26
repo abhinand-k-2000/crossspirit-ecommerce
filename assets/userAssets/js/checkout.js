@@ -59,7 +59,6 @@
 						if (response.status === 400) {
 							// Handle 400 Bad Request
 							return response.json().then(data => {
-								console.log("Invalid");
 								document.getElementById("couponError").innerHTML = data.message;
 								document.getElementById("couponError").style.display = 'block';
 								// throw new Error("Invalid coupon code");

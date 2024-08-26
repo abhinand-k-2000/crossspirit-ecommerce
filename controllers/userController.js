@@ -48,11 +48,11 @@ const securePassword = async (password) => {
 
 // function to generate OTP
 function generateOtp() {
-  return Math.floor(1000 + Math.random() * 9000);
+  return Math.floor(100000 + Math.random() * 900000);
 }
 
 // function to send OTP
-function sendOtp(email, OTP) {
+function sendOtp(email, OTP, name) {
   let config = {
     service: "gmail",
     auth: {
@@ -66,16 +66,22 @@ function sendOtp(email, OTP) {
   let MailGenerator = new mailgen({
     theme: "default",
     product: {
-      name: "Mailgen",
+      name: "Crossspirit Fashion",
       link: "http://mailgen.js/",
     },
   });
 
   let response = {
     body: {
-      name: `${email}`,
-      intro: `Yoour OTP is ${OTP}`,
-      outro: "Looking forward",
+      name: `${name}`,
+      intro: `Thank you for choosing Crossspirit Fashion. Use the following OTP to complete your Sign Up procedures. `,
+      action: {
+        instructions: 'OTP is valid for 5 minutes',
+        button: { 
+            color: '#22BC66', 
+            text: OTP,
+        }
+    },
     },
   };
   let mail = MailGenerator.generate(response);
@@ -187,7 +193,7 @@ console.log("Register session: ", req.session.referralId)
     OTP = generateOtp();
     console.log(OTP);
 
-    sendOtp(email, OTP);
+    sendOtp(email, OTP, name);
 
     const newotp = new Otp({
       email: email,
@@ -570,10 +576,10 @@ const userLogin = async (req, res) => {
           res.render("login", { message: "Account is blocked !" });
         }
       } else {
-        res.render("login", { message: "Password is incorrect" });
+        res.render("login", { message: "Incorrect password!" });
       }
     } else {
-      res.render("login", { message: "Email is incorrect" });
+      res.render("login", { message: "User not found!" });
     }
   } catch (error) {
     console.log(error);

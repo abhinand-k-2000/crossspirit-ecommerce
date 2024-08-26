@@ -59,7 +59,6 @@ module.exports.loadEditBanner = async (req, res, next) => {
     try {
         const {bannerId} = req.params
         const banner = await Banner.findById(bannerId)
-        console.log(banner)
         res.render('edit-banner', {banner})
     } catch (error) {
         console.log(error)
